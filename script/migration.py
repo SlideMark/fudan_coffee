@@ -4,6 +4,7 @@ __author__ = 'wills'
 
 import sys
 import os
+import traceback
 
 sys.path.append("..")
 import sys
@@ -127,9 +128,10 @@ def work():
     myopts.get('-h') and usage()
     port = myopts.get('-p') or usage()
     try:
-        conn = psycopg2.connect(SQLDB_DSN % port)
+        conn = psycopg2.connect(SQLDB_DSN)
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     except:
+        traceback.print_exc()
         return
 
     init_db(conn, cur)
