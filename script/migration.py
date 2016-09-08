@@ -41,7 +41,6 @@ Usage:
 
 OPTIONS:
    -h    查看帮助文档
-   -p    端口
 
 ''' % __file__
     sys.exit(1)
@@ -126,7 +125,6 @@ def migrate_sql(conn, cur, key, filename):
 def work():
     myopts = hashopts('ht:p:')
     myopts.get('-h') and usage()
-    port = myopts.get('-p') or usage()
     try:
         conn = psycopg2.connect(SQLDB_DSN)
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
