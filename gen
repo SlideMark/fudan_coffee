@@ -1,0 +1,43 @@
+# !/usr/bin/env sh
+#
+# Usage: gen -t -n
+
+help_gen()
+{
+  echo "Usage: $0 -n -t"
+  echo "Options: These are optional argument"
+  echo " -n name of file"
+  exit 1
+}
+
+name=""
+
+if [ $# -lt 1 ]; then
+  help_gen
+fi
+while getopts n:t: opt
+do
+  case "$opt" in
+    n) name=`echo "$OPTARG" | tr "A-Z-" "a-z_"`;;
+    \?) help_gen;;
+  esac
+done
+if [ name = "" ]; then
+   echo "Name not null"
+   help_gen
+   exit 1
+fi
+
+file=migration/`date +%Y%m%d%H%M%S`_$name.sql
+if [ -f $file ]; then
+    echo "File $file already existed!"
+fi
+
+echo "-- $name" > $file
+echo "CREATE TABLE xxxx (" >> $file
+echo "    id            BIGSERIAL PRIMARY KEY," >> $file
+echo "    uid           integer NOT NULL," >> $file
+echo "    create_at   TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL," >> $file
+echo "    update_at   TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL" >> $file
+echo ");" >> $file
+echo "File gen success: $file"
