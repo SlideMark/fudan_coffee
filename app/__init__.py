@@ -9,3 +9,4 @@ from app.controller.event import *
 from app.controller.account import *
 from app.controller.home import *
 from app.controller.product import *
+from app.controller.ledger import *

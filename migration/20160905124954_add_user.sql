@@ -14,6 +14,7 @@ CREATE TABLE fc_user (
     session_data  varchar not null,
     phone       varchar,
     state      smallint not null default 0,
+    role       integer not null default 0,
     create_at   TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     update_at   TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );

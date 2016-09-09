@@ -15,14 +15,6 @@ def events():
     else:
         return []
 
-@app.route("/event/<event_id>")
-def event_info(event_id=None):
-    ev = Event.find(event_id)
-    if ev:
-        return ev.to_dict()
-    else:
-        return {}
-
 @app.route("/event", methods=['POST'])
 @auth_required
 def create_event():

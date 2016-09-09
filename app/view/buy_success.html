@@ -15,17 +15,14 @@
   </head>
   <body>
   <div class="page">
-  <div class="top-pic">
-	<div class="top-avatar" style="background: #fff url({{user.avatar}}) no-repeat center;background-size: cover"></div>
-</div>
 <div class="top-uinfo">
-<div class="uname">{{user.name.decode('utf8')}}</div>
-<div class="orders-status">
-	<a class="daifukuan" href="/ledgers?type=0">我的钱包<strong>{{user.balance/100.0}}元</strong></a>
-	<a class="fuwuzhong" href="/ledgers?type=2">优惠额度<strong>{{user.coupon/100.0}}元</strong></a>
+<div class="uname">购买成功 {{product.name.decode('utf8')}}</div>
+      <div class="uname">花费余额 {{money/100.0}}</div>
+    <div class="uname">花费折扣 {{discount/100.0}}</div>
 </div>
+
+
 </div>
-      </div>
 
 <div style="text-align: center;padding:20px"><a href="/"><img src="/static/logo.jpeg" style="height:60px;width:65px"></a></div>
 <script>

@@ -339,6 +339,7 @@ class DAO(object):
             return
 
         except Exception, e:
+            traceback.print_exc()
             if e.message.find('duplicate key') == -1:
                 traceback.print_exc()
                 

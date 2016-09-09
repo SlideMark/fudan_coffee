@@ -6,7 +6,7 @@ from app.core.dao import DAO
 
 class Ledger(DAO):
 
-    TABLE = 'fc_legder'
+    TABLE = 'fc_ledger'
     COLUMNS = ['uid', 'product_id', 'money', 'type']
 
     class Type:
