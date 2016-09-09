@@ -2,9 +2,9 @@
 
 __author__ = 'wills'
 
-from app import app
+from app import app, conf
 from app.model.user import User
-from flask import request
+from flask import request, render_template, abort
 from app.util.weixin import WXClient
 from app.core.response import ResponseCode
 
@@ -12,13 +12,13 @@ from app.core.response import ResponseCode
 def signin():
 
     code = request.args.get('code')
-    init = 0
-    token = WXClient.get_service_token()
+    token = WXClient.get_wx_token(conf.wechat_app_id, conf.wechat_secret, code)
+    print token
     if token and token.get('errcode') is None:
         openid = token.get('openid')
         access_token = token.get('access_token')
     else:
-        resp = {'code': 1,
+        resp = {'code': ResponseCode.OPERATE_ERROR,
                 'msg': '获取微信token失败'}
         return resp
 
@@ -33,17 +33,12 @@ def signin():
         user.access_token = access_token
         if _signup(user):
             user.save()
-            init = 1
+            user = User.query_instance(openid=openid, master=True)
         else:
-            resp = {'code': ResponseCode.OPERATE_ERROR,
-            'msg': '第三方登录失败'}
-            return resp
+            abort(403)
 
-    resp_data = user.to_dict()
-    resp_data['init'] = init
-    resp = {'code': ResponseCode.SUCCESS,
-            'data': resp_data}
-    return resp
+    return render_template('user.html', user=user)
+
 
 def _signup(user):
     wx_user = WXClient.get_wx_profile(user.openid, user.access_token)

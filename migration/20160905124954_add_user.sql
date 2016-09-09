@@ -6,6 +6,8 @@ CREATE TABLE fc_user (
     province      varchar,
     city          varchar,
     avatar        varchar,
+    balance       integer not null default 0,
+    coupon        integer not null default 0,
     openid    varchar NOT NULL,
     unionid    varchar,
     access_token varchar,

@@ -70,7 +70,7 @@ class WXClient(object):
         return profile
 
     @staticmethod
-    def get_service_token():
+    def get_service_token(code):
         token = LocalCache.get(WXClient.TOKEN_REDIS)
 
         if not token:

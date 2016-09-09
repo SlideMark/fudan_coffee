@@ -14,8 +14,26 @@
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
   </head>
   <body>
-<center>
-  无法显示此页
-</center>
+  <div class="page">
+  <div class="top-pic">
+	<div class="top-avatar" style="background: #fff url('{{product.icon}}') no-repeat center;background-size: cover"></div>
+</div>
+<div class="top-uinfo">
+<div class="uname">{{product.name.decode('utf8')}}</div>
+
+</div>
+      {{product.description.decode('utf8')}}
+      <form method='post' action="/product/{{product.id}}">
+          <button type="submit" class="btn">购买</button>
+          </form>
+</div>
+
+<div style="text-align: center;padding:20px"><a href="/"><img src="/static/logo.jpeg" style="height:60px;width:65px"></a></div>
+<script>
+if(top.location!=self.location)
+{
+    top.location=self.location;
+}
+</script>
   </body>
 </html>
