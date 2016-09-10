@@ -10,3 +10,4 @@ from app.controller.account import *
 from app.controller.home import *
 from app.controller.product import *
 from app.controller.ledger import *
+from app.controller.payment import *

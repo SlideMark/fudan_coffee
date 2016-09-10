@@ -7,15 +7,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="format-detection" content="telephone=no">
-		<link rel="stylesheet" href="http://static2.flowerplus.cn/Static/css/m.css?_t=13">
-    <link rel="stylesheet" href="http://static2.flowerplus.cn/Static/css/m_web.css?_t=167">
+		<link rel="stylesheet" href="/static/m.css?v=1">
+    <link rel="stylesheet" href="/static/m_web.css?v=1">
 
         <link rel="dns-prefetch" href="//res.wx.qq.com">
 <link rel="dns-prefetch" href="//mmbiz.qpic.cn">
 <link rel="shortcut icon" type="image/x-icon" href="http://res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/icon/common/favicon22c41b.ico">
 
         <title>
-活动</title>
+账单</title>
         
 <link rel="stylesheet" href="https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/style/page/homepage/index23b0e8.css">
 
@@ -53,7 +53,7 @@ benchmark.mark('pageBegin');
 			{% for each in ledgers %}
 			<a class="list_item js_post" href="/product/{{each['product_id']}}">
 				<div class="cont">
-					<h2 class="title js_title">{{each['product_name'].decode('utf8')}} {{each['money']/100.0}}元</h2>
+					<h2 class="title js_title">{{each['name'].decode('utf8')}} {{each['money']/100.0}}元</h2>
 					<p class="desc">{{each['create_at']}}</p>
 				</div>
 			</a>

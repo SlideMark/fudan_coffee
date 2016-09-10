@@ -18,10 +18,74 @@ def products():
 @app.route("/product/<product_id>", methods=['GET'])
 def product(product_id=0):
     product = Product.find(product_id)
-    return render_template('product.html', product=product)
+    user = User.find(1)
+    return render_template('product.html', user=user, product=product)
 
 @app.route("/product/<product_id>", methods=['POST'])
 def buy_product(product_id=0):
+    pd = Product.find(product_id)
+    user = User.find(1)
+    if not pd or not user:
+        abort(404)
+        return
+
+    if user.balance >= pd.price:
+        user.balance -= pd.price
+        user.save()
+
+        ledger = Ledger()
+        ledger.name = pd.name
+        ledger.item_id = pd.id
+        ledger.money = -pd.price
+        ledger.type = Ledger.Type.BUY_USE_COUPON
+        ledger.uid = 1
+        ledger.save()
+
+        return render_template('buy_success.html', product=pd, money=pd.price, discount=0)
+    else:
+
+        return render_template('buy_fail.html', product=pd, msg='余额不足')
+
+@app.route("/product/<product_id>/with_charge", methods=['POST'])
+def buy_product_with_charge(product_id=0):
+    pd = Product.find(product_id)
+    user = User.find(1)
+    if not pd or not user:
+        abort(404)
+        return
+
+    discount = 0.2
+
+    discount_money = min(user.charge, int(pd.price*discount))
+    need_money = pd.price - discount_money
+
+    if user.balance >= need_money:
+        user.charge -= discount_money
+        user.balance -= need_money
+        user.save()
+
+        ledger = Ledger()
+        ledger.name = pd.name
+        ledger.item_id = pd.id
+        ledger.money = -discount_money
+        ledger.type = Ledger.Type.BUY_USE_CHARGE
+        ledger.uid = 1
+        ledger.save()
+
+        ledger2 = Ledger()
+        ledger2.name = pd.name
+        ledger2.money = -need_money
+        ledger2.uid = 1
+        ledger2.item_id = pd.id
+        ledger2.save()
+
+        return render_template('buy_success.html', product=pd, money=need_money, discount=discount_money)
+    else:
+
+        return render_template('buy_fail.html', product=pd, msg='余额不足')
+
+@app.route("/product/<product_id>/with_coupon", methods=['POST'])
+def buy_product_with_coupon(product_id=0):
     pd = Product.find(product_id)
     user = User.find(1)
     if not pd or not user:
@@ -33,28 +97,29 @@ def buy_product(product_id=0):
     elif user.is_cofounder():
         discount = 0.3
     else:
-        discount = 0
+        discount = 0.2
 
     discount_money = min(user.coupon, int(pd.price*discount))
     need_money = pd.price - discount_money
 
-    print discount_money, need_money, user.balance
     if user.balance >= need_money:
         user.coupon -= discount_money
         user.balance -= need_money
         user.save()
 
         ledger = Ledger()
-        ledger.product_id = pd.id
+        ledger.name = pd.name
+        ledger.item_id = pd.id
         ledger.money = -discount_money
-        ledger.type = 2
+        ledger.type = Ledger.Type.BUY_USE_COUPON
         ledger.uid = 1
         ledger.save()
 
         ledger2 = Ledger()
+        ledger2.name = pd.name
         ledger2.money = -need_money
         ledger2.uid = 1
-        ledger2.product_id = pd.id
+        ledger2.item_id = pd.id
         ledger2.save()
 
         return render_template('buy_success.html', product=pd, money=need_money, discount=discount_money)

@@ -15,7 +15,7 @@
 <link rel="shortcut icon" type="image/x-icon" href="http://res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/icon/common/favicon22c41b.ico">
 
         <title>
-咖啡</title>
+充值</title>
         
 <link rel="stylesheet" href="https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/style/page/homepage/index23b0e8.css">
 
@@ -38,32 +38,6 @@ var benchmark = {
 };
 benchmark.mark('pageBegin');
 </script>
-<div class="container">
-    <div id="js_plugins_loading" class="loading">
-    	加载中    </div>
-    <div id="js_plugins" style="visibility:hidden;">
-	    <div class="slider js_plugin" id="namespace_0" data-pid="1">
-    <div class="swiper" style="height: 180px;">
-		
-		<div class="item js_post">
-				<div class="img js_img" style="background-image: url('/static/kabuqinuo.jpg');"></div>
-				<p class="desc js_title">卡布奇诺</p>
-		</div>
-		
-		<div class="item js_post">
-				<div class="img js_img" style="background-image: url('/static/natie.jpg');"></div>
-				<p class="desc js_title">拿铁</p>
-		</div>
-		
-	</div>
-	<div class="indicator">
-		
-		<a href="javascript:;"><i class="icon_dot active"></i></a>
-		
-		<a href="javascript:;"><i class="icon_dot "></i></a>
-
-	</div>
-</div>
 <div class="tab js_plugin" id="namespace_1" data-pid="2">
 	<div class="tab_hd">
 		<div class="tab_hd_inner">
@@ -75,14 +49,11 @@ benchmark.mark('pageBegin');
 	<div class="tab_bd">
 		
 		<div class="article_list article_list_0" >
-			{% for each in products %}
-			<a class="list_item js_post" href="/product/{{each['id']}}">
-				<div class="cover">
-					<img class="img js_img" src="{{each['icon']}}" alt=""/>
-				</div>
+			{% for each in payment_items %}
+			<a class="list_item js_post" href="/payment_item/{{each['id']}}">
 				<div class="cont">
-					<h2 class="title js_title">{{each['name'].decode('utf8')}} {{each['price']/100.0}}元</h2>
-					<p class="desc">{{each['description'].decode('utf8')[:10]+'......'}}</p>
+					<h2 class="title js_title">{{each['name'].decode('utf8')}} {{each['money']/100.0}}元</h2>
+					<p class="desc">{{each['description'].decode('utf8')}}</p>
 				</div>
 			</a>
 			{% endfor%}
@@ -90,9 +61,7 @@ benchmark.mark('pageBegin');
 		
 	</div>
 </div>
-
-    </div>
-</div>
+	</div>
 
         <script>window.moon_map = {"biz_common/utils/report.js":"https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/biz_common/utils/report275627.js","homepage/report.js":"https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/homepage/report243273.js","biz_wap/zepto/event.js":"https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/biz_wap/zepto/event275627.js","biz_wap/zepto/ajax.js":"https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/biz_wap/zepto/ajax275627.js","biz_wap/zepto/zepto.js":"https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/biz_wap/zepto/zepto275627.js","homepage/index.js":"https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/homepage/index2e7b74.js"};</script>
 <script>
@@ -156,7 +125,6 @@ benchmark.mark('soonJsBegin');
 seajs.use('homepage/index.js');
 benchmark.mark('pageEnd');
 </script>
-</div>
             <div style="text-align: center;padding:20px"><a href="/"><img src="/static/logo.jpeg" style="height:60px;width:65px"></a></div>
 
     </body>
