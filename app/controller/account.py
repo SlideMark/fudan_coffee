@@ -7,11 +7,13 @@ from app.model.user import User
 from flask import request, render_template, abort, make_response
 from app.util.weixin import WXClient
 from app.core.response import ResponseCode
-from app.model.user import auth_required
+from app.model.user import auth_required, logedin
 import hashlib
 
 @app.route("/account/signin")
 def wechat_signin():
+    if logedin(request):
+        return render_template('user.html', user=request.user)
 
     code = request.args.get('code')
     token = WXClient.get_wx_token(conf.wechat_app_id, conf.wechat_secret, code)
@@ -61,6 +63,8 @@ def _signup(user):
 
 @app.route("/account/login", methods=['POST'])
 def password_signin():
+    if logedin(request):
+        return render_template('user.html', user=request.user)
     phone = request.form.get('phone')
     password = request.form.get('password')
     password = hashlib.md5('fudan_coffee-%s' % password).hexdigest().lower()
@@ -85,6 +89,9 @@ def signout():
 
 @app.route("/account/signup", methods=['GET', 'POST'])
 def signup():
+    if logedin(request):
+        return render_template('user.html', user=request.user)
+    
     if request.method == 'GET':
         return render_template('signup.html')
 

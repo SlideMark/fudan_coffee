@@ -58,3 +58,13 @@ def auth_required(func):
 
     wraper.__name__ = func.__name__
     return wraper
+
+def logedin(request):
+    uid = request.cookies.get('uid')
+    session = request.cookies.get('session')
+    if uid and session:
+        user = User.query_instance(id=uid, session_data=session)
+        if user:
+            request.user = user
+            return True
+    return False
