@@ -21,9 +21,8 @@
 <div class="top-uinfo">
 <div class="uname">{{user.name.decode('utf8')}}<a href="/payment_items">[充值]</a></div>
 <div class="orders-status">
-	<a class="daifukuan" href="/ledgers?type=0">我的钱包<strong>{{user.balance/100.0}}元</strong></a>
-    <a class="fuwuzhong" href="/ledgers?type=1">充值返现<strong>{{user.charge/100.0}}元</strong></a>
-    <a class="yiwancheng" href="/ledgers?type=2">创始人优惠<strong>{{user.coupon/100.0}}元</strong></a>
+	<a class="daifukuan" href="/user/1/ledgers?type=0">我的钱包<strong>{{user.balance/100.0}}元</strong></a>
+    <a class="yiwancheng" href="/user/1/ledgers?type=1">创始人优惠<strong>{{user.coupon/100.0}}元</strong></a>
 </div>
 </div>
       </div>

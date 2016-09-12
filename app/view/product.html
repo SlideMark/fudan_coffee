@@ -25,23 +25,28 @@
 </div>
       {{product.description.decode('utf8')}}
       <br>
-          {% if user.charge > 0 %}
-      <form method='post' action="/product/{{product.id}}/with_charge">
-          <button type="submit" class="btn">余额+返现购买</button>
+          {% if user.balance > 0 %}
+      <form method='post' action="/product/{{product.id}}">
+          <button type="submit" class="btn">余额购买</button>
           </form>
       {% endif  %}
       <br>
       {% if user.coupon > 0 %}
       <form method='post' action="/product/{{product.id}}/with_coupon">
-          <button type="submit" class="btn">余额+优惠券购买</button>
+          <button type="submit" class="btn">优惠券购买</button>
           </form>
       {% endif %}
       <br>
       {% if user.coupon <= 0 and user.charge <=0 %}
       <form method='post' action="/product/{{product.id}}">
-          <button type="submit" class="btn">购买</button>
+          <button type="submit" class="btn">微信支付</button>
           </form>
       {% endif %}
+      <br>
+      <form method='post' action="/user/{{user.id}}/cart">
+          <input type="hidden" name="product_id" value="{{product.id}}">
+          <button type="submit" class="btn btn-pay">加入购物车</button>
+          </form>
 </div>
 
 <div style="text-align: center;padding:20px"><a href="/"><img src="/static/logo.jpeg" style="height:60px;width:65px"></a></div>

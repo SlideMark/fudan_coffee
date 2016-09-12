@@ -8,7 +8,7 @@ class User(DAO):
 
     TABLE = 'fc_user'
     COLUMNS = ['name', 'gender', 'province', 'city', 'avatar',
-               'balance', 'coupon', 'role', 'charge',
+               'balance', 'coupon', 'role',
                'openid', 'unionid', 'phone', 'access_token']
     INCR_FIELDS = ['balance', 'coupon']
 
