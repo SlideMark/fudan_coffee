@@ -23,6 +23,7 @@ def product(product_id=0):
     return render_template('product.html', user=request.user, product=product)
 
 @app.route("/product/<product_id>", methods=['POST'])
+@auth_required
 def buy_product(product_id=0):
     pd = Product.find(product_id)
     user = request.user
