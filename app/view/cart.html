@@ -61,8 +61,8 @@ benchmark.mark('pageBegin');
 		</div>
         {% if carts %}
       <br>
-          {% if user.balance > 0 %}
-      <form method='post' action="/cart/pay">
+          {% if user.balance >= 0 %}
+      <form method='post' action="/cart/pay_with_balance">
           <button type="submit" class="btn btn-pay">余额结算</button>
           </form>
       {% endif  %}
@@ -70,12 +70,6 @@ benchmark.mark('pageBegin');
       {% if user.coupon > 0 %}
       <form method='post' action="/cart/pay_with_coupon">
           <button type="submit" class="btn btn-pay">优惠券结算</button>
-          </form>
-      {% endif %}
-      <br>
-      {% if user.coupon <= 0 and user.charge <=0 %}
-      <form method='post' action="/cart/pay_with_balance">
-          <button type="submit" class="btn btn-pay">微信支付</button>
           </form>
       {% endif %}
       <br>

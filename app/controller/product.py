@@ -20,13 +20,12 @@ def products():
 @auth_required
 def product(product_id=0):
     product = Product.find(product_id)
-    user = User.find(1)
-    return render_template('product.html', user=user, product=product)
+    return render_template('product.html', user=request.user, product=product)
 
 @app.route("/product/<product_id>", methods=['POST'])
 def buy_product(product_id=0):
     pd = Product.find(product_id)
-    user = User.find(1)
+    user = request.user
     if not pd or not user:
         abort(404)
         return
@@ -40,7 +39,7 @@ def buy_product(product_id=0):
         ledger.item_id = pd.id
         ledger.money = -pd.price
         ledger.type = Ledger.Type.BUY_USE_COUPON
-        ledger.uid = 1
+        ledger.uid = user.id
         ledger.save()
 
         return render_template('buy_success.html', product=pd, money=pd.price, discount=0)

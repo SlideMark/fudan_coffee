@@ -25,7 +25,7 @@
 </div>
       {{product.description.decode('utf8')}}
       <br>
-          {% if user.balance > 0 %}
+      {% if user.balance >= 0 %}
       <form method='post' action="/product/{{product.id}}">
           <button type="submit" class="btn">余额购买</button>
           </form>
@@ -37,11 +37,6 @@
           </form>
       {% endif %}
       <br>
-      {% if user.coupon <= 0 and user.charge <=0 %}
-      <form method='post' action="/product/{{product.id}}">
-          <button type="submit" class="btn">微信支付</button>
-          </form>
-      {% endif %}
       <br>
       <form method='post' action="/cart">
           <input type="hidden" name="product_id" value="{{product.id}}">
