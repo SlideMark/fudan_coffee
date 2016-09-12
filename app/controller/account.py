@@ -110,3 +110,8 @@ def signup():
             resp.set_cookie('uid', '%s' % user.id)
             resp.set_cookie('session', user.session_data)
             return resp
+
+    elif password == password_confirm:
+        return render_template('error.html', msg='Same password!')
+    else:
+        return render_template('error.html', msg='Signup msg error!')
