@@ -41,18 +41,18 @@ def add_cart():
 
 @app.route("/cart/pay_with_balance", methods=['POST'])
 @auth_required
-def pay_cart():
+def pay_cart_with_balance():
     user = request.user
     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
     if not carts:
         abort(404)
         return
-
     success = []
     for each in carts:
         pd = Product.find(each['product_id'])
+        each['product'] = pd
         if user.balance > pd.price:
-            ct = Cart.find(each['id'])
+            ct = Cart(**each)
             ct.state = Cart.State.FINISHED
             ct.save()
 
@@ -63,11 +63,15 @@ def pay_cart():
             ledger.uid = user.id
             ledger.name = pd.name
             ledger.money = -pd.price
-            ledger.type = Ledger.Type.BUY_USE_BALANCE
+            ledger.type = Ledger.Type.BUY_USE_COUPON
             ledger.save()
 
             success.append(each)
-    return render_template('pay_cart_success.html', carts=success)
+
+    if success:
+        return render_template('pay_cart_success.html', carts=success)
+    else:
+        return render_template('pay_cart_fail.html', carts=carts)
 
 
 
@@ -79,13 +83,15 @@ def pay_cart_with_coupon():
     if not carts:
         abort(404)
         return
-
     success = []
     for each in carts:
         pd = Product.find(each['product_id'])
+        each['product'] = pd
         if user.coupon > pd.price:
-            each.state = Cart.State.FINISHED
-            each.save()
+            ct = Cart(**each)
+            ct.state = Cart.State.FINISHED
+            ct.save()
+
 
             user.coupon -= pd.price
             user.save()
@@ -98,4 +104,8 @@ def pay_cart_with_coupon():
             ledger.save()
 
             success.append(each)
-    return render_template('pay_cart_success.html', carts=success)
+
+    if success:
+        return render_template('pay_cart_success.html', carts=success)
+    else:
+        return render_template('pay_cart_fail.html', carts=carts)

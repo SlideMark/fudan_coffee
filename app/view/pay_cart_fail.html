@@ -8,15 +8,15 @@
     <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
     <script type='text/javascript'>window.BWEUM||(BWEUM={});BWEUM.info = {"stand":true,"agentType":"browser","agent":"bi-collector.oneapm.com/static/js/bw-send-411.4.5.js","beaconUrl":"bi-collector.oneapm.com/beacon","licenseKey":"Bjb~YrERBrNnQIaB","applicationID":2286362};</script><script type="text/javascript" src="//bi-collector.oneapm.com/static/js/bw-loader-411.4.5.js"></script>
 
-    <link rel="stylesheet" href="http://static2.flowerplus.cn/Static/css/m.css?_t=13">
-    <link rel="stylesheet" href="http://static2.flowerplus.cn/Static/css/m_web.css?_t=167">
+		<link rel="stylesheet" href="/static/m.css?v=1">
+    <link rel="stylesheet" href="/static/m_web.css?v=1">
     <script src="http://static2.flowerplus.cn/Static/js/jquery.js?_t=3"></script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
   </head>
   <body>
   <div class="page">
 <div class="top-uinfo">
-<h2 class="uname">购买成功</h2>
+    <div class="uname">余额不足,购买失败</div>
     {% for cart in carts %}
   <p>{{cart['product'].name.decode('utf8')}}</p>
   {% endfor %}
