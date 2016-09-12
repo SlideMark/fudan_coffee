@@ -23,24 +23,15 @@ def buy_item(item_id=0):
         abort(404)
         return
 
-    user.balance += it.money
-    user.charge += it.charge
+    user.balance += user.balance + it.money + it.charge
     user.save()
 
     ledger = Ledger()
     ledger.item_id = it.id
     ledger.name = it.name
-    ledger.money = it.money
+    ledger.money = it.money + it.charge
     ledger.type = Ledger.Type.PAYMENT_MONEY
     ledger.uid = user.id
     ledger.save()
-
-    ledger2 = Ledger()
-    ledger2.name = it.name
-    ledger2.money = it.charge
-    ledger2.uid = user.id
-    ledger2.item_id = it.id
-    ledger2.type = Ledger.Type.PAYMENT_CHARGE
-    ledger2.save()
 
     return render_template('payment_buy_success.html', payment_item=it)
