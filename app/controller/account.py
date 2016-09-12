@@ -78,7 +78,10 @@ def password_signin():
 @app.route("/account/signout")
 @auth_required
 def signout():
-    return render_template('signin.html')
+    resp = make_response(render_template('signin.html'))
+    resp.set_cookie('uid', '')
+    resp.set_cookie('session', '')
+    return resp
 
 @app.route("/account/signup", methods=['GET', 'POST'])
 def signup():

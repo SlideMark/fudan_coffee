@@ -29,15 +29,14 @@
       <form method='post' action="/product/{{product.id}}">
           <button type="submit" class="btn">余额购买</button>
           </form>
+            <br>
       {% endif  %}
-      <br>
       {% if user.coupon > 0 %}
       <form method='post' action="/product/{{product.id}}/with_coupon">
           <button type="submit" class="btn">优惠券购买</button>
           </form>
+            <br>
       {% endif %}
-      <br>
-      <br>
       <form method='post' action="/cart">
           <input type="hidden" name="product_id" value="{{product.id}}">
           <button type="submit" class="btn btn-pay">加入购物车</button>

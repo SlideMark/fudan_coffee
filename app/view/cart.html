@@ -65,14 +65,13 @@ benchmark.mark('pageBegin');
       <form method='post' action="/cart/pay_with_balance">
           <button type="submit" class="btn btn-pay">余额结算</button>
           </form>
+              <br>
       {% endif  %}
-      <br>
       {% if user.coupon > 0 %}
       <form method='post' action="/cart/pay_with_coupon">
           <button type="submit" class="btn btn-pay">优惠券结算</button>
           </form>
       {% endif %}
-      <br>
         {% endif %}
 		
 	</div>
