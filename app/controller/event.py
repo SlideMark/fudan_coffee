@@ -5,7 +5,6 @@ __author__ = 'wills'
 from app import app
 from app.model.event import Event
 from flask import request, render_template
-from app.controller import auth_required
 
 @app.route("/events")
 def events():
@@ -16,7 +15,6 @@ def events():
         return []
 
 @app.route("/event", methods=['POST'])
-@auth_required
 def create_event():
     ev = Event()
     ev.fee = request.form['fee'] or 0

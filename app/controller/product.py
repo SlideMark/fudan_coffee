@@ -8,6 +8,7 @@ from app.model.shop import Shop
 from app.model.user import User
 from app.model.product import Product
 from app.model.ledger import Ledger
+from app.model.user import auth_required
 
 @app.route("/products")
 def products():
@@ -16,6 +17,7 @@ def products():
     return render_template('products.html', products=products)
 
 @app.route("/product/<product_id>", methods=['GET'])
+@auth_required
 def product(product_id=0):
     product = Product.find(product_id)
     user = User.find(1)
@@ -48,9 +50,10 @@ def buy_product(product_id=0):
 
 
 @app.route("/product/<product_id>/with_coupon", methods=['POST'])
+@auth_required
 def buy_product_with_coupon(product_id=0):
     pd = Product.find(product_id)
-    user = User.find(1)
+    user = request.user
     if not pd or not user:
         abort(404)
         return
@@ -75,13 +78,13 @@ def buy_product_with_coupon(product_id=0):
         ledger.item_id = pd.id
         ledger.money = -discount_money
         ledger.type = Ledger.Type.BUY_USE_COUPON
-        ledger.uid = 1
+        ledger.uid = user.id
         ledger.save()
 
         ledger2 = Ledger()
         ledger2.name = pd.name
         ledger2.money = -need_money
-        ledger2.uid = 1
+        ledger2.uid = user.id
         ledger2.item_id = pd.id
         ledger2.save()
 

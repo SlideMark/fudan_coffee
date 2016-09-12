@@ -4,12 +4,14 @@ __author__ = 'wills'
 
 from app import app, conf
 from app.model.user import User
-from flask import request, render_template, abort
+from flask import request, render_template, abort, make_response
 from app.util.weixin import WXClient
 from app.core.response import ResponseCode
+from app.model.user import auth_required
+import hashlib
 
 @app.route("/account/signin")
-def signin():
+def wechat_signin():
 
     code = request.args.get('code')
     token = WXClient.get_wx_token(conf.wechat_app_id, conf.wechat_secret, code)
@@ -37,7 +39,10 @@ def signin():
         else:
             abort(403)
 
-    return render_template('user.html', user=user)
+    resp = make_response(render_template('user.html', user=user))
+    resp.set_cookie('uid', user.id)
+    resp.set_cookie('session', user.session_data)
+    return resp
 
 
 def _signup(user):
@@ -52,3 +57,53 @@ def _signup(user):
         return True
     else:
         return False
+
+
+@app.route("/account/login", methods=['POST'])
+def password_signin():
+    phone = request.form.get('phone')
+    password = request.form.get('password')
+    password = hashlib.md5('fudan_coffee-%s' % password).hexdigest().lower()
+    user = User.query_instance(phone=phone, password=password)
+    if user:
+        user.update_session()
+        user.save()
+        resp = make_response(render_template('user.html', user=user))
+        resp.set_cookie('uid', '%s' % user.id)
+        resp.set_cookie('session', user.session_data)
+        return resp
+    else:
+        return render_template('error.html', msg='User Not Found!')
+
+@app.route("/account/signout")
+@auth_required
+def signout():
+    return render_template('signin.html')
+
+@app.route("/account/signup", methods=['GET', 'POST'])
+def signup():
+    if request.method == 'GET':
+        return render_template('signup.html')
+
+    phone = request.form.get('phone')
+    password = request.form.get('password')
+    password_confirm = request.form.get('password_confirm')
+    if password == password_confirm and password is not None:
+        password = hashlib.md5('fudan_coffee-%s' % password).hexdigest().lower()
+        user = User.query_instance(phone=phone, password=password)
+        if user:
+            return render_template('error.html', msg='Phone already existed!')
+        else:
+            user = User()
+            user.name = phone
+            user.password = password
+            user.phone = phone
+            user.openid = 'dummy'
+            user.update_session()
+            user.save()
+
+            user = User.query_instance(phone=phone, password=password)
+            resp = make_response(render_template('user.html', user=user))
+            resp.set_cookie('uid', '%s' % user.id)
+            resp.set_cookie('session', user.session_data)
+            return resp

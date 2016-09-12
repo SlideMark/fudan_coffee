@@ -3,12 +3,16 @@
 __author__ = 'wills'
 
 from app.core.dao import DAO
+import hashlib
+import time
+import random
+from flask import request, render_template
 
 class User(DAO):
 
     TABLE = 'fc_user'
     COLUMNS = ['name', 'gender', 'province', 'city', 'avatar',
-               'balance', 'coupon', 'role',
+               'balance', 'coupon', 'role', 'session_data', 'password',
                'openid', 'unionid', 'phone', 'access_token']
     INCR_FIELDS = ['balance', 'coupon']
 
@@ -34,3 +38,23 @@ class User(DAO):
 
     def set_employee(self):
         self.role |= self.EMPLOYEE
+
+    def update_session(self):
+        md5 = hashlib.md5()
+        md5.update('%s-%s-%s' % ('fudan_coffee', time.time(), random.randint(0,1000)))
+        self.session_data = md5.hexdigest().lower()
+
+
+def auth_required(func):
+    def wraper(*args, **argv):
+        uid = request.cookies.get('uid')
+        session = request.cookies.get('session')
+        if uid:
+            usr = User.query_instance(id=uid, session_data=session)
+            if usr:
+                request.user = usr
+                return func(*args, **argv)
+        return render_template('signin.html')
+
+    wraper.__name__ = func.__name__
+    return wraper

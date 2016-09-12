@@ -3,20 +3,22 @@
 __author__ = 'wills'
 
 from app import app
-from flask import render_template, abort
+from flask import render_template, abort, request
 from app.model.payment_item import PaymentItem
-from app.model.user import User
 from app.model.ledger import Ledger
+from app.model.user import auth_required
 
 @app.route("/payment_items")
+@auth_required
 def items():
     items = PaymentItem.query_all()
     return render_template('payment_items.html', payment_items=items)
 
 @app.route("/payment_item/<item_id>")
+@auth_required
 def buy_item(item_id=0):
     it = PaymentItem.find(item_id)
-    user = User.find(1)
+    user = request.user
     if not it or not user:
         abort(404)
         return
@@ -30,13 +32,13 @@ def buy_item(item_id=0):
     ledger.name = it.name
     ledger.money = it.money
     ledger.type = Ledger.Type.PAYMENT_MONEY
-    ledger.uid = 1
+    ledger.uid = user.id
     ledger.save()
 
     ledger2 = Ledger()
     ledger2.name = it.name
     ledger2.money = it.charge
-    ledger2.uid = 1
+    ledger2.uid = user.id
     ledger2.item_id = it.id
     ledger2.type = Ledger.Type.PAYMENT_CHARGE
     ledger2.save()
