@@ -13,37 +13,9 @@
 ```bash
 ssh root@xxx.xxx.xxx.xx(ip)
 
-useradd deploy
+useradd fudan_coffee
 ```
 
-#### 修改hostname
-
-```bash
-vim /etc/sysconfig/network
-```
-
-* 修改配置例子
-
-```bash
-NETWORKING=yes
-HOSTNAME=peiwo-test3
-NETWORKING_IPV6=no
-PEERNTP=no
-GATEWAY=120.24.243.247(这里不用修改)
-```
-
-* 不重启修改hostname
-
-```bash
-hostname peiwo-test3
-```
-
-* 从git拉取安装所需软件(包含python环境，turnserver以及postgres)
-
-```bash
-git clone git@code.peiwoapi.com:dev_all/open_software.git
-#需要在code.peiwoapi.com上的个人账户中加入peiwo-test3服务器生成的id_rsa.pub文件
-```
 ### python以及虚拟环境的安装
 
 #### 1。安装python2.7.8
@@ -54,6 +26,7 @@ yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel read
 ```
 
 ```bash
+# 从网络下载python2.7.8的安装包
 tar xf Python-2.7.8.tar.xz
 cd Python-2.7.8
 ./configure --enable-shared --prefix=/usr/local --enable-unicode=ucs4
@@ -64,6 +37,7 @@ make && make altinstall #su
 * 安装pip2.7
 
 ```bash
+# 从网络下载ez_setup.py
 python2.7 ez_setup.py
 easy_install-2.7 pip
 ```
@@ -73,11 +47,11 @@ easy_install-2.7 pip
 ```bash
 pip2.7 install virtualenv
 
-# 在home/deploy/下新建fudan_coffee目录，将虚拟环境安装到fudan_coffee下
-su deploy
+# 将虚拟环境安装到fudan_coffee的home目录下
+su - fudan_coffee
 cd ~
 mkdir fudan_coffee
-cd peiwo
+cd fudan_coffee
 virtualenv env
 ```
 
@@ -102,6 +76,7 @@ rpm -e postgresql-libs-8.4.18-1.el6_4.x86_64 postgresql-8.4.18-1.el6_4.x86_64 po
 * 安装postgres
 
 ```bash
+# 从网络下载postgresql9.3或更高版本
 rpm -ihv postgresql93-*
 
 # 修改postgres用户密码
@@ -111,7 +86,7 @@ passwd postgres
 echo 'export PATH=$PATH:/usr/pgsql-9.3/bin' >> /var/lib/pgsql/.bash_profile #su
 
 # 将postgres的可执行加到环境变量之中
-echo 'export PATH=$PATH:/usr/pgsql-9.3/bin' >> /home/deploy/.bash_profile #su
+echo 'export PATH=$PATH:/usr/pgsql-9.3/bin' >> /home/fudan_coffee/.bash_profile #su
 
 # 用postgres用户运行
 su - postgres
@@ -160,6 +135,4 @@ psql -U postgres postgres
 ```sql
 create user fudan_coffee with password '*******'
 create database fudan_coffee with owner fudan_coffee
-
-# 导入数据库的schema，导入用户表
 ```

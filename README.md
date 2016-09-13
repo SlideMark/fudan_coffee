@@ -1,6 +1,11 @@
 ## 复旦咖啡项目
 
-### INSTALL
+复旦咖啡馆微信项目，基于flask实现
+
+### 安装
+
+* 参考[安装指南](doc/install.md)安装postgres，python，virtualenv等组件
+* 安装pip软件包
 
 ```
 pip install -r doc/requirements.txt
