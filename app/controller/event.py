@@ -4,17 +4,22 @@ __author__ = 'wills'
 
 from app import app
 from app.model.event import Event
-from flask import request, render_template
+from flask import request
+from app.core.response import Response
+from app.model.user import auth_required
 
 @app.route("/events")
 def events():
     evs = Event.query_all(orderby='open_at asc')
-    if evs:
-        return [Event(**ev).to_dict() for ev in evs]
-    else:
-        return []
+    return str(Response(data=[Event(**ev).to_dict() for ev in evs]))
+
+@app.route("/event/<event_id>", methods=['GET'])
+def events(event_id=0):
+    ev = Event.find(event_id)
+    return str(Response(data=ev.to_dict()))
 
 @app.route("/event", methods=['POST'])
+@auth_required
 def create_event():
     ev = Event()
     ev.fee = request.form['fee'] or 0
@@ -25,4 +30,4 @@ def create_event():
     ev.open_at = request.form['open_at']
     ev.close_at = request.form['close_at']
     ev.save()
-    return render_template('event.html', event=ev)
+    return str(Response())
