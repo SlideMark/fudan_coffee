@@ -14,7 +14,7 @@ def events():
     return str(Response(data=[Event(**ev).to_dict() for ev in evs]))
 
 @app.route("/event/<event_id>", methods=['GET'])
-def events(event_id=0):
+def event(event_id=0):
     ev = Event.find(event_id)
     return str(Response(data=ev.to_dict()))
 
