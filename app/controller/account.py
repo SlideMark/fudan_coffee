@@ -6,14 +6,14 @@ from app import app, conf
 from app.model.user import User
 from flask import request, render_template, abort, make_response
 from app.util.weixin import WXClient
-from app.core.response import ResponseCode
+from app.core.response import ResponseCode, Response
 from app.model.user import auth_required, logedin
 import hashlib
 
 @app.route("/account/signin")
 def wechat_signin():
     if logedin(request):
-        return render_template('user.html', user=request.user)
+        return str(Response(user=request.user.json()))
 
     code = request.args.get('code')
     token = WXClient.get_wx_token(conf.wechat_app_id, conf.wechat_secret, code)
@@ -39,9 +39,9 @@ def wechat_signin():
             user.save()
             user = User.query_instance(openid=openid, master=True)
         else:
-            abort(403)
+            return str(Response(code=ResponseCode.OPERATE_ERROR))
 
-    resp = make_response(render_template('user.html', user=user))
+    resp = make_response(str(Response(data=user.json())))
     resp.set_cookie('uid', user.id)
     resp.set_cookie('session', user.session_data)
     return resp
@@ -72,17 +72,17 @@ def password_signin():
     if user:
         user.update_session()
         user.save()
-        resp = make_response(render_template('user.html', user=user))
+        resp = make_response(str(Response(data=user.json())))
         resp.set_cookie('uid', '%s' % user.id)
         resp.set_cookie('session', user.session_data)
         return resp
     else:
-        return render_template('error.html', msg='User Not Found!')
+        return str(Response(code=ResponseCode.DATA_NOT_EXIST, msg='用户或密码错误'))
 
 @app.route("/account/signout")
 @auth_required
 def signout():
-    resp = make_response(render_template('signin.html'))
+    resp = make_response(str(Response()))
     resp.set_cookie('uid', '')
     resp.set_cookie('session', '')
     return resp
@@ -97,12 +97,11 @@ def signup():
 
     phone = request.form.get('phone')
     password = request.form.get('password')
-    password_confirm = request.form.get('password_confirm')
-    if password == password_confirm and password is not None:
+    if password is not None:
         password = hashlib.md5('fudan_coffee-%s' % password).hexdigest().lower()
         user = User.query_instance(phone=phone, password=password)
         if user:
-            return render_template('error.html', msg='Phone already existed!')
+            return str(Response(code=ResponseCode.DUPLICATE_DATA, msg='用户已存在'))
         else:
             user = User()
             user.name = phone
@@ -113,12 +112,9 @@ def signup():
             user.save()
 
             user = User.query_instance(phone=phone, password=password)
-            resp = make_response(render_template('user.html', user=user))
+            resp = make_response(str(Response(data=user.json())))
             resp.set_cookie('uid', '%s' % user.id)
             resp.set_cookie('session', user.session_data)
             return resp
-
-    elif password == password_confirm:
-        return render_template('error.html', msg='Same password!')
     else:
-        return render_template('error.html', msg='Signup msg error!')
+        return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))

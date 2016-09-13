@@ -7,4 +7,4 @@ from app.core.dao import DAO
 class PaymentItem(DAO):
 
     TABLE = 'fc_payment_item'
-    COLUMNS = ['name', 'description', 'money', 'charge']
+    COLUMNS = ['id', 'name', 'description', 'money', 'charge', 'create_at', 'update_at']

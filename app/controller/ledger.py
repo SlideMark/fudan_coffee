@@ -2,10 +2,11 @@
 
 __author__ = 'wills'
 
-from flask import render_template,request
+from flask import request
 from app import app
 from app.model.user import auth_required
 from app.model.ledger import Ledger
+from app.core.response import Response
 
 @app.route("/ledgers")
 @auth_required
@@ -21,5 +22,5 @@ def ledgers():
                                extra={'type in': (Ledger.Type.BUY_USE_COUPON, Ledger.Type.TRANSFER_COUPON)})
     else:
         ledgers = []
-    print ledgers
-    return render_template('ledgers.html', ledgers=ledgers)
+
+    return str(Response(data=[Ledger(**each).to_dict() for each in ledgers]))

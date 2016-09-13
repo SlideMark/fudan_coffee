@@ -7,7 +7,7 @@ from app.core.dao import DAO
 class Cart(DAO):
 
     TABLE = 'fc_cart'
-    COLUMNS = ['uid', 'product_id', 'state', 'num']
+    COLUMNS = ['id', 'uid', 'product_id', 'state', 'num', 'create_at', 'update_at']
 
     class State:
         INIT = 0

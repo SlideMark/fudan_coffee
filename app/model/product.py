@@ -7,4 +7,4 @@ from app.core.dao import DAO
 class Product(DAO):
 
     TABLE = 'fc_product'
-    COLUMNS = ['name', 'description', 'icon', 'shop_id', 'price']
+    COLUMNS = ['id', 'name', 'description', 'icon', 'shop_id', 'price', 'create_at', 'update_at']

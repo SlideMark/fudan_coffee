@@ -3,17 +3,18 @@
 __author__ = 'wills'
 
 from app.core.dao import DAO
+from app.core.response import ResponseCode, Response
 import hashlib
 import time
 import random
-from flask import request, render_template
+from flask import request
 
 class User(DAO):
 
     TABLE = 'fc_user'
-    COLUMNS = ['name', 'gender', 'province', 'city', 'avatar',
+    COLUMNS = ['id', 'name', 'gender', 'province', 'city', 'avatar',
                'balance', 'coupon', 'role', 'session_data', 'password',
-               'openid', 'unionid', 'phone', 'access_token']
+               'openid', 'unionid', 'phone', 'access_token', 'create_at', 'update_at']
     INCR_FIELDS = ['balance', 'coupon']
 
 
@@ -44,6 +45,14 @@ class User(DAO):
         md5.update('%s-%s-%s' % ('fudan_coffee', time.time(), random.randint(0,1000)))
         self.session_data = md5.hexdigest().lower()
 
+    def json(self):
+        c = ['id', 'name', 'gender', 'province', 'city', 'avatar',
+               'balance', 'coupon', 'role', 'phone']
+        result = {}
+        for each in c:
+            result[each] = getattr(self, each)
+
+        return result
 
 def auth_required(func):
     def wraper(*args, **argv):
@@ -54,7 +63,7 @@ def auth_required(func):
             if usr:
                 request.user = usr
                 return func(*args, **argv)
-        return render_template('signin.html')
+        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请先登录'))
 
     wraper.__name__ = func.__name__
     return wraper

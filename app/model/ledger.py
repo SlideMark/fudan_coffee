@@ -7,7 +7,7 @@ from app.core.dao import DAO
 class Ledger(DAO):
 
     TABLE = 'fc_ledger'
-    COLUMNS = ['uid', 'name', 'money', 'type', 'item_id']
+    COLUMNS = ['id', 'uid', 'name', 'money', 'type', 'item_id', 'create_at', 'update_at']
 
     class Type:
         BUY_USE_BALANCE = 0

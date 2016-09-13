@@ -3,9 +3,9 @@
 __author__ = 'wills'
 
 from app import app
-from flask import request, render_template, abort
+from flask import request
 from app.model.shop import Shop
-from app.model.user import User
+from app.core.response import Response, ResponseCode
 from app.model.product import Product
 from app.model.ledger import Ledger
 from app.model.user import auth_required
@@ -14,22 +14,19 @@ from app.model.user import auth_required
 def products():
     shop_id = request.args.get('shop_id', Shop.GEHUA)
     products = Product.query(fetchone=False, shop_id=shop_id) or []
-    return render_template('products.html', products=products)
+    return str(Response(data=[Product(**each).to_dict() for each in products]))
 
 @app.route("/product/<product_id>", methods=['GET'])
 @auth_required
 def product(product_id=0):
     product = Product.find(product_id)
-    return render_template('product.html', user=request.user, product=product)
+    return str(Response(data=product.to_dict()))
 
-@app.route("/product/<product_id>", methods=['POST'])
+@app.route("/product/<product_id>/with_balance", methods=['POST'])
 @auth_required
 def buy_product(product_id=0):
     pd = Product.find(product_id)
     user = request.user
-    if not pd or not user:
-        abort(404)
-        return
 
     if user.balance >= pd.price:
         user.balance -= pd.price
@@ -43,10 +40,10 @@ def buy_product(product_id=0):
         ledger.uid = user.id
         ledger.save()
 
-        return render_template('buy_success.html', product=pd, money=pd.price, discount=0)
+        return str(Response(data=pd.to_dict()))
     else:
 
-        return render_template('buy_fail.html', product=pd, msg='余额不足')
+        return str(Response(code=ResponseCode.LOW_BALANCE, msg='余额不足'))
 
 
 @app.route("/product/<product_id>/with_coupon", methods=['POST'])
@@ -54,10 +51,6 @@ def buy_product(product_id=0):
 def buy_product_with_coupon(product_id=0):
     pd = Product.find(product_id)
     user = request.user
-    if not pd or not user:
-        abort(404)
-        return
-
     if user.is_founder():
         discount = 0.4
     elif user.is_cofounder():
@@ -88,7 +81,7 @@ def buy_product_with_coupon(product_id=0):
         ledger2.item_id = pd.id
         ledger2.save()
 
-        return render_template('buy_success.html', product=pd, money=need_money, discount=discount_money)
+        return str(Response(data=pd.to_dict()))
     else:
 
-        return render_template('buy_fail.html', product=pd, msg='余额不足')
+        return str(Response(code=ResponseCode.LOW_BALANCE, msg='余额不足'))

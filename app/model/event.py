@@ -8,7 +8,7 @@ class Event(DAO):
 
     TABLE = 'fc_event'
     COLUMNS = ['creator', 'state', 'fee', 'user_limit', 'poster_url',
-               'description', 'open_at', 'close_at', 'memo', 'update_at']
+               'description', 'open_at', 'close_at', 'memo', 'create_at', 'update_at']
 
     class State:
         DRAFT = 0
