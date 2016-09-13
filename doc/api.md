@@ -138,7 +138,7 @@ API接口说明
 | create_at| y| string | 创建时间|
 | update_at | y | string | 更新时间| 
 
-## GET /product/<product_id>
+## GET /product/{product_id}
 
 获取单个商品
 
@@ -155,7 +155,7 @@ API接口说明
 | code  | y    | number | 返回状态码 |
 | data  | y     | object | 商品信息， 同上|
 
-## GET /product/<product_id>/with_balance
+## GET /product/{product_id}/with_balance
 
 使用余额购买单个商品
 
@@ -172,7 +172,7 @@ API接口说明
 | code  | y    | number | 返回状态码 |
 | data  | y     | object | 商品信息， 同上|
 
-## GET /product/<product_id>/with_coupon
+## GET /product/{product_id}/with_coupon
 
 使用余额购买单个商品
 
@@ -313,7 +313,7 @@ API接口说明
 | update_at | y | string | 更新时间| 
 
 
-## POST /payment_item/<item_id>
+## POST /payment_item/{item_id}
 
 获取充值商品信息
 
