@@ -1,0 +1,47 @@
+* {
+	margin: 0;
+	padding: 0;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    font-weight: normal;
+    outline: 0;
+	color: #333;
+}
+::-webkit-input-placeholder{
+	color: #8e8e8e;
+}
+section {
+    padding: 0.3rem 0.3rem 0;
+    max-width: 7.5rem;
+    margin: 0 auto;
+}
+input {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0.25rem 0;
+    font-size: 0.28rem;
+    border: none;
+}
+div {
+    overflow: hidden;
+    padding: 0 0.2rem;
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px #d7d7d7;
+}
+button {
+    width: 100%;
+    height: 0.9rem;
+    line-height: 0.9rem;
+    border-radius: 2px;
+    display: block;
+    text-align: center;
+    background: #ff6686;
+    color: #FFFFFF;
+    border: none;
+    font-size: 0.28rem;
+}
+p {
+    font-size:0.28rem;
+    padding: 0.15rem 0;
+}
