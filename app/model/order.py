@@ -7,6 +7,7 @@ import logging
 import time
 import traceback
 from app import conf
+from datetime import datetime
 import urllib2
 import json
 from xml.etree import ElementTree
@@ -16,6 +17,7 @@ from app.model.payment_transaction import PaymentTransaction
 from app.model.payment import Payment
 from app.model.user import User
 from app.util.weixin import WXClient
+from app.util.timeutil import dt_to_str
 
 class Order(object):
 
@@ -26,8 +28,8 @@ class Order(object):
         self.body = ''
         self.out_trade_no = ''
         self.total_fee = ''
-        self.spbill_create_ip = '115.28.160.193'
-        self.notify_url = '%s/v2.0/payment/weixin/notify'
+        self.spbill_create_ip = conf.ip
+        self.notify_url = '%s/payment_notify' % conf.domain
         self.trade_type = ''
         self.attach = ''
         self.openid = openid
@@ -167,7 +169,8 @@ class Order(object):
                     'item_id': item_id,
                     'trade_no': data['transaction_id'],
                     'price': int(data['total_fee']),
-                    'money': item.money + item.charge
+                    'money': item.money + item.charge,
+                    'item_name': '账户充值%s元, 返现%s元' % (item.money/100.0, item.charge/100.0)
                 }
             else:
                 money = int(flag)
@@ -176,7 +179,8 @@ class Order(object):
                     'item_id': 'recharge_%s' % money,
                     'trade_no': data['transaction_id'],
                     'price': money,
-                    'money': money
+                    'money': money,
+                    'item_name': '购买咖啡消费%s元' % (money/100.0)
                 }
         except:
             traceback.print_exc()
@@ -191,7 +195,7 @@ class Order(object):
             logging.error(error[1])
             return error[0]
 
-        return Order.finish_web(uid, data)
+        return Order.send_msg(user, data)
 
     @classmethod
     def finish_transaction(cls, user, payment_info):
@@ -201,29 +205,37 @@ class Order(object):
         Payment(uid=user.uid, item_id=payment_info['item_id'],
                 num=1, money=payment_info['price']).save()
 
+    '''
+    {{first.DATA}}
+    会员姓名：{{name.DATA}}
+    消费内容：{{itemName.DATA}}
+    消费金额：{{itemMoney.}}
+    时间：{{time.DATA}}
+    {{remark.DATA}}
+    '''
     @classmethod
-    def finish_web(cls, uid, data):
+    def send_msg(cls, user, data):
         openid = data.get('openid')
         token = WXClient.get_service_token()
 
         template = {
             'touser':openid,
-            'template_id':'UTac8ANDkVkSQ9CAhiH-BBwxBkikPrqbYavKBXX8bMk',
+            'template_id': conf.wechat_template_id,
             'data':{
                 'first':{
                     'value':'恭喜你购买成功！',
                 },
-                'accountType':{
-                    'value':'ID',
+                'name':{
+                    'value': user.name,
                 },
-                'account':{
-                    'value':str(uid),
+                'itemName':{
+                    'value': data['item_name'],
                 },
-                'amount':{
-                    'value': str(int(data['total_fee']) / 100.0)+'元',
+                'itemMoney':{
+                    'value':'%s元' % str(data['price']/100.0),
                 },
-                'result':{
-                    'value':'充值成功',
+                'time': {
+                    'value': dt_to_str(datetime.now())
                 },
                 'remark':{
                     'value':'如有疑问，请联系客服人员。',

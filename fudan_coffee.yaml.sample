@@ -1,3 +1,12 @@
+# 环境(默认非debug)
+env: debug
+
+# domain(不加/结尾)
+domain: http://127.0.0.1
+
+# ip
+ip: 127.0.0.1
+
 # 数据库连接设置
 db: dbname=123 user=123 password=123 host=127.0.0.1
 
@@ -18,4 +27,6 @@ wechat_fwh_mchid: 123
 
 # 微信商户秘钥
 wechat_fwh_mchkey: 1234
->>>>>>> .
+
+# 微信消费成功推送模板id
+wechat_template_id: 21221
