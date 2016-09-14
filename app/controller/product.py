@@ -43,7 +43,9 @@ def buy_product(product_id=0):
         return str(Response(data=pd.to_dict()))
     else:
 
-        return str(Response(code=ResponseCode.LOW_BALANCE, msg='余额不足'))
+        return str(Response(code=ResponseCode.LOW_BALANCE,
+                            msg='余额不足',
+                            data={'need_money': pd.price-user.balance}))
 
 
 @app.route("/product/<product_id>/with_coupon", methods=['POST'])
@@ -61,9 +63,8 @@ def buy_product_with_coupon(product_id=0):
     discount_money = min(user.coupon, int(pd.price*discount))
     need_money = pd.price - discount_money
 
-    if user.balance >= need_money:
+    if discount_money > 0:
         user.coupon -= discount_money
-        user.balance -= need_money
         user.save()
 
         ledger = Ledger()
@@ -74,14 +75,6 @@ def buy_product_with_coupon(product_id=0):
         ledger.uid = user.id
         ledger.save()
 
-        ledger2 = Ledger()
-        ledger2.name = pd.name
-        ledger2.money = -need_money
-        ledger2.uid = user.id
-        ledger2.item_id = pd.id
-        ledger2.save()
-
-        return str(Response(data=pd.to_dict()))
-    else:
-
-        return str(Response(code=ResponseCode.LOW_BALANCE, msg='余额不足'))
+    return str(Response(code=ResponseCode.LOW_BALANCE,
+                        msg='余额不足',
+                        data={'need_money': need_money}))
