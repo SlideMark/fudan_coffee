@@ -14,26 +14,40 @@ import psycopg2
 from app import conf
 from app.util.timeutil import dt_to_str
 
+class Transaction(object):
+
+    def __init__(self, pool):
+        self.pool = pool
+        self.conn = None
+
+    def __enter__(self):
+        self.conn = self.pool.getconn()
+        return self.conn
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.conn:
+            self.pool.putconn(self.conn)
+
 class ConnectionPool(ThreadedConnectionPool):
 
     def run_query_fetch_one(self, query, *args):
-        conn = self.getconn()
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute(query, *args)
-        return cur.fetchone()
+        with Transaction(self) as conn:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute(query, *args)
+            return cur.fetchone()
 
     def run_query(self, query, *args):
-        conn = self.getconn()
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute(query, *args)
-        return cur.fetchall()
+        with Transaction(self) as conn:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute(query, *args)
+            return cur.fetchall()
 
     def run_operation(self, query, *args):
-        conn = self.getconn()
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute(query, *args)
-        conn.commit()
-        return cur.fetchone()
+        with Transaction(self) as conn:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute(query, *args)
+            conn.commit()
+            return cur.fetchone()
 
 class Postgres(object):
 
