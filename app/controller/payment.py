@@ -42,7 +42,7 @@ def buy_item(item_id=0):
 
 @app.route("/payment_order", methods=['GET'])
 @auth_required
-def payment():
+def order():
     user = request.user
     item_id = request.args.get('payment_item_id')
 
@@ -66,8 +66,8 @@ def payment():
         return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
 
 
-@app.route("/payment_order", methods=['POST'])
-def payment():
+@app.route("/payment_notify", methods=['POST'])
+def notify():
         result = Order.notify(request.stream.read())
         if result:
             return '''<xml>
