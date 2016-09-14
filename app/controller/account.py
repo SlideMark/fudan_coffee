@@ -62,7 +62,8 @@ def _signup(user):
 @app.route("/account/login", methods=['POST'])
 def password_signin():
     if logedin(request):
-        return render_template('user.html', user=request.user)
+        # return render_template('user.html', user=request.user)
+        return str(Response(code=ResponseCode.OPERATE_ERROR, msg='用户已经登录'))
     phone = request.form.get('phone')
     password = request.form.get('password')
     password = hashlib.md5('%s-%s' % (conf.salt, password)).hexdigest().lower()
