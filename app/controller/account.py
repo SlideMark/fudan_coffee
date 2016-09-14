@@ -85,13 +85,10 @@ def signout():
     resp.set_cookie('session', '')
     return resp
 
-@app.route("/account/signup", methods=['GET', 'POST'])
+@app.route("/account/signup", methods=['POST'])
 def signup():
     if logedin(request):
-        return render_template('user.html', user=request.user)
-    
-    if request.method == 'GET':
-        return render_template('signup.html')
+        return str(Response(code=ResponseCode.OPERATE_ERROR, msg='用户已经登录'))
 
     phone = request.form.get('phone')
     password = request.form.get('password')

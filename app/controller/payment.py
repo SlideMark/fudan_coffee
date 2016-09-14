@@ -44,7 +44,7 @@ def buy_item(item_id=0):
 @auth_required
 def order():
     user = request.user
-    item_id = request.args.get('payment_item_id')
+    item_id = request.args.get('item_id')
 
     if user.openid or not item_id:
         token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
