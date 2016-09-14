@@ -2,7 +2,7 @@
 lock '>=3.2.1'
 
 set :application, 'fudan_coffee'
-set :repo_url, 'git@github.com:SlideMark/fudan_coffee'
+set :repo_url, 'git@github.com:SlideMark/fudan_coffee.git'
 ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 set :deploy_to, '/home/fudan_coffee/deploy'
 set :ssh_options, {
