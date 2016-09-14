@@ -12,7 +12,6 @@ import hashlib
 
 @app.route("/account/signin")
 def wechat_signin():
-    '''
     if logedin(request):
         return str(Response(user=request.user.json()))
 
@@ -24,8 +23,6 @@ def wechat_signin():
         access_token = token.get('access_token')
     else:
         return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
-    '''
-    openid='oa6iTwu0Svd0DfAYhhIU0eJ-q9w0'
     user = User.query_instance(openid=openid)
     if user:
         user.access_token = access_token
