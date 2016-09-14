@@ -70,7 +70,7 @@ class WXClient(object):
         return profile
 
     @staticmethod
-    def get_service_token(code):
+    def get_service_token():
         token = LocalCache.get(WXClient.TOKEN_REDIS)
 
         if not token:
@@ -81,33 +81,4 @@ class WXClient(object):
             LocalCache.set(WXClient.TOKEN_REDIS, token, expire_time=3600)
 
         return token
-
-    @staticmethod
-    def get_service_user(next_openid):
-        access_token = WXClient.get_service_token()
-        profile_url = 'https://api.weixin.qq.com/cgi-bin/user/get'
-        kwargs = {
-            'access_token': access_token,
-        }
-        if next_openid:kwargs['next_openid'] = next_openid
-
-        profile = request_with_params(profile_url, **kwargs)
-
-        return profile
-
-    @staticmethod
-    def get_service_user_info(openid):
-        fwh_token = WXClient.get_service_token()
-        if not fwh_token:return None
-
-        wx_user = WXClient.get_wx_info(openid, fwh_token)
-        if wx_user and wx_user.get('errcode') == 40001:
-            fwh_token = WXClient.get_service_token()
-            if not fwh_token:return None
-            wx_user = WXClient.get_wx_info(openid, fwh_token)
-
-        if not wx_user or wx_user.get('errcode'):
-            return None
-
-        return wx_user
 

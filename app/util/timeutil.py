@@ -18,7 +18,7 @@ def dt_to_str(dt):
     except:
         pass
 
-def str_to_dt(dt_str):
+def str_to_dt(dt_str, style=format_str):
     if not dt_str:
         return
     if isinstance(dt_str, datetime):
@@ -26,7 +26,7 @@ def str_to_dt(dt_str):
     elif isinstance(dt_str, date):
         return datetime(dt_str.year, dt_str.month, dt_str.day)
     try:
-        return datetime.strptime(dt_str, format_str)
+        return datetime.strptime(dt_str, style)
     except:
         pass
 

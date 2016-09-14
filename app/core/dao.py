@@ -30,6 +30,7 @@ class Connection(object):
     def run_operation(self, query, *args):
         self.cursor.execute(query, *args)
         self.conn.commit()
+        return self.cursor.fetchone()
 
 class Postgres(object):
 

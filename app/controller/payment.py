@@ -7,13 +7,18 @@ from flask import request
 from app.model.payment_item import PaymentItem
 from app.model.ledger import Ledger
 from app.model.user import auth_required
-from app.core.response import Response
+from app.model.order import Order
+from app.core.response import Response, ResponseCode
+from app.util.weixin import WXClient
+from app import conf
+
 
 @app.route("/payment_items")
 @auth_required
 def items():
     items = PaymentItem.query_all()
     return str(Response(data=[Ledger(**each).to_dict() for each in items]))
+
 
 @app.route("/payment_item/<item_id>", methods=['POST'])
 @auth_required
@@ -33,3 +38,39 @@ def buy_item(item_id=0):
     ledger.save()
 
     return str(Response(data=it.to_dict()))
+
+
+@app.route("/payment_order", methods=['GET'])
+@auth_required
+def payment():
+    user = request.user
+    item_id = request.args.get('payment_item_id')
+
+    if user.openid or not item_id:
+        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
+        if not token or token.get('errcode'):
+            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
+
+        order = Order(user.uid, user.openid)
+        if not order.set_item(item_id):
+            return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
+
+        tokens = order.get_token()
+        if not tokens:
+            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
+
+        return str(Response(data=tokens))
+    elif not user.openid:
+        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
+    else:
+        return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
+
+
+@app.route("/payment_order", methods=['POST'])
+def payment():
+        result = Order.notify(request.stream.read())
+        if result:
+            return '''<xml>
+    <return_code><![CDATA[SUCCESS]]></return_code>
+    <return_msg><![CDATA[OK]]></return_msg>
+</xml>'''
