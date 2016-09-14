@@ -10,7 +10,7 @@
 * 加入购物车购买
 * 充值
 * 查看消费记录
-* 微信登录（TODO）
+* 微信登录
 * 微信充值（TODO）
 * 微信支付（TODO）
 
@@ -36,4 +36,12 @@ python script/migration.py
 
 ```
 python manager.py
+```
+
+### 部署
+
+* 部署采用capistrano+supervisor部署
+
+```
+cap production deploy
 ```
