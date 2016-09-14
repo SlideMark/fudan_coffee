@@ -363,22 +363,11 @@ API接口说明
 
 | key | Requried | type | description |
 |-----|----------|------|-------------|
-| id  | y    | number | 购物车ID |
-| name | y| string | 商品名|
-| money | y | number | 金额|
-| description| y | string | 描述|
-| charge| y | number | 返现金额|
-| create_at| y| string | 创建时间|
-| update_at | y | string | 更新时间| 
-
-
-'appid': self.appid,
-                        'partnerid': config.WX_MCH_ID,
-                        'prepayid': response.get('prepay_id'),
-                        'package': 'Sign=WXPay',
-                        'noncestr': response.get('nonce_str'),
-                        'timestamp': str(int(time.time()))
-                    }
-                    resp['sign'] = PayOrder.sign(resp, self.pay_way)
-                    resp['payment_id'] = self.pw_tid
-
+| id  | y | number | 订单id|
+| appid  | y    | string | appid |
+| partnerid | y| string | 商户id|
+| prepayid | y | string | prepayid|
+| package| y | string | package|
+| noncestr| y | number | 随机串|
+| timestamp| y| string | 时间戳|
+| sign | y | string | 签名|

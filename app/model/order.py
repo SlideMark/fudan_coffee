@@ -107,19 +107,17 @@ class Order(object):
             root = ElementTree.fromstring(data)
             response = {child.tag: child.text for child in root.getchildren()}
             print response
-            if response.get('return_code') == 'SUCCESS':
-                if response.get('result_code') == 'SUCCESS' and response.get('sign') == self.sign(response):
-                    resp = {
-                        'appId': self.appid,
-                        'package': 'prepay_id=%s' % (response.get('prepay_id'), ),
-                        'nonceStr': response.get('nonce_str'),
-                        'signType':'MD5',
-                        'timeStamp': str(int(time.time()))
-                    }
-                    resp['sign'] = self.sign(resp)
-                    return resp
-                else:
-                    logging.error(data)
+            if response.get('return_code') == 'SUCCESS' and response.get('result_code') == 'SUCCESS' and response.get('sign') == self.sign(response):
+                resp = {
+                    'appId': self.appid,
+                    'package': 'prepay_id=%s' % (response.get('prepay_id'), ),
+                    'nonceStr': response.get('nonce_str'),
+                    'signType':'MD5',
+                    'timeStamp': str(int(time.time()))
+                }
+                resp['sign'] = self.sign(resp)
+                resp['id'] = self.tid
+                return resp
             else:
                 logging.error(data)
 
