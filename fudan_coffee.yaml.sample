@@ -1,3 +1,21 @@
-db: dbname=dbname user=user password=123456 host=127.0.0.1
-wechat_app_id: wx3d1063cef150300a
-wechat_secret: 041507ca4f2d5c1b4dd53684dddbfdbb
+# 数据库连接设置
+db: dbname=123 user=123 password=123 host=127.0.0.1
+
+# 微信服务号/公众号appid
+wechat_app_id: 123
+
+# 微信服务号公众号秘钥
+wechat_secret: 123
+
+# 加密字符串
+salt: 123
+
+# 微信商户应用id
+wechat_fwh_appid: 123
+
+# 微信商户id
+wechat_fwh_mchid: 123
+
+# 微信商户秘钥
+wechat_fwh_mchkey: 1234
+>>>>>>> .

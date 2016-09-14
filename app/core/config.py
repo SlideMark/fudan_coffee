@@ -16,3 +16,4 @@ class Config(object):
         self.wechat_fwh_appid = conf.get('wechat_fwh_appid')
         self.wechat_fwh_mchid = conf.get('wechat_fwh_mchid')
         self.wechat_fwh_mchkey = conf.get('wechat_fwh_mchkey')
+        self.salt = conf.get('salt')

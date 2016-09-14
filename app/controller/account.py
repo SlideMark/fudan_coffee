@@ -4,7 +4,7 @@ __author__ = 'wills'
 
 from app import app, conf
 from app.model.user import User
-from flask import request, render_template, abort, make_response
+from flask import request, render_template, make_response
 from app.util.weixin import WXClient
 from app.core.response import ResponseCode, Response
 from app.model.user import auth_required, logedin
@@ -65,7 +65,7 @@ def password_signin():
         return render_template('user.html', user=request.user)
     phone = request.form.get('phone')
     password = request.form.get('password')
-    password = hashlib.md5('fudan_coffee-%s' % password).hexdigest().lower()
+    password = hashlib.md5('%s-%s' % (conf.salt, password)).hexdigest().lower()
     user = User.query_instance(phone=phone, password=password)
     if user:
         user.update_session()
@@ -96,7 +96,7 @@ def signup():
     phone = request.form.get('phone')
     password = request.form.get('password')
     if password is not None:
-        password = hashlib.md5('fudan_coffee-%s' % password).hexdigest().lower()
+        password = hashlib.md5('%s-%s' % (conf.salt, password)).hexdigest().lower()
         user = User.query_instance(phone=phone, password=password)
         if user:
             return str(Response(code=ResponseCode.DUPLICATE_DATA, msg='用户已存在'))
