@@ -61,7 +61,7 @@ namespace :deploy do
 
   task :install_package do
     on roles(:api, :hub, :worker) do |host|
-      execute "source /home/fudan_coffee/env/bin/activate && && pip install -r doc/requirements.txt"
+      execute "source /home/fudan_coffee/env/bin/activate && pip install -r doc/requirements.txt"
     end
   end
 
