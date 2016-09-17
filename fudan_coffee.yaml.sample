@@ -1,6 +1,9 @@
 # 环境(默认非debug)
 env: debug
 
+# 端口
+port: 5000
+
 # domain(不加/结尾)
 domain: http://127.0.0.1
 

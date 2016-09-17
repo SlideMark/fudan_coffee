@@ -10,6 +10,7 @@ class Config(object):
     def __init__(self):
         conf = yaml.load(open(os.getenv("HOME") + '/.fudan_coffee.yaml'))
         self.domain = conf.get('domain')
+        self.port = conf.get('port') or 5000
         self.ip = conf.get('ip')
         self.db_uri = conf.get('db')
         self.wechat_app_id = conf.get('wechat_app_id')
