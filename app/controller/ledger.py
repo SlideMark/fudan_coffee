@@ -23,4 +23,4 @@ def ledgers():
     else:
         ledgers = []
 
-    return str(Response(data=[Ledger(**each).to_dict() for each in ledgers]))
+    return Response(data=[Ledger(**each).to_dict() for each in ledgers]).out()

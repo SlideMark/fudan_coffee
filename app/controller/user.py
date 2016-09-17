@@ -10,4 +10,4 @@ from app.model.user import auth_required
 @app.route("/user")
 @auth_required
 def me():
-    return str(Response(user=request.user.json()))
+    return Response(user=request.user.json()).out()
