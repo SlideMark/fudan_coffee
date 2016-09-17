@@ -2,13 +2,15 @@
 
 __author__ = 'wills'
 
-from app import app
-from flask import render_template, abort, request, redirect, url_for
+from app import app, conf
+from flask import request
 from app.model.cart import Cart
 from app.model.ledger import Ledger
 from app.model.user import auth_required
 from app.model.product import Product
+from app.model.order import Order
 from app.core.response import Response, ResponseCode
+from app.util.weixin import WXClient
 
 @app.route("/cart", methods=['GET'])
 @auth_required
@@ -46,31 +48,36 @@ def pay_cart_with_balance():
     user = request.user
     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
 
-    success = []
-    fail = []
-    for each in carts:
-        pd = Product.find(each['product_id'])
-        each['product'] = pd
-        if user.balance > pd.price:
+    money = sum([each['price'] for each in carts])
+    if user.balance >= money:
+        for each in carts:
+            pd = Product.find(each['product_id'])
             ct = Cart(**each)
             ct.state = Cart.State.FINISHED
             ct.save()
 
-            user.balance -= pd.price
-            user.save()
+            Ledger(uid=user.id, name=pd.name,
+                money=-pd.price, type=Ledger.Type.BUY_USE_COUPON).save()
 
-            ledger = Ledger()
-            ledger.uid = user.id
-            ledger.name = pd.name
-            ledger.money = -pd.price
-            ledger.type = Ledger.Type.BUY_USE_COUPON
-            ledger.save()
+        user.balance -= money
+        user.save()
+    elif user.openid:
+        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
+        if not token or token.get('errcode'):
+            return Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败').out()
 
-            success.append(pd.to_dict())
-        else:
-            fail.append(pd.to_dict())
+        order = Order(user.uid, user.openid)
+        order.set_money(money-user.balance, balance=user.balance, from_cart=1)
+        tokens = order.get_token()
+        if not tokens:
+            return Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败').out()
 
-    return str(Response(data={'success': success, 'fail': fail}))
+        return Response(code=ResponseCode.LOW_BALANCE,
+                            msg='余额不足',
+                            data={'need_money': money-user.balance,
+                                    'order': tokens}).out()
+    else:
+        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
 
 
 @app.route("/cart/pay_with_coupon", methods=['POST'])
@@ -79,30 +86,31 @@ def pay_cart_with_coupon():
     user = request.user
     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
 
-    success = []
-    fail = []
+    if user.is_founder():
+        discount = 0.4
+    elif user.is_cofounder():
+        discount = 0.3
+    else:
+        discount = 0.2
 
-    for each in carts:
-        pd = Product.find(each['product_id'])
-        each['product'] = pd
-        if user.coupon > pd.price:
-            ct = Cart(**each)
-            ct.state = Cart.State.FINISHED
-            ct.save()
+    money = sum([each['price'] for each in carts])
+    discount_money = min(user.coupon, int(money*discount))
+    need_money = money - discount_money
 
+    if user.openid:
+        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
+        if not token or token.get('errcode'):
+            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
 
-            user.coupon -= pd.price
-            user.save()
+        order = Order(user.uid, user.openid)
+        order.set_money(money - discount_money, coupon=discount_money, from_cart=1)
+        tokens = order.get_token()
+        if not tokens:
+            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
 
-            ledger = Ledger()
-            ledger.uid = user.id
-            ledger.name = pd.name
-            ledger.money = -pd.price
-            ledger.type = Ledger.Type.BUY_USE_COUPON
-            ledger.save()
-
-            success.append(pd.to_dict())
-        else:
-            fail.append(pd.to_dict())
-
-    return str(Response(data={'success': success, 'fail': fail}))
+        return str(Response(code=ResponseCode.LOW_BALANCE,
+                                msg='余额不足',
+                                data={'need_money': need_money,
+                                      'order': tokens}))
+    else:
+        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))

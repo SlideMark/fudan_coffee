@@ -20,6 +20,7 @@ from app.model.ledger import Ledger
 from app.model.user import User
 from app.util.weixin import WXClient
 from app.util.timeutil import dt_to_str
+from app.model.cart import Cart
 
 class Order(object):
 
@@ -57,11 +58,12 @@ class Order(object):
 
             return True
 
-    def set_money(self, money, balance=0, coupon=0):
+    def set_money(self, money, balance=0, coupon=0, from_cart=0):
         self.out_trade_no = '%s-%s-%s-%s' % (
             self.uid, money, int(1000 * time.time()), random.randint(0, 1000))
         result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no,
-                                    balance=balance, coupon=coupon).save(return_keys=['id'])
+                                    balance=balance, coupon=coupon,
+                                    from_cart=from_cart).save(return_keys=['id'])
         self.tid = result['id']
         self.body = self.detail = '自由而无用消费%s元' % (money / 100.0)
         self.attach = '%s-%s' % (self.uid, self.tid)
@@ -201,6 +203,14 @@ class Order(object):
                     Ledger(uid=user.id, name='购买咖啡消费', money=pay,
                        type=Ledger.Type.BUY_USE_COUPON).save()
                     user.balance -= pay
+
+                if t.from_cart:
+                    carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
+                    for each in carts:
+                        cart = Cart(**each)
+                        cart.state = Cart.State.FINISHED
+                        cart.save()
+
                 user.save()
 
             Payment(uid=user.uid, item_id=payment_info['item_id'],
