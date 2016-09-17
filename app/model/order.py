@@ -12,6 +12,7 @@ import urllib2
 import json
 from xml.etree import ElementTree
 import random
+from app.util.httputil import request_with_data
 from app.model.payment_item import PaymentItem
 from app.model.payment_transaction import PaymentTransaction
 from app.model.payment import Payment
@@ -217,7 +218,7 @@ class Order(object):
     会员姓名：{{name.DATA}}
     消费内容：{{itemName.DATA}}
     消费金额：{{itemMoney.}}
-    时间：{{time.DATA}}
+    消费时间：{{time.DATA}}
     {{remark.DATA}}
     '''
     @classmethod
@@ -250,14 +251,7 @@ class Order(object):
             }
         }
 
-        try:
-            url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s' % (token, )
-            request = urllib2.Request(url, json.dumps(template))
-            data = urllib2.urlopen(request, timeout=5).read()
-            data2 = json.loads(data)
-            if data2.get('msgid'):return True
-        except:
-            traceback.print_exc()
-            return False
-
-        return True
+        resp = request_with_data('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s' % (token, ),
+                          json.dumps(template))
+        if resp and resp.get('msgid'):return True
+        return False
