@@ -1,0 +1,76 @@
+@startuml
+
+== 显示商品逻辑图 ==
+
+客户端 -> 服务器: 获取商品列表
+note left
+GET /product/{product_id}
+
+RESPONSE:
+{
+  "code": 0,
+  "data": //商品信息
+}
+
+* 如果用户账户没有coupon,则显示【购买】【加入购物车】按钮,
+ 分别对应POST /product/{product_id}/with_balance 和 POST /cart
+* 如果用户账户有coupon, 则显示【购买】【使用优惠券】【加入购物车】,
+ 分别对应POST /product/{product_id}/with_balance,
+ POST /product/{product_id}/with_coupon 和 POST /cart
+
+endnote
+
+== 购买按钮序图 ==
+客户端 -> 服务器: 购买
+note left
+GET /product/{product_id}/with_balance
+
+当余额充足的时候,直接扣款成功,
+当余额不足的时候,返回错误并返回需要额外微信支付的订单信息
+
+1. 购买成功RESPONSE:
+{
+  "code": 0,
+  "data": //商品信息
+}
+
+2. 余额不足RESPONSE:
+{
+  "code": 10006,
+  "data": {
+    "need_money": 2121 //需要微信支付的钱,分
+    "order": //结构同payment_order
+  }
+}
+
+endnote
+
+客户端-> 微信: (余额不足时)微信支付
+微信 -> 客户端: 支付成功回调
+
+客户端-> 服务器: 获取支付结果等信息
+
+== 优惠券购买按钮序图 ==
+客户端 -> 服务器: 购买
+note left
+GET /product/{product_id}/with_coupon
+
+只有固定比例的价格能用优惠券,所以剩下的一定会使用到微信支付
+
+RESPONSE:
+{
+  "code": 10006,
+  "data": {
+    "need_money": 2121 //需要微信支付的钱,分
+    "order": //结构同payment_order
+  }
+}
+
+endnote
+
+客户端-> 微信: (余额不足时)微信支付
+微信 -> 客户端: 支付成功回调
+
+客户端-> 服务器: 获取支付结果等信息
+
+@enduml

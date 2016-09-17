@@ -7,15 +7,19 @@ import logging
 import time
 import traceback
 from app import conf
+from datetime import datetime
 import urllib2
 import json
 from xml.etree import ElementTree
 import random
+from app.util.httputil import request_with_data
 from app.model.payment_item import PaymentItem
 from app.model.payment_transaction import PaymentTransaction
 from app.model.payment import Payment
+from app.model.ledger import Ledger
 from app.model.user import User
 from app.util.weixin import WXClient
+from app.util.timeutil import dt_to_str
 
 class Order(object):
 
@@ -26,8 +30,8 @@ class Order(object):
         self.body = ''
         self.out_trade_no = ''
         self.total_fee = ''
-        self.spbill_create_ip = '115.28.160.193'
-        self.notify_url = '%s/v2.0/payment/weixin/notify'
+        self.spbill_create_ip = conf.ip
+        self.notify_url = '%s/payment_notify' % conf.domain
         self.trade_type = ''
         self.attach = ''
         self.openid = openid
@@ -53,10 +57,11 @@ class Order(object):
 
             return True
 
-    def set_money(self, money):
+    def set_money(self, money, balance=0, coupon=0):
         self.out_trade_no = '%s-%s-%s-%s' % (
-            self.uid, 'money_%s'%money, int(1000 * time.time()), random.randint(0, 1000))
-        result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no).save(return_keys=['id'])
+            self.uid, money, int(1000 * time.time()), random.randint(0, 1000))
+        result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no,
+                                    balance=balance, coupon=coupon).save(return_keys=['id'])
         self.tid = result['id']
         self.body = self.detail = '自由而无用消费%s元' % (money / 100.0)
         self.attach = '%s-%s' % (self.uid, self.tid)
@@ -163,67 +168,82 @@ class Order(object):
                 item_id = int(flag)
                 item = PaymentItem.find(item_id)
                 payment_info = {
+                    'openid': data.get('openid'),
                     'uid': uid,
                     'item_id': item_id,
                     'trade_no': data['transaction_id'],
                     'price': int(data['total_fee']),
-                    'money': item.money + item.charge
+                    'money': item.money + item.charge,
+                    'item_name': '账户充值%s元, 返现%s元' % (item.money/100.0, item.charge/100.0)
                 }
+                user.balance += payment_info['money']
+                user.save()
+                Ledger(uid=user.id, name='账户充值', money=payment_info['money'],
+                       type=Ledger.Type.PAYMENT_CHARGE, item_id=item_id).save()
             else:
                 money = int(flag)
                 payment_info = {
+                    'openid': data.get('openid'),
                     'uid': uid,
                     'item_id': 'recharge_%s' % money,
                     'trade_no': data['transaction_id'],
                     'price': money,
-                    'money': money
+                    'money': money,
+                    'item_name': '购买咖啡消费%s元' % (money/100.0)
                 }
+                if t.balance:
+                    pay = max(t.balance, user.banalce)
+                    Ledger(uid=user.id, name='购买咖啡消费', money=pay,
+                       type=Ledger.Type.BUY_USE_BALANCE).save()
+                    user.balance -= pay
+                if t.coupon:
+                    pay = max(t.coupon, user.coupon)
+                    Ledger(uid=user.id, name='购买咖啡消费', money=pay,
+                       type=Ledger.Type.BUY_USE_COUPON).save()
+                    user.balance -= pay
+                user.save()
+
+            Payment(uid=user.uid, item_id=payment_info['item_id'],
+                    num=1, money=payment_info['price']).save()
         except:
             traceback.print_exc()
             return False
 
-        logging.debug("finish: payment_info: %s" % payment_info)
-        error = cls.finish_transaction(user, payment_info)
-
         t.close()
 
-        if error:
-            logging.error(error[1])
-            return error[0]
+        return Order.send_msg(user, payment_info)
 
-        return Order.finish_web(uid, data)
-
+    '''
+    {{first.DATA}}
+    会员姓名：{{name.DATA}}
+    消费内容：{{itemName.DATA}}
+    消费金额：{{itemMoney.}}
+    消费时间：{{time.DATA}}
+    {{remark.DATA}}
+    '''
     @classmethod
-    def finish_transaction(cls, user, payment_info):
-        user.balance += payment_info['money']
-        user.save()
-
-        Payment(uid=user.uid, item_id=payment_info['item_id'],
-                num=1, money=payment_info['price']).save()
-
-    @classmethod
-    def finish_web(cls, uid, data):
+    def send_msg(cls, user, data):
         openid = data.get('openid')
         token = WXClient.get_service_token()
 
         template = {
             'touser':openid,
-            'template_id':'UTac8ANDkVkSQ9CAhiH-BBwxBkikPrqbYavKBXX8bMk',
+            'template_id': conf.wechat_template_id,
             'data':{
                 'first':{
                     'value':'恭喜你购买成功！',
                 },
-                'accountType':{
-                    'value':'ID',
+                'name':{
+                    'value': user.name,
                 },
-                'account':{
-                    'value':str(uid),
+                'itemName':{
+                    'value': data['item_name'],
                 },
-                'amount':{
-                    'value': str(int(data['total_fee']) / 100.0)+'元',
+                'itemMoney':{
+                    'value':'%s元' % str(data['price']/100.0),
                 },
-                'result':{
-                    'value':'充值成功',
+                'time': {
+                    'value': dt_to_str(datetime.now())
                 },
                 'remark':{
                     'value':'如有疑问，请联系客服人员。',
@@ -231,14 +251,7 @@ class Order(object):
             }
         }
 
-        try:
-            url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s' % (token, )
-            request = urllib2.Request(url, json.dumps(template))
-            data = urllib2.urlopen(request, timeout=5).read()
-            data2 = json.loads(data)
-            if data2.get('msgid'):return True
-        except:
-            traceback.print_exc()
-            return False
-
-        return True
+        resp = request_with_data('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s' % (token, ),
+                          json.dumps(template))
+        if resp and resp.get('msgid'):return True
+        return False

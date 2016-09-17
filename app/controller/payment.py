@@ -17,7 +17,7 @@ from app import conf
 @auth_required
 def items():
     items = PaymentItem.query_all()
-    return str(Response(data=[Ledger(**each).to_dict() for each in items]))
+    return Response(data=[Ledger(**each).to_dict() for each in items]).out()
 
 
 @app.route("/payment_item/<item_id>", methods=['POST'])
@@ -29,15 +29,10 @@ def buy_item(item_id=0):
     user.balance += user.balance + it.money + it.charge
     user.save()
 
-    ledger = Ledger()
-    ledger.item_id = it.id
-    ledger.name = it.name
-    ledger.money = it.money + it.charge
-    ledger.type = Ledger.Type.PAYMENT_MONEY
-    ledger.uid = user.id
-    ledger.save()
+    Ledger(uid=user.id, item_id=it.id, name=it.name,
+            money=it.money+it.charge, type=Ledger.Type.PAYMENT_MONEY).save()
 
-    return str(Response(data=it.to_dict()))
+    return Response(data=it.to_dict()).out()
 
 
 @app.route("/payment_order", methods=['GET'])

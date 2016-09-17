@@ -7,35 +7,52 @@ from datetime import date
 from decimal import Decimal
 from collections import defaultdict
 import psycopg2.extras
+from psycopg2.pool import ThreadedConnectionPool
 import traceback
 import logging
 import psycopg2
 from app import conf
 from app.util.timeutil import dt_to_str
 
-class Connection(object):
+class Transaction(object):
 
-    def __init__(self, db):
-        self.conn = psycopg2.connect(db)
-        self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    def __init__(self, pool):
+        self.pool = pool
+        self.conn = None
+
+    def __enter__(self):
+        self.conn = self.pool.getconn()
+        return self.conn
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.conn:
+            self.pool.putconn(self.conn)
+
+class ConnectionPool(ThreadedConnectionPool):
 
     def run_query_fetch_one(self, query, *args):
-        self.cursor.execute(query, *args)
-        return self.cursor.fetchone()
+        with Transaction(self) as conn:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute(query, *args)
+            return cur.fetchone()
 
     def run_query(self, query, *args):
-        self.cursor.execute(query, *args)
-        return self.cursor.fetchall()
+        with Transaction(self) as conn:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute(query, *args)
+            return cur.fetchall()
 
     def run_operation(self, query, *args):
-        self.cursor.execute(query, *args)
-        self.conn.commit()
-        return self.cursor.fetchone()
+        with Transaction(self) as conn:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute(query, *args)
+            conn.commit()
+            return cur.fetchone()
 
 class Postgres(object):
 
-    master = Connection(conf.db_uri)
-    slave = Connection(conf.db_uri)
+    master = ConnectionPool(1, 5, conf.db_uri)
+    slave = ConnectionPool(1, 5, conf.db_uri)
 
 class DAO(object):
 

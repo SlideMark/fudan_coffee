@@ -1,14 +1,12 @@
 from flask import Flask
 from core.config import Config
+import os
 
 app = Flask(__name__, template_folder='view')
 conf = Config()
+app.debug = conf.debug
 
-from app.controller.user import *
-from app.controller.event import *
-from app.controller.account import *
-from app.controller.home import *
-from app.controller.product import *
-from app.controller.ledger import *
-from app.controller.payment import *
-from app.controller.cart import *
+modules = os.listdir(os.getcwd()+'/app/controller/')
+pymodule = [each for each in modules if each.endswith('.py')]
+for each in modules:
+    exec('from app.controller.{} import *'.format(each.split('.')[0]))

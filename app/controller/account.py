@@ -23,7 +23,6 @@ def wechat_signin():
         access_token = token.get('access_token')
     else:
         return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
-
     user = User.query_instance(openid=openid)
     if user:
         user.access_token = access_token

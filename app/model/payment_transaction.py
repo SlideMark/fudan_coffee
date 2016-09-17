@@ -7,7 +7,7 @@ from app.core.dao import DAO
 class PaymentTransaction(DAO):
 
     TABLE = 'fc_payment_transaction'
-    COLUMNS = ['id', 'uid', 'type', 'out_trade_no', 'state', 'create_at', 'update_at']
+    COLUMNS = ['id', 'uid', 'type', 'out_trade_no', 'balance', 'coupon', 'state', 'create_at', 'update_at']
 
     class State:
         NORMAL = 0
