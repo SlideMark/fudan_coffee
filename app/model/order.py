@@ -15,6 +15,7 @@ import random
 from app.model.payment_item import PaymentItem
 from app.model.payment_transaction import PaymentTransaction
 from app.model.payment import Payment
+from app.model.ledger import Ledger
 from app.model.user import User
 from app.util.weixin import WXClient
 from app.util.timeutil import dt_to_str
@@ -166,6 +167,7 @@ class Order(object):
                 item_id = int(flag)
                 item = PaymentItem.find(item_id)
                 payment_info = {
+                    'openid': data.get('openid'),
                     'uid': uid,
                     'item_id': item_id,
                     'trade_no': data['transaction_id'],
@@ -173,9 +175,14 @@ class Order(object):
                     'money': item.money + item.charge,
                     'item_name': '账户充值%s元, 返现%s元' % (item.money/100.0, item.charge/100.0)
                 }
+                user.balance += payment_info['money']
+                user.save()
+                Ledger(uid=user.id, name='账户充值', money=payment_info['money'],
+                       type=Ledger.Type.PAYMENT_CHARGE, item_id=item_id).save()
             else:
                 money = int(flag)
                 payment_info = {
+                    'openid': data.get('openid'),
                     'uid': uid,
                     'item_id': 'recharge_%s' % money,
                     'trade_no': data['transaction_id'],
@@ -183,28 +190,27 @@ class Order(object):
                     'money': money,
                     'item_name': '购买咖啡消费%s元' % (money/100.0)
                 }
+                if t.balance:
+                    pay = max(t.balance, user.banalce)
+                    Ledger(uid=user.id, name='购买咖啡消费', money=pay,
+                       type=Ledger.Type.BUY_USE_BALANCE).save()
+                    user.balance -= pay
+                if t.coupon:
+                    pay = max(t.coupon, user.coupon)
+                    Ledger(uid=user.id, name='购买咖啡消费', money=pay,
+                       type=Ledger.Type.BUY_USE_COUPON).save()
+                    user.balance -= pay
+                user.save()
+
+            Payment(uid=user.uid, item_id=payment_info['item_id'],
+                    num=1, money=payment_info['price']).save()
         except:
             traceback.print_exc()
             return False
 
-        logging.debug("finish: payment_info: %s" % payment_info)
-        error = cls.finish_transaction(user, payment_info)
-
         t.close()
 
-        if error:
-            logging.error(error[1])
-            return error[0]
-
-        return Order.send_msg(user, data)
-
-    @classmethod
-    def finish_transaction(cls, user, payment_info):
-        user.balance += payment_info['money']
-        user.save()
-
-        Payment(uid=user.uid, item_id=payment_info['item_id'],
-                num=1, money=payment_info['price']).save()
+        return Order.send_msg(user, payment_info)
 
     '''
     {{first.DATA}}
