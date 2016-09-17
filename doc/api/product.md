@@ -55,7 +55,7 @@
 1. 使用余额购买,当余额不足时调起微信支付
 2. 使用优惠券购买,优惠券最高抵消40%的价格,剩下的调起微信支付
 
-![](api/buy_product.png)
+![](buy_product.png)
 ## POST /product/{product_id}/with_balance
 
 使用余额购买单个商品
