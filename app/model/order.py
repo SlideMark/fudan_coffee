@@ -55,10 +55,11 @@ class Order(object):
 
             return True
 
-    def set_money(self, money):
+    def set_money(self, money, balance=0, coupon=0):
         self.out_trade_no = '%s-%s-%s-%s' % (
-            self.uid, 'money_%s'%money, int(1000 * time.time()), random.randint(0, 1000))
-        result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no).save(return_keys=['id'])
+            self.uid, money, int(1000 * time.time()), random.randint(0, 1000))
+        result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no,
+                                    balance=balance, coupon=coupon).save(return_keys=['id'])
         self.tid = result['id']
         self.body = self.detail = '自由而无用消费%s元' % (money / 100.0)
         self.attach = '%s-%s' % (self.uid, self.tid)

@@ -2,13 +2,15 @@
 
 __author__ = 'wills'
 
-from app import app
+from app import app, conf
 from flask import request
 from app.model.shop import Shop
 from app.core.response import Response, ResponseCode
 from app.model.product import Product
 from app.model.ledger import Ledger
 from app.model.user import auth_required
+from app.util.weixin import WXClient
+from app.model.order import Order
 
 @app.route("/products")
 def products():
@@ -42,10 +44,25 @@ def buy_product(product_id=0):
 
         return str(Response(data=pd.to_dict()))
     else:
+        if user.openid:
+            token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
+            if not token or token.get('errcode'):
+                return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
 
-        return str(Response(code=ResponseCode.LOW_BALANCE,
-                            msg='余额不足',
-                            data={'need_money': pd.price-user.balance}))
+            order = Order(user.uid, user.openid)
+            order.set_money(pd.price-user.balance, balance=user.balance)
+            tokens = order.get_token()
+            if not tokens:
+                return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
+
+            return str(Response(code=ResponseCode.LOW_BALANCE,
+                                msg='余额不足',
+                                data={'need_money': pd.price-user.balance,
+                                      'order': tokens}))
+        elif not user.openid:
+            return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
+        else:
+            return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
 
 
 @app.route("/product/<product_id>/with_coupon", methods=['POST'])
@@ -63,18 +80,22 @@ def buy_product_with_coupon(product_id=0):
     discount_money = min(user.coupon, int(pd.price*discount))
     need_money = pd.price - discount_money
 
-    if discount_money > 0:
-        user.coupon -= discount_money
-        user.save()
+    if user.openid:
+        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
+        if not token or token.get('errcode'):
+            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
 
-        ledger = Ledger()
-        ledger.name = pd.name
-        ledger.item_id = pd.id
-        ledger.money = -discount_money
-        ledger.type = Ledger.Type.BUY_USE_COUPON
-        ledger.uid = user.id
-        ledger.save()
+        order = Order(user.uid, user.openid)
+        order.set_money(pd.price-user.balance, coupon=discount_money)
+        tokens = order.get_token()
+        if not tokens:
+            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
 
-    return str(Response(code=ResponseCode.LOW_BALANCE,
-                        msg='余额不足',
-                        data={'need_money': need_money}))
+        return str(Response(code=ResponseCode.LOW_BALANCE,
+                                msg='余额不足',
+                                data={'need_money': need_money,
+                                      'order': tokens}))
+    elif not user.openid:
+        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
+    else:
+        return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
