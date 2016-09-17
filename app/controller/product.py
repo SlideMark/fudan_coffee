@@ -16,13 +16,13 @@ from app.model.order import Order
 def products():
     shop_id = request.args.get('shop_id', Shop.GEHUA)
     products = Product.query(fetchone=False, shop_id=shop_id) or []
-    return str(Response(data=[Product(**each).to_dict() for each in products]))
+    return Response(data=[Product(**each).to_dict() for each in products]).out()
 
 @app.route("/product/<product_id>", methods=['GET'])
 @auth_required
 def product(product_id=0):
     product = Product.find(product_id)
-    return str(Response(data=product.to_dict()))
+    return Response(data=product.to_dict()).out()
 
 @app.route("/product/<product_id>/with_balance", methods=['POST'])
 @auth_required
@@ -42,27 +42,24 @@ def buy_product(product_id=0):
         ledger.uid = user.id
         ledger.save()
 
-        return str(Response(data=pd.to_dict()))
+        return Response(data=pd.to_dict()).out()
+    elif user.openid:
+        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
+        if not token or token.get('errcode'):
+            return Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败').out()
+
+        order = Order(user.uid, user.openid)
+        order.set_money(pd.price-user.balance, balance=user.balance)
+        tokens = order.get_token()
+        if not tokens:
+            return Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败').out()
+
+        return Response(code=ResponseCode.LOW_BALANCE,
+                            msg='余额不足',
+                            data={'need_money': pd.price-user.balance,
+                                    'order': tokens}).out()
     else:
-        if user.openid:
-            token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
-            if not token or token.get('errcode'):
-                return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
-
-            order = Order(user.uid, user.openid)
-            order.set_money(pd.price-user.balance, balance=user.balance)
-            tokens = order.get_token()
-            if not tokens:
-                return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
-
-            return str(Response(code=ResponseCode.LOW_BALANCE,
-                                msg='余额不足',
-                                data={'need_money': pd.price-user.balance,
-                                      'order': tokens}))
-        elif not user.openid:
-            return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
-        else:
-            return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
+        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
 
 
 @app.route("/product/<product_id>/with_coupon", methods=['POST'])
@@ -95,7 +92,5 @@ def buy_product_with_coupon(product_id=0):
                                 msg='余额不足',
                                 data={'need_money': need_money,
                                       'order': tokens}))
-    elif not user.openid:
-        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
     else:
-        return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
+        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
