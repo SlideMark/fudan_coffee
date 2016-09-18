@@ -60,6 +60,25 @@
 |-----|----------|------|-------------|
 | code  | y    | number | 返回状态码 |
 
+
+## POST /account/bindphone
+
+绑定手机号
+
+### Post Body说明
+
+| key | Requried | type | description |
+|-----|----------|------|-------------|
+| phone   | y    | string | 手机号码 |
+
+### Response Body说明
+
+| key | Requried | type | description |
+|-----|----------|------|-------------|
+| code  | y    | number | 返回状态码 |
+| data  | y     | object | 用户信息，同上|
+
+
 ## POST /account/signup
 
 手机号密码注册，会设置cookie
