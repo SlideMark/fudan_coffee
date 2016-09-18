@@ -12,8 +12,8 @@ $(function () {
             var user = result.user;
             $('.avator').attr('src', user.avatar);
             $('.nickname').text(user.name);
-            $('.balance span').text('￥'+user.balance);
-            $('.coupon span').text('￥'+user.coupon);
+            $('.balance span').text('￥'+user.balance/100);
+            $('.coupon span').text('￥'+user.coupon/100);
         }
     });
 });
