@@ -501,3 +501,104 @@ coffee: started
   INFO [230b1c20] Running /usr/bin/env echo "Branch master (at 2bd97aba01c7f0a2bff073663cf8136811459031) deployed as release 20160918080152 by irish" >> /home/fudan_coffee/deploy/revisions.log as fudan_coffee@115.28.174.126
  DEBUG [230b1c20] Command: cd /home/fudan_coffee/deploy/releases && /usr/bin/env echo "Branch master (at 2bd97aba01c7f0a2bff073663cf8136811459031) deployed as release 20160918080152 by irish" >> /home/fudan_coffee/deploy/revisions.log
   INFO [230b1c20] Finished in 0.112 seconds with exit status 0 (successful).
+  INFO ---------------------------------------------------------------------------
+  INFO START 2016-09-18 16:17:35 +0800 cap production deploy
+  INFO ---------------------------------------------------------------------------
+  INFO [060332d8] Running /usr/bin/env mkdir -p /tmp as fudan_coffee@115.28.174.126
+ DEBUG [060332d8] Command: /usr/bin/env mkdir -p /tmp
+  INFO [060332d8] Finished in 0.415 seconds with exit status 0 (successful).
+ DEBUG Uploading /tmp/git-ssh-fudan_coffee-production-irish.sh 0.0%
+  INFO Uploading /tmp/git-ssh-fudan_coffee-production-irish.sh 100.0%
+  INFO [cdb3fb11] Running /usr/bin/env chmod 700 /tmp/git-ssh-fudan_coffee-production-irish.sh as fudan_coffee@115.28.174.126
+ DEBUG [cdb3fb11] Command: /usr/bin/env chmod 700 /tmp/git-ssh-fudan_coffee-production-irish.sh
+  INFO [cdb3fb11] Finished in 0.069 seconds with exit status 0 (successful).
+  INFO [94cada2c] Running /usr/bin/env git ls-remote --heads git@github.com:SlideMark/fudan_coffee.git as fudan_coffee@115.28.174.126
+ DEBUG [94cada2c] Command: ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-fudan_coffee-production-irish.sh" ; /usr/bin/env git ls-remote --heads git@github.com:SlideMark/fudan_coffee.git )
+ DEBUG [94cada2c] 	1f94bddcb870c8d52056c38f1f9de61f746ffe38	refs/heads/feature/old
+57492ecbb7cefcc765e53c8a0422c1de598d1152	refs/heads/master
+  INFO [94cada2c] Finished in 10.606 seconds with exit status 0 (successful).
+  INFO [9ead1b2c] Running /usr/bin/env mkdir -p /home/fudan_coffee/deploy/shared /home/fudan_coffee/deploy/releases as fudan_coffee@115.28.174.126
+ DEBUG [9ead1b2c] Command: /usr/bin/env mkdir -p /home/fudan_coffee/deploy/shared /home/fudan_coffee/deploy/releases
+  INFO [9ead1b2c] Finished in 0.069 seconds with exit status 0 (successful).
+ DEBUG [d8a88163] Running [ -f /home/fudan_coffee/deploy/current/REVISION ] as fudan_coffee@115.28.174.126
+ DEBUG [d8a88163] Command: [ -f /home/fudan_coffee/deploy/current/REVISION ]
+ DEBUG [d8a88163] Finished in 0.060 seconds with exit status 0 (successful).
+ DEBUG [de77ea13] Running /usr/bin/env cat /home/fudan_coffee/deploy/current/REVISION 2>/dev/null as fudan_coffee@115.28.174.126
+ DEBUG [de77ea13] Command: /usr/bin/env cat /home/fudan_coffee/deploy/current/REVISION 2>/dev/null
+ DEBUG [de77ea13] 	2bd97aba01c7f0a2bff073663cf8136811459031
+ DEBUG [de77ea13] Finished in 0.058 seconds with exit status 0 (successful).
+ DEBUG [27a0e173] Running [ -f /home/fudan_coffee/deploy/repo/HEAD ] as fudan_coffee@115.28.174.126
+ DEBUG [27a0e173] Command: [ -f /home/fudan_coffee/deploy/repo/HEAD ]
+ DEBUG [27a0e173] Finished in 0.057 seconds with exit status 0 (successful).
+  INFO The repository mirror is at /home/fudan_coffee/deploy/repo
+ DEBUG [5b5b8e15] Running if test ! -d /home/fudan_coffee/deploy/repo; then echo "Directory does not exist '/home/fudan_coffee/deploy/repo'" 1>&2; false; fi as fudan_coffee@115.28.174.126
+ DEBUG [5b5b8e15] Command: if test ! -d /home/fudan_coffee/deploy/repo; then echo "Directory does not exist '/home/fudan_coffee/deploy/repo'" 1>&2; false; fi
+ DEBUG [5b5b8e15] Finished in 0.054 seconds with exit status 0 (successful).
+  INFO [a5f509f3] Running /usr/bin/env git remote update --prune as fudan_coffee@115.28.174.126
+ DEBUG [a5f509f3] Command: cd /home/fudan_coffee/deploy/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-fudan_coffee-production-irish.sh" ; /usr/bin/env git remote update --prune )
+ DEBUG [a5f509f3] 	Fetching origin
+ DEBUG [a5f509f3] 	From github.com:SlideMark/fudan_coffee
+   2bd97ab..57492ec  master     -> master
+  INFO [a5f509f3] Finished in 10.570 seconds with exit status 0 (successful).
+ DEBUG [42f313c1] Running if test ! -d /home/fudan_coffee/deploy/repo; then echo "Directory does not exist '/home/fudan_coffee/deploy/repo'" 1>&2; false; fi as fudan_coffee@115.28.174.126
+ DEBUG [42f313c1] Command: if test ! -d /home/fudan_coffee/deploy/repo; then echo "Directory does not exist '/home/fudan_coffee/deploy/repo'" 1>&2; false; fi
+ DEBUG [42f313c1] Finished in 0.058 seconds with exit status 0 (successful).
+  INFO [ece9390e] Running /usr/bin/env mkdir -p /home/fudan_coffee/deploy/releases/20160918081747 as fudan_coffee@115.28.174.126
+ DEBUG [ece9390e] Command: cd /home/fudan_coffee/deploy/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-fudan_coffee-production-irish.sh" ; /usr/bin/env mkdir -p /home/fudan_coffee/deploy/releases/20160918081747 )
+  INFO [ece9390e] Finished in 0.062 seconds with exit status 0 (successful).
+  INFO [824c2342] Running /usr/bin/env git archive master | tar -x -f - -C /home/fudan_coffee/deploy/releases/20160918081747 as fudan_coffee@115.28.174.126
+ DEBUG [824c2342] Command: cd /home/fudan_coffee/deploy/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-fudan_coffee-production-irish.sh" ; /usr/bin/env git archive master | tar -x -f - -C /home/fudan_coffee/deploy/releases/20160918081747 )
+  INFO [824c2342] Finished in 0.076 seconds with exit status 0 (successful).
+ DEBUG [e5634934] Running if test ! -d /home/fudan_coffee/deploy/repo; then echo "Directory does not exist '/home/fudan_coffee/deploy/repo'" 1>&2; false; fi as fudan_coffee@115.28.174.126
+ DEBUG [e5634934] Command: if test ! -d /home/fudan_coffee/deploy/repo; then echo "Directory does not exist '/home/fudan_coffee/deploy/repo'" 1>&2; false; fi
+ DEBUG [e5634934] Finished in 0.057 seconds with exit status 0 (successful).
+ DEBUG [efa9938c] Running /usr/bin/env git rev-list --max-count=1 master as fudan_coffee@115.28.174.126
+ DEBUG [efa9938c] Command: cd /home/fudan_coffee/deploy/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-fudan_coffee-production-irish.sh" ; /usr/bin/env git rev-list --max-count=1 master )
+ DEBUG [efa9938c] 	57492ecbb7cefcc765e53c8a0422c1de598d1152
+ DEBUG [efa9938c] Finished in 0.063 seconds with exit status 0 (successful).
+ DEBUG [ddfd26d9] Running if test ! -d /home/fudan_coffee/deploy/releases/20160918081747; then echo "Directory does not exist '/home/fudan_coffee/deploy/releases/20160918081747'" 1>&2; false; fi as fudan_coffee@115.28.174.126
+ DEBUG [ddfd26d9] Command: if test ! -d /home/fudan_coffee/deploy/releases/20160918081747; then echo "Directory does not exist '/home/fudan_coffee/deploy/releases/20160918081747'" 1>&2; false; fi
+ DEBUG [ddfd26d9] Finished in 0.059 seconds with exit status 0 (successful).
+  INFO [ee494305] Running /usr/bin/env echo "57492ecbb7cefcc765e53c8a0422c1de598d1152" >> REVISION as fudan_coffee@115.28.174.126
+ DEBUG [ee494305] Command: cd /home/fudan_coffee/deploy/releases/20160918081747 && /usr/bin/env echo "57492ecbb7cefcc765e53c8a0422c1de598d1152" >> REVISION
+  INFO [ee494305] Finished in 0.060 seconds with exit status 0 (successful).
+  INFO [8e74fcda] Running /usr/bin/env ln -s /home/fudan_coffee/deploy/releases/20160918081747 /home/fudan_coffee/deploy/releases/current as fudan_coffee@115.28.174.126
+ DEBUG [8e74fcda] Command: /usr/bin/env ln -s /home/fudan_coffee/deploy/releases/20160918081747 /home/fudan_coffee/deploy/releases/current
+  INFO [8e74fcda] Finished in 0.067 seconds with exit status 0 (successful).
+  INFO [9d0cf469] Running /usr/bin/env mv /home/fudan_coffee/deploy/releases/current /home/fudan_coffee/deploy as fudan_coffee@115.28.174.126
+ DEBUG [9d0cf469] Command: /usr/bin/env mv /home/fudan_coffee/deploy/releases/current /home/fudan_coffee/deploy
+  INFO [9d0cf469] Finished in 0.069 seconds with exit status 0 (successful).
+  INFO [21a710cb] Running source /home/fudan_coffee/env/bin/activate && cd /home/fudan_coffee/deploy/releases/20160918081747 && pip install -r doc/requirements.txt as fudan_coffee@115.28.174.126
+ DEBUG [21a710cb] Command: source /home/fudan_coffee/env/bin/activate && cd /home/fudan_coffee/deploy/releases/20160918081747 && pip install -r doc/requirements.txt
+ DEBUG [21a710cb] 	Requirement already satisfied (use --upgrade to upgrade): psycopg2==2.6.1 in /home/fudan_coffee/env/lib/python2.7/site-packages (from -r doc/requirements.txt (line 1))
+ DEBUG [21a710cb] 	Requirement already satisfied (use --upgrade to upgrade): PyYAML==3.11 in /home/fudan_coffee/env/lib/python2.7/site-packages (from -r doc/requirements.txt (line 2))
+ DEBUG [21a710cb] 	Requirement already satisfied (use --upgrade to upgrade): flask==0.11.1 in /home/fudan_coffee/env/lib/python2.7/site-packages (from -r doc/requirements.txt (line 3))
+ DEBUG [21a710cb] 	Requirement already satisfied (use --upgrade to upgrade): itsdangerous>=0.21 in /home/fudan_coffee/env/lib/python2.7/site-packages (from flask==0.11.1->-r doc/requirements.txt (line 3))
+ DEBUG [21a710cb] 	Requirement already satisfied (use --upgrade to upgrade): click>=2.0 in /home/fudan_coffee/env/lib/python2.7/site-packages (from flask==0.11.1->-r doc/requirements.txt (line 3))
+ DEBUG [21a710cb] 	Requirement already satisfied (use --upgrade to upgrade): Werkzeug>=0.7 in /home/fudan_coffee/env/lib/python2.7/site-packages (from flask==0.11.1->-r doc/requirements.txt (line 3))
+ DEBUG [21a710cb] 	Requirement already satisfied (use --upgrade to upgrade): Jinja2>=2.4 in /home/fudan_coffee/env/lib/python2.7/site-packages (from flask==0.11.1->-r doc/requirements.txt (line 3))
+ DEBUG [21a710cb] 	Requirement already satisfied (use --upgrade to upgrade): MarkupSafe in /home/fudan_coffee/env/lib/python2.7/site-packages (from Jinja2>=2.4->flask==0.11.1->-r doc/requirements.txt (line 3))
+  INFO [21a710cb] Finished in 0.522 seconds with exit status 0 (successful).
+  INFO [e746d9d2] Running source /home/fudan_coffee/env/bin/activate && cd /home/fudan_coffee/deploy/releases/20160918081747 && python script/migration.py as fudan_coffee@115.28.174.126
+ DEBUG [e746d9d2] Command: source /home/fudan_coffee/env/bin/activate && cd /home/fudan_coffee/deploy/releases/20160918081747 && python script/migration.py
+  INFO [e746d9d2] Finished in 0.190 seconds with exit status 0 (successful).
+  INFO [b091e8e6] Running source /home/fudan_coffee/env/bin/activate && supervisorctl restart coffee as fudan_coffee@115.28.174.126
+ DEBUG [b091e8e6] Command: source /home/fudan_coffee/env/bin/activate && supervisorctl restart coffee
+ DEBUG [b091e8e6] 	coffee: stopped
+coffee: started
+  INFO [b091e8e6] Finished in 1.697 seconds with exit status 0 (successful).
+ DEBUG [0b8c40ba] Running /usr/bin/env ls -xtr /home/fudan_coffee/deploy/releases as fudan_coffee@115.28.174.126
+ DEBUG [0b8c40ba] Command: /usr/bin/env ls -xtr /home/fudan_coffee/deploy/releases
+ DEBUG [0b8c40ba] 	20160918073516	20160918073603	20160918073748	20160918075711	20160918080152
+20160918081747
+ DEBUG [0b8c40ba] Finished in 0.062 seconds with exit status 0 (successful).
+  INFO Keeping 5 of 6 deployed releases on 115.28.174.126
+  INFO [2c5c88d2] Running /usr/bin/env rm -rf /home/fudan_coffee/deploy/releases/20160918073516 as fudan_coffee@115.28.174.126
+ DEBUG [2c5c88d2] Command: /usr/bin/env rm -rf /home/fudan_coffee/deploy/releases/20160918073516
+  INFO [2c5c88d2] Finished in 0.069 seconds with exit status 0 (successful).
+ DEBUG [2cf73333] Running if test ! -d /home/fudan_coffee/deploy/releases; then echo "Directory does not exist '/home/fudan_coffee/deploy/releases'" 1>&2; false; fi as fudan_coffee@115.28.174.126
+ DEBUG [2cf73333] Command: if test ! -d /home/fudan_coffee/deploy/releases; then echo "Directory does not exist '/home/fudan_coffee/deploy/releases'" 1>&2; false; fi
+ DEBUG [2cf73333] Finished in 0.058 seconds with exit status 0 (successful).
+  INFO [80a13d46] Running /usr/bin/env echo "Branch master (at 57492ecbb7cefcc765e53c8a0422c1de598d1152) deployed as release 20160918081747 by irish" >> /home/fudan_coffee/deploy/revisions.log as fudan_coffee@115.28.174.126
+ DEBUG [80a13d46] Command: cd /home/fudan_coffee/deploy/releases && /usr/bin/env echo "Branch master (at 57492ecbb7cefcc765e53c8a0422c1de598d1152) deployed as release 20160918081747 by irish" >> /home/fudan_coffee/deploy/revisions.log
+  INFO [80a13d46] Finished in 0.062 seconds with exit status 0 (successful).

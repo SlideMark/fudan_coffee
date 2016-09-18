@@ -15,54 +15,15 @@ img {
     max-width: 7.5rem;
     margin: 0 auto;
 }
-section {
-    background: url("../img/userbg.jpg") no-repeat;
-    background-size: contain;
+.norecord {
+    font-size: 0.28rem;
+    color: #999;
+    padding: 0.2rem 0;
     text-align: center;
-    padding-top: 2.4rem;
-    border-bottom: 10px solid #f0f0f0;
 }
-section img {
-    width: 1.35rem;
-    border-radius: 999px;
-    border: 5px solid #FFFFFF;
-}
-.nickname {
-    font-size: 0.28rem;
-    margin: 0.25rem 0 0.5rem;
-}
-.money > a {
-    display: inline-block;
-    vertical-align: top;
-    font-size: 0.28rem;
-    margin: 0 0.25rem;
-}
-.money span {
+.records a {
     display: block;
-    margin-bottom: 5px;
-}
-.listmenu a {
-    display: block;
-    padding: 0.2rem;
-    color: #444450;
-    border-bottom: 1px solid #e5e5e5;
     font-size: 0.28rem;
-}
-.listmenu a:before {
-    content: '';
-    display: inline-block;
-    width: 0.4rem;
-    height: 0.4rem;
-    vertical-align: middle;
-    margin-right: 0.25rem;
-}
-.orders:before {
-    background: url("http://static2.flowerplus.cn/Static/img/iconfont-box.png") no-repeat;
-    background-size: contain;
-}
-.mycoupon:before {
-    background: url("http://static2.flowerplus.cn/Static/img/iconfont-quan.png") no-repeat;
-    background-size: contain;
 }
 .logo {
     display: block;

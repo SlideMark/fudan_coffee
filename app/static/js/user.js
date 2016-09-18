@@ -2,12 +2,7 @@
  * Created by irish on 16/9/18.
  */
 $(function () {
-    function getUrlParam(name) {
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
-        return results == null  ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '))
-    }
-    var loading = $('.loading'), products = $('.products');
+    var loading = $('.loading');
     $.ajax({
         url: '/user',
         type: 'get',
