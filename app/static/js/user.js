@@ -13,6 +13,7 @@ $(function () {
         type: 'get',
         dataType: 'json',
         success: function (result) {
+            loading.addClass('hide');
             var user = result.user;
             $('.avator').attr('src', user.avatar);
             $('.nickname').text(user.name);
