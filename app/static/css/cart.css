@@ -34,9 +34,12 @@ img {
     font-size: 0.5rem;
     margin-left: 0.2rem;
 }
-.minus, .plus, .num, .product_num {
+.product_num span, .num, .product_num {
     display: inline-block;
     vertical-align: middle;
+}
+.product_num span {
+    padding: 0 0.1rem;
 }
 .delete {
     float: right;
