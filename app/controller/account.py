@@ -4,7 +4,7 @@ __author__ = 'wills'
 
 from app import app, conf
 from app.model.user import User
-from flask import request, render_template, make_response
+from flask import request, make_response
 from app.util.weixin import WXClient
 from app.core.response import ResponseCode, Response
 from app.model.user import auth_required, logedin

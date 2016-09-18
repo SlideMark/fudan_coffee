@@ -47,7 +47,8 @@ class ConnectionPool(ThreadedConnectionPool):
             cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
             cur.execute(query, *args)
             conn.commit()
-            #return cur.fetchone()
+            if 'returning' in query:
+                return cur.fetchone()
 
 class Postgres(object):
 
