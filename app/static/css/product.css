@@ -16,21 +16,16 @@ img {
     margin: 0 auto;
     padding-bottom: 0.75rem;
 }
-.product {
-    display: block;
+.product_imgs {}
+.product_name {
+    font-size: 0.4rem;
 }
-.description {
+.product_des {
     font-size: 0.3rem;
-    white-space: nowrap;
-    width: 7rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0.2rem auto 0;
 }
 .price {
-    font-size: 0.3rem;
+    font-size: 0.26rem;
     display: block;
-    margin: 0.2rem 0.25rem;
 }
 footer {
     position: fixed;
