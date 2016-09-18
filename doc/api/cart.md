@@ -65,10 +65,7 @@
 
 ### Response Body说明
 
-| key | Requried | type | description |
-|-----|----------|------|-------------|
-| code  | y    | number | 返回状态码 |
-| data | y | object | 包含success和fail两个属性， 每个属性为一个商品信息列表，商品信息同上|
+同[余额直接购买](product.md)
 
 ## POST /cart/pay_with_coupon
 
@@ -76,8 +73,6 @@
 
 ### Response Body说明
 
-| key | Requried | type | description |
-|-----|----------|------|-------------|
-| code  | y    | number | 返回状态码 |
-| data | y | object | 包含success和fail两个属性， 每个属性为一个商品信息列表，商品信息同上|
+同[优惠券直接购买](product.md)
+
 
