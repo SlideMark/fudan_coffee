@@ -31,7 +31,7 @@ def cart():
 @auth_required
 def add_cart():
     product_id = request.form['product_id']
-    if not product_id or Product.find(product_id):
+    if not product_id or not Product.find(product_id):
         return str(Response(code=ResponseCode.DATA_NOT_EXIST, msg='商品不存在'))
 
     cart = Cart()
@@ -65,7 +65,7 @@ def pay_cart_with_balance():
     money = 0
     for each in carts:
         pd = Product.find(each['product_id'])
-        money += pd.price * pd.num
+        money += pd.price * each['num']
 
     if user.balance >= money:
         for each in carts:
@@ -114,7 +114,7 @@ def pay_cart_with_coupon():
     money = 0
     for each in carts:
         pd = Product.find(each['product_id'])
-        money += pd.price * pd.num
+        money += pd.price * each['num']
 
     discount_money = min(user.coupon, int(money*discount))
     need_money = money - discount_money
