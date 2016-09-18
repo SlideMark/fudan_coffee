@@ -14,7 +14,6 @@ img {
 .main {
     max-width: 7.5rem;
     margin: 0 auto;
-    padding-bottom: 0.75rem;
 }
 section {
     background: url("../img/userbg.jpg") no-repeat;
@@ -40,6 +39,14 @@ section img {
 .money span {
     display: block;
     margin-top: 5px;
+}
+.logo {
+    display: block;
+    margin: 0.5rem auto;
+    width: 1.56rem;
+    height: 1.42rem;
+    background: url("../img/logo.jpeg") no-repeat;
+    background-size: contain;
 }
 .loading {
     position: fixed;
