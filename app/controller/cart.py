@@ -86,7 +86,7 @@ def pay_cart_with_balance():
 
         user.balance -= money
         user.save()
-        return Response(data=resp)
+        return Response(data=resp).out()
     elif user.openid:
         token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
         if not token or token.get('errcode'):
