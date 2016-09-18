@@ -16,6 +16,31 @@ img {
     margin: 0 auto;
     padding-bottom: 0.75rem;
 }
+section {
+    background: url("../img/userbg.jpg") no-repeat;
+    background-size: contain;
+    text-align: center;
+    padding-top: 2.4rem;
+}
+section img {
+    width: 1.35rem;
+    border-radius: 999px;
+    border: 5px solid #FFFFFF;
+}
+.nickname {
+    font-size: 0.28rem;
+    margin: 0.25rem 0 0.5rem;
+}
+.money > div {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 0.28rem;
+    margin: 0 0.25rem;
+}
+.money span {
+    display: block;
+    margin-top: 5px;
+}
 .loading {
     position: fixed;
     top: 0;
