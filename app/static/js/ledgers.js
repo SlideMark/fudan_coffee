@@ -20,7 +20,7 @@ $(function () {
             var data = result.data;
             if (data.length) {
                 data.forEach(function(list) {
-                    records.append('<a href="product.html?pid='+list.item_id+'"><span>'+list.name+'</span><span>'+list.money+'</span></a>');
+                    records.append('<a href="product.html?pid='+list.item_id+'"><span>'+list.name+'</span><span>'+list.money/100.0+'元</span></a>');
                 });
             } else {
                 records.addClass('hide');

@@ -40,7 +40,7 @@ def add_cart():
     rt = cart.save(return_keys=[Cart.PKEY])
     cart = Cart.find(rt[Cart.PKEY])
 
-    return str(Response(data=cart.to_dict()))
+    return str(Response())
 
 
 @app.route("/cart/update", methods=['POST'])
