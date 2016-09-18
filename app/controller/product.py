@@ -35,7 +35,7 @@ def buy_product(product_id=0):
         user.save()
 
         Ledger(uid=user.id, name=pd.name, item_id=pd.id,
-            money=-pd.price, type=Ledger.Type.BUY_USE_COUPON).save()
+            money=-pd.price, type=Ledger.Type.BUY_USE_BALANCE).save()
 
         return Response(data=pd.to_dict()).out()
     elif user.openid:

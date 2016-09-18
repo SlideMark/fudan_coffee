@@ -76,7 +76,7 @@ def pay_cart_with_balance():
             ct.save()
 
             Ledger(uid=user.id, name=pd.name,
-                money=-pd.price, type=Ledger.Type.BUY_USE_COUPON).save()
+                money=-pd.price, type=Ledger.Type.BUY_USE_BALANCE).save()
 
             cart = Cart(**each).to_dict()
             cart['product_name'] = pd.name
