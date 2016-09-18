@@ -7,19 +7,15 @@ import logging
 import time
 import traceback
 from app import conf
-from datetime import datetime
 import urllib2
-import json
 from xml.etree import ElementTree
 import random
-from app.util.httputil import request_with_data
 from app.model.payment_item import PaymentItem
 from app.model.payment_transaction import PaymentTransaction
 from app.model.payment import Payment
 from app.model.ledger import Ledger
 from app.model.user import User
 from app.util.weixin import WXClient
-from app.util.timeutil import dt_to_str
 from app.model.cart import Cart
 
 class Order(object):

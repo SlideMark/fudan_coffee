@@ -39,7 +39,7 @@ def wechat_signin():
 
             WXClient.send_signup_msg(user, {"openid": openid})
         else:
-            return str(Response(code=ResponseCode.OPERATE_ERROR))
+            return Response(code=ResponseCode.OPERATE_ERROR, msg='获取用户资料失败').out()
 
     resp = make_response(str(Response(data=user.json())))
     resp.set_cookie('uid', '%s'%user.id)
@@ -110,7 +110,7 @@ def signup():
             user.save()
 
             user = User.query_instance(phone=phone, password=password)
-            resp = make_response(str(Response(data=user.json())))
+            resp = make_response(Response(data=user.json()).out())
             resp.set_cookie('uid', '%s' % user.id)
             resp.set_cookie('session', user.session_data)
             return resp
