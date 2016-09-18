@@ -67,6 +67,8 @@
 
 同[余额直接购买](product.md)
 
+如果直接购买成功,则返回购物车信息列表(同上)
+
 ## POST /cart/pay_with_coupon
 
 余额结算购物车
