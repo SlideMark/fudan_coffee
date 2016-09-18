@@ -72,6 +72,8 @@ $(function () {
 				       		alert(JSON.stringify(res));
 				       }
 				    );
+                } else {
+                    alert(result.msg);
                 }
             }
         });
