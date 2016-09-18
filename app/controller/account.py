@@ -37,7 +37,7 @@ def wechat_signin():
             user.save()
             user = User.query_instance(openid=openid, master=True)
 
-            WXClient.send_signup_msg(user, {})
+            WXClient.send_signup_msg(user, {"openid": openid})
         else:
             return str(Response(code=ResponseCode.OPERATE_ERROR))
 
