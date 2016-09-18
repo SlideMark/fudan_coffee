@@ -20,6 +20,7 @@ section {
     background-size: contain;
     text-align: center;
     padding-top: 2.4rem;
+    border-bottom: 10px solid #f0f0f0;
 }
 section img {
     width: 1.35rem;
@@ -30,7 +31,7 @@ section img {
     font-size: 0.28rem;
     margin: 0.25rem 0 0.5rem;
 }
-.money > div {
+.money > a {
     display: inline-block;
     vertical-align: top;
     font-size: 0.28rem;
@@ -38,7 +39,30 @@ section img {
 }
 .money span {
     display: block;
-    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.listmenu a {
+    display: block;
+    padding: 0.15rem 0.15rem 0.15rem 0.2rem;
+    color: #444450;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 0.28rem;
+}
+.listmenu a:before {
+    content: '';
+    display: inline-block;
+    width: 0.4rem;
+    height: 0.4rem;
+    vertical-align: middle;
+    margin-right: 0.25rem;
+}
+.orders:before {
+    background: url("http://static2.flowerplus.cn/Static/img/iconfont-box.png") no-repeat;
+    background-size: contain;
+}
+.mycoupon:before {
+    background: url("http://static2.flowerplus.cn/Static/img/iconfont-quan.png") no-repeat;
+    background-size: contain;
 }
 .logo {
     display: block;
