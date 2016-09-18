@@ -58,7 +58,7 @@ def update_cart():
 
 @app.route("/cart/delete", methods=['POST'])
 @auth_required
-def update_cart():
+def delete_cart():
     cart_id = request.form['cart_id']
     cart = Cart.query_instance(id=cart_id, uid=request.user.id)
 
