@@ -38,7 +38,8 @@ def add_cart():
     cart.uid = request.user.id
     cart.product_id = product_id
     rt = cart.save(return_keys=[Cart.PKEY])
-    cart.id = rt[Cart.PKEY]
+    cart = Cart.find(rt[Cart.PKEY])
+
     return str(Response(data=cart.to_dict()))
 
 
