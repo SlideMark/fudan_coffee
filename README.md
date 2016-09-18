@@ -34,7 +34,7 @@ python script/migration.py
 
 ### 运行
 
-* 配置~/.fudan_coffee.yaml配置文件，可以参考fudan_coffee.yaml.sample
+* 配置~/.fudan_coffee.yaml配置文件，可以参考[配置例子](doc/fudan_coffee.yaml.sample)
 
 ```
 python manager.py
