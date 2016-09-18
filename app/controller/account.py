@@ -40,7 +40,7 @@ def wechat_signin():
             return str(Response(code=ResponseCode.OPERATE_ERROR))
 
     resp = make_response(str(Response(data=user.json())))
-    resp.set_cookie('uid', user.id)
+    resp.set_cookie('uid', '%s'%user.id)
     resp.set_cookie('session', user.session_data)
     return resp
 
