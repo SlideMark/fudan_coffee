@@ -49,9 +49,10 @@ $(function () {
             }
         });
     });
-    $('.buy').click(function () {
+    $('.purchase').click(function () {
+        var tail = $(this).hasClass('buy') ? 'with_balance' : 'with_coupon';
         $.ajax({
-            url: '/product/'+pid+'/with_balance',
+            url: '/product/'+pid+'/'+tail,
             type: 'post',
             dataType: 'json',
             success: function (result) {
