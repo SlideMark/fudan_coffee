@@ -41,6 +41,24 @@
 |-----|----------|------|-------------|
 | code  | y    | number | 返回状态码 |
 
+## POST /cart/update
+
+修改购物车
+
+### Post Body说明
+
+| key | Requried | type | description |
+|-----|----------|------|-------------|
+| cart_id   | y    | number | 订单ID |
+| num | y| number | 数量后的数量|
+
+### Response Body说明
+
+| key | Requried | type | description |
+|-----|----------|------|-------------|
+| code  | y    | number | 返回状态码 |
+| data | y | object | cart信息|
+
 ## POST /cart/pay_with_balance
 
 余额结算购物车

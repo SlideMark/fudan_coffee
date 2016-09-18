@@ -22,6 +22,7 @@ def cart():
         cart = Cart(**each).to_dict()
         cart['product_name'] = pd.name
         cart['product_price'] = pd.price
+        cart['product_icon'] = pd.icon
         resp.append(cart)
     return str(Response(data=resp))
 
@@ -40,6 +41,21 @@ def add_cart():
     cart.product_id = product_id
     cart.save()
     return str(Response())
+
+
+@app.route("/cart/update", methods=['POST'])
+@auth_required
+def update_cart():
+    cart_id = request.form['cart_id']
+    num = request.form['num']
+    cart = Cart.query_instance(id=cart_id, uid=request.user.uid)
+
+    if not cart:
+        return str(Response(code=ResponseCode.DATA_NOT_EXIST, msg='数据不存在'))
+
+    cart.num = num
+    cart.save()
+    return Response(data=cart.to_dict()).out()
 
 
 @app.route("/cart/pay_with_balance", methods=['POST'])
