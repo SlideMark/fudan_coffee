@@ -32,6 +32,7 @@ def wechat_signin():
         user = User()
         user.openid = openid
         user.access_token = access_token
+        user.update_session()
         if _signup(user):
             user.save()
             user = User.query_instance(openid=openid, master=True)
