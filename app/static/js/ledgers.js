@@ -19,7 +19,6 @@ $(function () {
             loading.addClass('hide');
             var data = result.data;
             if (data.length) {
-                norecord.addClass('hide');
                 data.forEach(function(list) {
                     records.append('<a href="product.html?pid='+list.item_id+'"><span>'+list.name+'</span><span>'+list.money+'</span></a>');
                 });
@@ -29,8 +28,8 @@ $(function () {
          }
             $('.avator').attr('src', user.avatar);
             $('.nickname').text(user.name);
-            $('.balance span').text('￥'+user.balance);
-            $('.coupon span').text('￥'+user.coupon);
+            $('.balance span').text('￥'+user.balance/100.0+'元');
+            $('.coupon span').text('￥'+user.coupon/100.0+'元');
         }
     });
 });

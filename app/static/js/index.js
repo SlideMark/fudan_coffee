@@ -29,7 +29,7 @@ $(function () {
             loading.addClass('hide');
             if(result.code === 0) {
                 result.data.forEach(function(product) {
-                    products.append('<a class="product" href="product.html?pid='+product.id+'"><img src="'+product.icon+'"><p class="description">'+product.description+'</p><span class="price">价格：'+product.price+'</span></a>');
+                    products.append('<a class="product" href="product.html?pid='+product.id+'"><img src="'+product.icon+'"><p class="description">'+product.description+'</p><span class="price">价格：'+product.price/100.0+'元</span></a>');
                 });
             } else {
                 alert(result.msg);
