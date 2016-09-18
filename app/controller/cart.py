@@ -68,6 +68,7 @@ def pay_cart_with_balance():
         money += pd.price * each['num']
 
     if user.balance >= money:
+        resp = []
         for each in carts:
             pd = Product.find(each['product_id'])
             ct = Cart(**each)
@@ -77,8 +78,15 @@ def pay_cart_with_balance():
             Ledger(uid=user.id, name=pd.name,
                 money=-pd.price, type=Ledger.Type.BUY_USE_COUPON).save()
 
+            cart = Cart(**each).to_dict()
+            cart['product_name'] = pd.name
+            cart['product_price'] = pd.price
+            cart['product_icon'] = pd.icon
+            resp.append(cart)
+
         user.balance -= money
         user.save()
+        return Response(data=resp)
     elif user.openid:
         token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
         if not token or token.get('errcode'):
