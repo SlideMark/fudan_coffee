@@ -19,7 +19,7 @@ $(function () {
                 $('.product_imgs').attr('src', result.data.icon);
                 $('.product_name').text(result.data.name);
                 $('.product_des').text(result.data.description);
-                $('.price').text('￥'+result.data.price);
+                $('.price').text('￥'+result.data.price/100.0+'元');
             }
         });
     }
