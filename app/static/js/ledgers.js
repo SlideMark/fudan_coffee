@@ -19,6 +19,7 @@ $(function () {
             loading.addClass('hide');
             var data = result.data;
             if (data.length) {
+                norecord.addClass('hide');
                 data.forEach(function(list) {
                     records.append('<a href="product.html?pid='+list.item_id+'"><span>'+list.name+'</span><span>'+list.money+'</span></a>');
                 });

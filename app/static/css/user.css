@@ -57,11 +57,11 @@ section img {
     margin-right: 0.25rem;
 }
 .orders:before {
-    background: url("http://static2.flowerplus.cn/Static/img/iconfont-box.png") no-repeat;
+    background: url("../img/iconfont-box.png") no-repeat;
     background-size: contain;
 }
 .mycoupon:before {
-    background: url("http://static2.flowerplus.cn/Static/img/iconfont-quan.png") no-repeat;
+    background: url("../img/iconfont-quan.png") no-repeat;
     background-size: contain;
 }
 .logo {

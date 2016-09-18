@@ -32,6 +32,12 @@ img {
     display: block;
     margin: 0.2rem 0.25rem;
 }
+.empty {
+    font-size: 0.28rem;
+    color: #999;
+    padding: 0.2rem 0;
+    text-align: center;
+}
 footer {
     position: fixed;
     left: 0;

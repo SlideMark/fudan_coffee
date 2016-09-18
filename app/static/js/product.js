@@ -47,5 +47,8 @@ $(function () {
                 }
             }
         });
+    });
+    $('.buy').click(function () {
+        
     })
-})
+});
