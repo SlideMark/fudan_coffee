@@ -26,6 +26,7 @@ class Transaction(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.conn:
+            self.conn.commit()
             self.pool.putconn(self.conn)
 
 class ConnectionPool(ThreadedConnectionPool):
@@ -46,9 +47,6 @@ class ConnectionPool(ThreadedConnectionPool):
         with Transaction(self) as conn:
             cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
             cur.execute(query, *args)
-            conn.commit()
-            if 'returning' in query:
-                return cur.fetchone()
 
 class Postgres(object):
 

@@ -37,9 +37,10 @@ def add_cart():
     cart = Cart()
     cart.uid = request.user.id
     cart.product_id = product_id
-    cart.save()
+    ct = cart.save(return_keys=[Cart.PKEY])
+    cart = Cart.find(ct[Cart.PKEY])
 
-    return str(Response())
+    return Response(data=cart.to_dict()).out()
 
 
 @app.route("/cart/update", methods=['POST'])
