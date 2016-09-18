@@ -221,47 +221,4 @@ class Order(object):
 
         t.close()
 
-        return Order.send_msg(user, payment_info)
-
-    '''
-    {{first.DATA}}
-    会员姓名：{{name.DATA}}
-    消费内容：{{itemName.DATA}}
-    消费金额：{{itemMoney.}}
-    消费时间：{{time.DATA}}
-    {{remark.DATA}}
-    '''
-    @classmethod
-    def send_msg(cls, user, data):
-        openid = data.get('openid')
-        token = WXClient.get_service_token()
-
-        template = {
-            'touser':openid,
-            'template_id': conf.wechat_template_id,
-            'data':{
-                'first':{
-                    'value':'恭喜你购买成功！',
-                },
-                'name':{
-                    'value': user.name,
-                },
-                'itemName':{
-                    'value': data['item_name'],
-                },
-                'itemMoney':{
-                    'value':'%s元' % str(data['price']/100.0),
-                },
-                'time': {
-                    'value': dt_to_str(datetime.now())
-                },
-                'remark':{
-                    'value':'如有疑问，请联系客服人员。',
-                }
-            }
-        }
-
-        resp = request_with_data('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s' % (token, ),
-                          json.dumps(template))
-        if resp and resp.get('msgid'):return True
-        return False
+        return WXClient.send_buy_success_msg(user, payment_info)

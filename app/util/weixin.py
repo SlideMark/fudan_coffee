@@ -3,9 +3,13 @@
 __author__ = 'wills'
 
 import logging
+import json
 from app import conf
-from app.util.httputil import request_with_params
+from app.util.httputil import request_with_params, request_with_data
 from app.core.cache import LocalCache
+from app.util.timeutil import dt_to_str
+from datetime import datetime
+
 
 class WXClient(object):
 
@@ -82,3 +86,63 @@ class WXClient(object):
 
         return token
 
+
+    '''
+    {{first.DATA}}
+    会员姓名：{{name.DATA}}
+    消费内容：{{itemName.DATA}}
+    消费金额：{{itemMoney.}}
+    消费时间：{{time.DATA}}
+    {{remark.DATA}}
+    '''
+    @staticmethod
+    def send_buy_success_msg(user, data):
+        openid = data.get('openid')
+        token = WXClient.get_service_token()
+
+        template = {
+            'touser':openid,
+            'template_id': conf.wechat_template_id,
+            'data':{
+                'first':{
+                    'value':'恭喜你购买成功！',
+                },
+                'name':{
+                    'value': user.name,
+                },
+                'itemName':{
+                    'value': data['item_name'],
+                },
+                'itemMoney':{
+                    'value':'%s元' % str(data['price']/100.0),
+                },
+                'time': {
+                    'value': dt_to_str(datetime.now())
+                },
+                'remark':{
+                    'value':'如有疑问，请联系客服人员。',
+                }
+            }
+        }
+
+        resp = request_with_data('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s' % (token, ),
+                          json.dumps(template))
+        if resp and resp.get('msgid'):return True
+        return False
+
+
+    @staticmethod
+    def send_signup_msg(user, data):
+        openid = data.get('openid')
+        token = WXClient.get_service_token()
+
+        template = {
+            'touser':openid,
+            'template_id': 'iOKEU3_7migQusQ6jU3mDlTkklB5d7VdpfQvY5g5ddw',
+            'data':{}
+        }
+
+        resp = request_with_data('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s' % (token, ),
+                          json.dumps(template))
+        if resp and resp.get('msgid'):return True
+        return False
