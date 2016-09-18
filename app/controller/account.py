@@ -50,7 +50,7 @@ def _signup(user):
     if wx_user and wx_user.get('errcode') is None:
         user.name = wx_user.get('nickname')
         user.gender = wx_user.get('sex')
-        user.headimgurl = wx_user.get('headimgurl')
+        user.avatar = wx_user.get('headimgurl')
         user.province = wx_user.get('province')
         user.city = wx_user.get('city')
         user.unionid = wx_user.get('unionid')
