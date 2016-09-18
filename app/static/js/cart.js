@@ -33,7 +33,7 @@ $(function () {
     $('.purchase').click(function () {
         var tail = $(this).hasClass('cart') ? 'pay_with_balance' : 'pay_with_coupon';
         $.ajax({
-            url: '/cart/'+pid+'/'+tail,
+            url: '/cart/'+tail,
             type: 'post',
             dataType: 'json',
             success: function (result) {
