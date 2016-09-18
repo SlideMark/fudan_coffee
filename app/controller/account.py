@@ -88,6 +88,17 @@ def signout():
     resp.set_cookie('session', '')
     return resp
 
+
+@app.route("/account/bindphone", methods=['POST'])
+@auth_required
+def bindphone():
+    phone = request.form.get('phone')
+    user = request.user
+    user.phone = phone
+    user.save()
+    return Response(data=user.to_dict()).out()
+
+
 @app.route("/account/signup", methods=['POST'])
 def signup():
     if logedin(request):
