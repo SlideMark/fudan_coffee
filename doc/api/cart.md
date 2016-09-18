@@ -59,6 +59,23 @@
 | code  | y    | number | 返回状态码 |
 | data | y | object | cart信息|
 
+## POST /cart/delete
+
+删除购物车项目
+
+### Post Body说明
+
+| key | Requried | type | description |
+|-----|----------|------|-------------|
+| cart_id   | y    | number | 订单ID |
+
+### Response Body说明
+
+| key | Requried | type | description |
+|-----|----------|------|-------------|
+| code  | y    | number | 返回状态码 |
+| data | y | object | cart信息|
+
 ## POST /cart/pay_with_balance
 
 余额结算购物车

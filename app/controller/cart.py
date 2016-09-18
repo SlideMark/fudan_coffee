@@ -37,8 +37,7 @@ def add_cart():
     cart = Cart()
     cart.uid = request.user.id
     cart.product_id = product_id
-    rt = cart.save(return_keys=[Cart.PKEY])
-    cart = Cart.find(rt[Cart.PKEY])
+    cart.save()
 
     return str(Response())
 
@@ -57,6 +56,18 @@ def update_cart():
     cart.save()
     return Response(data=cart.to_dict()).out()
 
+@app.route("/cart/delete", methods=['POST'])
+@auth_required
+def update_cart():
+    cart_id = request.form['cart_id']
+    cart = Cart.query_instance(id=cart_id, uid=request.user.id)
+
+    if not cart:
+        return str(Response(code=ResponseCode.DATA_NOT_EXIST, msg='数据不存在'))
+
+    cart.state = Cart.State.CANCELED
+    cart.save()
+    return Response(data=cart.to_dict()).out()
 
 @app.route("/cart/pay_with_balance", methods=['POST'])
 @auth_required
