@@ -2,7 +2,7 @@
  * Created by irish on 16/9/17.
  */
 $(function () {
-    var empty = $('.empty'), products = $('.payments'), st = 0;
+    var empty = $('.empty'), payments = $('.payments'), st = 0;
     $.ajax({
         url: '/payment_items',
         type: 'get',
@@ -20,7 +20,7 @@ $(function () {
             }
         }
     });
-    products.on('click', '.buy', function () {
+    payments.on('click', '.buy', function () {
         var m = $(this);
         $.ajax({
             url: '/payment_order',
