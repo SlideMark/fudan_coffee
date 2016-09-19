@@ -70,7 +70,7 @@ def buy_product_with_coupon(product_id=0):
 
     if user.openid:
         order = Order(user.id, user.openid)
-        order.set_money(pd.price-user.balance, coupon=discount_money)
+        order.set_money(need_money, coupon=discount_money)
         tokens = order.get_token()
         if not tokens:
             return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
