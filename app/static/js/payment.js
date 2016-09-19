@@ -28,7 +28,7 @@ $(function () {
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    var data = result.data.order;
+                    var data = result.data;
                     WeixinJSBridge.invoke(
 				       'getBrandWCPayRequest', {
 				           appId: data.appId,
