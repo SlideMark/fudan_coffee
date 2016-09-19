@@ -40,6 +40,8 @@ def buy_product(product_id=0):
         return Response(data=pd.to_dict()).out()
     elif user.openid:
         token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
+        import logging
+        logging.info(str(token))
         if not token or token.get('errcode'):
             return Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败').out()
 
