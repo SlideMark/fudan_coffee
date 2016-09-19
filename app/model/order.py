@@ -42,7 +42,7 @@ class Order(object):
             return False
         else:
             self.out_trade_no = '%s-%s-%s-%s' % (
-                self.uid, item_id, int(1000 * time.time()), random.randint(0, 1000))
+                self.uid, item.id, int(1000 * time.time()), random.randint(0, 1000))
             result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no).save(return_keys=['id'])
             self.tid = result['id']
             self.body = self.detail = '自由而无用账号充值%s元,赠送%s元' % (item.money / 100.0, item.charge/100.0)
@@ -101,7 +101,8 @@ class Order(object):
 </xml>''' % (self.appid, self.attach, self.body, self.detail,
              self.mch_id, self.nonce_str, self.notify_url,
              self.out_trade_no, self.spbill_create_ip, self.total_fee,
-             self.trade_type, self.openid.encode('utf8'), Order.sign(self.__dict__),
+             self.trade_type, self.openid.encode('utf8'),
+             Order.sign(self.__dict__)
     )
 
     def get_token(self):
