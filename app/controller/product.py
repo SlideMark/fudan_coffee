@@ -39,7 +39,7 @@ def buy_product(product_id=0):
 
         return Response(data=pd.to_dict()).out()
     elif user.openid:
-        order = Order(user.uid, user.openid)
+        order = Order(user.id, user.openid)
         order.set_money(pd.price-user.balance, balance=user.balance)
         tokens = order.get_token()
         if not tokens:
@@ -69,7 +69,7 @@ def buy_product_with_coupon(product_id=0):
     need_money = pd.price - discount_money
 
     if user.openid:
-        order = Order(user.uid, user.openid)
+        order = Order(user.id, user.openid)
         order.set_money(pd.price-user.balance, coupon=discount_money)
         tokens = order.get_token()
         if not tokens:

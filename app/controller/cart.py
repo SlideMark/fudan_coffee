@@ -102,7 +102,7 @@ def pay_cart_with_balance():
         user.save()
         return Response(data=resp).out()
     elif user.openid:
-        order = Order(user.uid, user.openid)
+        order = Order(user.id, user.openid)
         order.set_money(money-user.balance, balance=user.balance, from_cart=1)
         tokens = order.get_token()
         if not tokens:
@@ -138,7 +138,7 @@ def pay_cart_with_coupon():
     need_money = money - discount_money
 
     if user.openid:
-        order = Order(user.uid, user.openid)
+        order = Order(user.id, user.openid)
         order.set_money(money - discount_money, coupon=discount_money, from_cart=1)
         tokens = order.get_token()
         if not tokens:
