@@ -2,23 +2,28 @@
 
 __author__ = 'wills'
 
+from flask import render_template, request
 from app import app, conf
 from app.model.cart import Cart
 from app.model.product import Product
 from app.core.response import Response, ResponseCode
+from app.model.user import auth_required
 
 
 if conf.debug:
-    @app.route("/test")
-    def test():
-        product_id = 2
-        if not product_id or not Product.find(product_id):
-            return str(Response(code=ResponseCode.DATA_NOT_EXIST, msg='商品不存在'))
+    @app.route("/test/give_balance")
+    @auth_required
+    def give_balance():
+        request.user.balance += 5000
+        request.user.save()
 
-        cart = Cart()
-        cart.uid = 1
-        cart.product_id = product_id
-        rt = cart.save(return_keys=[Cart.PKEY])
-        print rt
+        return render_template('error.html', msg='成功!')
 
-        return str(Response())
+    @app.route("/test/give_coupon")
+    @auth_required
+    def give_coupon():
+        request.user.coupon += 5000
+        request.user.save()
+
+        return render_template('error.html', msg='成功!')
+
