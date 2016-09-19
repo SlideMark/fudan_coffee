@@ -17,7 +17,7 @@ if True:
         request.user.balance += 5000
         request.user.save()
 
-        return render_template('error.html', msg='成功!')
+        return render_template('error.html', msg='Success!')
 
     @app.route("/test/give_coupon")
     @auth_required
@@ -25,5 +25,5 @@ if True:
         request.user.coupon += 5000
         request.user.save()
 
-        return render_template('error.html', msg='成功!')
+        return render_template('error.html', msg='Success!')
 
