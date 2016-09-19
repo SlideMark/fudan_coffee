@@ -112,7 +112,7 @@ class Order(object):
             root = ElementTree.fromstring(data)
             response = {child.tag: child.text for child in root.getchildren()}
             print response
-            if response.get('return_code') == 'SUCCESS' and response.get('result_code') == 'SUCCESS' and response.get('sign') == self.sign(response):
+            if response.get('return_code') == 'SUCCESS' and response.get('result_code') == 'SUCCESS':
                 resp = {
                     'appId': self.appid,
                     'package': 'prepay_id=%s' % (response.get('prepay_id'), ),
