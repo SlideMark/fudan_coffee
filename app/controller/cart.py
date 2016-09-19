@@ -102,10 +102,6 @@ def pay_cart_with_balance():
         user.save()
         return Response(data=resp).out()
     elif user.openid:
-        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
-        if not token or token.get('errcode'):
-            return Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败').out()
-
         order = Order(user.uid, user.openid)
         order.set_money(money-user.balance, balance=user.balance, from_cart=1)
         tokens = order.get_token()
@@ -142,10 +138,6 @@ def pay_cart_with_coupon():
     need_money = money - discount_money
 
     if user.openid:
-        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
-        if not token or token.get('errcode'):
-            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
-
         order = Order(user.uid, user.openid)
         order.set_money(money - discount_money, coupon=discount_money, from_cart=1)
         tokens = order.get_token()

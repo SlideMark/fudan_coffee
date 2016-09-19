@@ -39,12 +39,6 @@ def buy_product(product_id=0):
 
         return Response(data=pd.to_dict()).out()
     elif user.openid:
-        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
-        import logging
-        logging.info(str(token))
-        if not token or token.get('errcode'):
-            return Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败').out()
-
         order = Order(user.uid, user.openid)
         order.set_money(pd.price-user.balance, balance=user.balance)
         tokens = order.get_token()
@@ -75,10 +69,6 @@ def buy_product_with_coupon(product_id=0):
     need_money = pd.price - discount_money
 
     if user.openid:
-        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
-        if not token or token.get('errcode'):
-            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
-
         order = Order(user.uid, user.openid)
         order.set_money(pd.price-user.balance, coupon=discount_money)
         tokens = order.get_token()
