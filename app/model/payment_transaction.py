@@ -17,3 +17,8 @@ class PaymentTransaction(DAO):
     class Type:
         BY_PAYMENT_ITEM = 0
         BY_DIRECTLY = 1
+
+
+    def close(self):
+        self.state = PaymentTransaction.State.FINISHED
+        self.save()

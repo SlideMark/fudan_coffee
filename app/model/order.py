@@ -59,6 +59,7 @@ class Order(object):
             self.uid, money, int(1000 * time.time()), random.randint(0, 1000))
         result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no,
                                     balance=balance, coupon=coupon,
+                                    type=PaymentTransaction.Type.BY_DIRECTLY,
                                     from_cart=from_cart).save(return_keys=['id'])
         self.tid = result['id']
         self.body = self.detail = '自由而无用消费%s元' % (money / 100.0)
@@ -74,7 +75,7 @@ class Order(object):
     def sign(self, data):
         weixin_params = []
         for key, value in data.iteritems():
-            if key not in ['uid','tid']:
+            if key not in ['uid','tid', 'sign']:
                 weixin_params.append([str(key), str(value)])
         weixin_params.sort(key=lambda x:x[0])
         sign_src = '%s&key=%s' % ('&'.join(['%s=%s'%(x[0], x[1]) for x in weixin_params]), conf.wechat_fwh_mchkey)
@@ -137,9 +138,10 @@ class Order(object):
             logging.debug("notify: data: %s" % data)
             root = ElementTree.fromstring(data)
             response = {child.tag: child.text for child in root.getchildren()}
+            logging.error('wx callback sign error %s:%s' % (response.get('sign'), cls.sign(response)))
+
             if response.get('sign') == cls.sign(response):
                 return cls.finish(response)
-            logging.info('wx callback sign error %s:%s' % (response.get('sign'), cls.sign(response)))
         except:
             traceback.print_exc()
 
@@ -211,7 +213,7 @@ class Order(object):
 
                 user.save()
 
-            Payment(uid=user.uid, item_id=payment_info['item_id'],
+            Payment(uid=user.id, item_id=payment_info['item_id'],
                     num=1, money=payment_info['price']).save()
         except:
             traceback.print_exc()
@@ -219,4 +221,5 @@ class Order(object):
 
         t.close()
 
-        return WXClient.send_buy_success_msg(user, payment_info)
+        WXClient.send_buy_success_msg(user, payment_info)
+        return True
