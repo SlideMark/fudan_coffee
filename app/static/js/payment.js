@@ -12,7 +12,7 @@ $(function () {
             if(result.data.length) {
                 empty.addClass('hide');
                 result.data.forEach(function(payment) {
-                    payments.append('<div class="payment"><div class="payment_info"><p class="description">'+payment.name+'</p><span class="price">价格：'+payment.money/100.0+'元, 返现'+payment.charge/100.0+'元</span></div><span class="buy" data-paymentitemid="'+payment.id+'">购买</span></div>');
+                    payments.append('<div class="payment"><div class="payment_info"><p class="description">'+payment.name+'</p><span class="price">价格：'+payment.money/100.0+'元, 返现'+payment.charge/100.0+'元</span></div><div class="buy" data-paymentitemid="'+payment.id+'">购买</div></div>');
                 });
             } else {
                 payments.addClass('hide');
@@ -23,12 +23,9 @@ $(function () {
     payments.on('click', '.buy', function () {
         var m = $(this);
         $.ajax({
-            url: '/payment_order',
-            type: 'post',
+            url: '/payment_order?item_id='+m.data('paymentitemid'),
+            type: 'get',
             dataType: 'json',
-            data: {
-                item_id: m.data('paymentitemid')
-            },
             success: function (result) {
                 if (result.code === 0) {
                     var data = result.data.order;
