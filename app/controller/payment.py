@@ -42,11 +42,7 @@ def order():
     item_id = request.args.get('item_id')
 
     if user.openid or not item_id:
-        token = WXClient.get_wx_token(conf.wechat_fwh_appid, conf.wechat_fwh_mchkey, user.openid)
-        if not token or token.get('errcode'):
-            return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
-
-        order = Order(user.uid, user.openid)
+        order = Order(user.id, user.openid)
         if not order.set_item(item_id):
             return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
 
