@@ -73,7 +73,9 @@ class Order(object):
     @classmethod
     def sign(self, data):
         weixin_params = []
-        for key, value in data.iteritems():weixin_params.append([str(key), str(value)])
+        for key, value in data.iteritems():
+            if key not in ['uid','tid']:
+                weixin_params.append([str(key), str(value)])
         weixin_params.sort(key=lambda x:x[0])
         sign_src = '%s&key=%s' % ('&'.join(['%s=%s'%(x[0], x[1]) for x in weixin_params]), conf.wechat_fwh_mchkey)
         logging.info(sign_src)
