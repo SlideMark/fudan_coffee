@@ -17,7 +17,7 @@ from app import conf
 @auth_required
 def items():
     items = PaymentItem.query_all()
-    return Response(data=[Ledger(**each).to_dict() for each in items]).out()
+    return Response(data=[PaymentItem(**each).to_dict() for each in items]).out()
 
 
 @app.route("/payment_item/<item_id>", methods=['POST'])
