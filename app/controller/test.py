@@ -10,7 +10,7 @@ from app.core.response import Response, ResponseCode
 from app.model.user import auth_required
 
 
-if conf.debug:
+if True:
     @app.route("/test/give_balance")
     @auth_required
     def give_balance():
