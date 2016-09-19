@@ -12,7 +12,7 @@ $(function () {
             if(result.data.length) {
                 empty.addClass('hide');
                 result.data.forEach(function(payment) {
-                    payments.append('<div class="payment"><div class="payment_info"><p class="description">'+payment.name+'</p><span class="price">价格：'+payment.money/100.0+'元, 返现'+payment.charge/100.0+'元</span></div><div class="payment_money"><span class="minus" data-cartid="'+payment.id+'">-</span><input type="text" data-paymentitemid="'+payment.id+' /><span data-paymentitemid="'+payment.id+'" class="plus">+</span></div><span class="buy" data-paymentitemid="'+payment.id+'">购买</span></div>');
+                    payments.append('<div class="payment"><div class="payment_info"><p class="description">'+payment.name+'</p><span class="price">价格：'+payment.money/100.0+'元, 返现'+payment.charge/100.0+'元</span></div><span class="buy" data-paymentitemid="'+payment.id+'">购买</span></div>');
                 });
             } else {
                 payments.addClass('hide');
