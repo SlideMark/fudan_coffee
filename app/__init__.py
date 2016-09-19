@@ -4,7 +4,6 @@ import os
 
 app = Flask(__name__, template_folder='view')
 conf = Config()
-app.debug = conf.debug
 
 modules = os.listdir(os.getcwd()+'/app/controller/')
 pymodule = [each for each in modules if each.endswith('.py')]

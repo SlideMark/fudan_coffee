@@ -22,9 +22,6 @@ wechat_secret: 123
 # 加密字符串
 salt: 123
 
-# 微信商户应用id
-wechat_fwh_appid: 123
-
 # 微信商户id
 wechat_fwh_mchid: 123
 
