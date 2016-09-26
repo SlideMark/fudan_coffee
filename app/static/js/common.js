@@ -51,6 +51,7 @@
                 if (result.code === 0) {
                     showSuccessDialog("购买成功");
                     $('.product').remove()
+                    $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
                 } else if (result.code === 10006) {
                     var data = result.data.order;
                     callWxPurchase(data);
