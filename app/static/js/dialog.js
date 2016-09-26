@@ -64,7 +64,7 @@
                 break;
 
             case 'info' :
-                var infoContent = settings.contentHtml || '<img class="info-icon" src="'+ settings.infoIcon +'" alt="'+ settings.infoText +'" /><p class="info-text">'+ settings.infoText +'</p>';
+                var infoContent = settings.contentHtml || '<img class="info-icon" src="'+ settings.infoIcon +'" alt="'+ settings.infoText +'" /><p class="info-text"><font color="white">'+ settings.infoText +'</font></p>';
                 content.append(
                     contentBd = $('<div class="dialog-content-bd">'+ infoContent +'</div>')
                 );
