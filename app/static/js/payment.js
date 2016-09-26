@@ -29,21 +29,11 @@ $(function () {
             success: function (result) {
                 if (result.code === 0) {
                     var data = result.data;
-                    WeixinJSBridge.invoke(
-				       'getBrandWCPayRequest', {
-				           appId: data.appId,
-				           timeStamp: data.timeStamp,
-				           nonceStr: data.nonceStr,
-				           package: data.package,
-				           signType: data.signType,
-				           paySign: data.sign
-				       },
-				       function(res){
-				       		alert(JSON.stringify(res));
-				       }
-				    );
+                    callWxPurchase(data);
+                    var url= window.location.protocol + '//' + window.location.host+'/static/cart.html';
+                    window.location.href = url;
                 } else {
-                    alert(result.msg);
+                    showTips(result.msg);
                 }
             }
         });
