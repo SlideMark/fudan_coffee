@@ -18,7 +18,7 @@ from app.core.dao import DAO
 
 class Order(DAO):
 
-    TABLE = 'fc_payment'
+    TABLE = 'fc_order'
     COLUMNS = ['id', 'order_id', 'uid', 'name', 'money',
                'balance', 'coupon', 'item_id', 'type',
                'state', 'extra', 'create_at', 'update_at']
