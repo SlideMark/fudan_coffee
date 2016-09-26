@@ -92,6 +92,8 @@ def _pay_cart_with_balance():
     user = request.user
     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
 
+    if not carts:
+        return Response(code=ResponseCode.DATA_NOT_EXIST, msg='购物车内没有物品').out()
     money = 0
     name = ''
 
@@ -150,6 +152,9 @@ def pay_cart_with_coupon():
 def _pay_cart_with_coupon():
     user = request.user
     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
+
+    if not carts:
+        return Response(code=ResponseCode.DATA_NOT_EXIST, msg='购物车内没有物品').out()
 
     if user.is_founder():
         discount = 0.4
