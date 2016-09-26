@@ -3,7 +3,7 @@
  */
 $(function () {
     var empty = $('.empty'), products = $('.products'), st = 0;
-   $.ajax({
+    $.ajax({
         url: '/cart',
         type: 'get',
         dataType: 'json',

@@ -2,15 +2,13 @@
 
 __author__ = 'wills'
 
-from app import app, conf
+from app import app
 from flask import request
 from app.model.cart import Cart
-from app.model.ledger import Ledger
 from app.model.user import auth_required
 from app.model.product import Product
-from app.model.order import WXOrder
+from app.model.order import Order, WXOrder
 from app.core.response import Response, ResponseCode
-from app.util.weixin import WXClient
 
 @app.route("/cart", methods=['GET'])
 @auth_required
@@ -95,10 +93,15 @@ def _pay_cart_with_balance():
     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
 
     money = 0
+    name = ''
+
     for each in carts:
         pd = Product.find(each['product_id'])
         money += pd.price * each['num']
-
+        if name:
+            name = '%s,%s' % (name, pd.name)
+        else:
+            name = pd.name
     if user.balance >= money:
         resp = []
         for each in carts:
@@ -107,22 +110,27 @@ def _pay_cart_with_balance():
             ct.state = Cart.State.FINISHED
             ct.save()
 
-            Ledger(uid=user.id, name=pd.name,
-                money=-pd.price, type=Ledger.Type.BUY_USE_BALANCE).save()
-
             cart = Cart(**each).to_dict()
             cart['product_name'] = pd.name
             cart['product_price'] = pd.price
             cart['product_icon'] = pd.icon
             resp.append(cart)
 
+        order = Order(uid=user.id, name=name, balance=-money, type=Order.Type.PAY)
+        order.set_order_id()
+        order.save()
+
         user.balance -= money
         user.save()
         return Response(data=resp).out()
     elif user.openid:
-        order = WXOrder(user.id, user.openid)
-        order.set_money(money-user.balance, balance=user.balance, from_cart=1)
-        tokens = order.get_token()
+        order = Order(uid=user.id, name=name, money=user.balance-money,
+              balance=-user.balance, type=Order.Type.PAY)
+        order.set_order_id()
+        order.save()
+
+        wxorder = WXOrder(user, order)
+        tokens = wxorder.get_token()
         if not tokens:
             return Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败').out()
 
@@ -151,17 +159,26 @@ def _pay_cart_with_coupon():
         discount = 0.2
 
     money = 0
+    name = ''
     for each in carts:
         pd = Product.find(each['product_id'])
         money += pd.price * each['num']
+        if name:
+            name = '%s,%s' % (name, pd.name)
+        else:
+            name = pd.name
 
     discount_money = min(user.coupon, int(money*discount))
     need_money = money - discount_money
 
     if user.openid:
-        order = WXOrder(user.id, user.openid)
-        order.set_money(money - discount_money, coupon=discount_money, from_cart=1)
-        tokens = order.get_token()
+        order = Order(uid=user.id, name=name, money=-need_money,
+              coupon=-discount_money, type=Order.Type.PAY)
+        order.set_order_id()
+        order.save()
+
+        wxorder = WXOrder(user, order)
+        tokens = wxorder.get_token()
         if not tokens:
             return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
 

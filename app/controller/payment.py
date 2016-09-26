@@ -5,13 +5,9 @@ __author__ = 'wills'
 from app import app
 from flask import request
 from app.model.payment_item import PaymentItem
-from app.model.ledger import Ledger
 from app.model.user import auth_required
-from app.model.order import WXOrder
+from app.model.order import Order, WXOrder
 from app.core.response import Response, ResponseCode
-from app.util.weixin import WXClient
-from app import conf
-
 
 @app.route("/payment_items")
 @auth_required
@@ -29,9 +25,6 @@ def buy_item(item_id=0):
     user.balance += user.balance + it.money + it.charge
     user.save()
 
-    Ledger(uid=user.id, item_id=it.id, name=it.name,
-            money=it.money+it.charge, type=Ledger.Type.PAYMENT_MONEY).save()
-
     return Response(data=it.to_dict()).out()
 
 
@@ -40,13 +33,16 @@ def buy_item(item_id=0):
 def order():
     user = request.user
     item_id = request.args.get('item_id')
+    item = PaymentItem.find(item_id)
 
     if user.openid or not item_id:
-        order = WXOrder(user.id, user.openid)
-        if not order.set_item(item_id):
-            return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
+        order = Order(uid=user.id, name=item.name, money=-item.money,
+              balance=item.money+item.charge, type=Order.Type.CHARGE)
+        order.set_order_id()
+        order.save()
 
-        tokens = order.get_token()
+        wxorder = WXOrder(user, order)
+        tokens = wxorder.get_token()
         if not tokens:
             return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
 

@@ -9,78 +9,61 @@ import traceback
 from app import conf
 import urllib2
 from xml.etree import ElementTree
-import random
-from app.model.payment_item import PaymentItem
-from app.model.payment_transaction import PaymentTransaction
-from app.model.payment import Payment
-from app.model.ledger import Ledger
 from app.model.user import User
 from app.util.weixin import WXClient
 from app.model.cart import Cart
-
+from datetime import datetime
+import random
 from app.core.dao import DAO
 
 class Order(DAO):
-    pass
+
+    TABLE = 'fc_payment'
+    COLUMNS = ['id', 'order_id', 'uid', 'name', 'money',
+               'balance', 'coupon', 'item_id', 'type',
+               'state', 'extra', 'create_at', 'update_at']
+
+    class State:
+        NORMAL = 0
+        FINISHED = 1
+        CANCELED = 2
+
+    class Type:
+        CHARGE = 0
+        PAY = 1
+
+    def set_order_id(self):
+        self.order_id = '%s%s' % (datetime.now().strftime('%Y%m%d%H%M%S'), random.randint(1000,9999))
+
+    def close(self):
+        self.state = Order.State.FINISHED
+        self.save()
 
 class WXOrder(object):
 
-    def __init__(self, uid, openid):
-        self.uid = uid
-        self.tid = 0
+    def __init__(self, user, order):
+        self.uid = user.id
         self.nonce_str = ''
-        self.body = ''
-        self.out_trade_no = ''
-        self.total_fee = ''
+        self.out_trade_no = order.order_id
         self.spbill_create_ip = conf.ip
         self.notify_url = '%s/payment_notify' % conf.domain
         self.trade_type = ''
-        self.attach = ''
-        self.openid = openid
+        self.attach = '%s' % (user.id)
+        self.openid = user.openid
         self.trade_type = 'JSAPI'
         self.appid = conf.wechat_fwh_appid
         self.mch_id = conf.wechat_fwh_mchid
-
-    def set_item(self, item_id):
-        item = PaymentItem.find(item_id)
-        if not item:
-            return False
-        else:
-            self.out_trade_no = '%s-%s-%s-%s' % (
-                self.uid, item.id, int(1000 * time.time()), random.randint(0, 1000))
-            result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no).save(return_keys=['id'])
-            self.tid = result['id']
-            self.body = self.detail = '自由而无用账号充值%s元,赠送%s元' % (item.money / 100.0, item.charge/100.0)
-            self.attach = '%s-%s' % (self.uid, self.tid)
-            if conf.debug:
-                self.total_fee = 1
-            else:
-                self.total_fee = item.money
-
-            return True
-
-    def set_money(self, money, balance=0, coupon=0, from_cart=0):
-        self.out_trade_no = '%s-%s-%s-%s' % (
-            self.uid, money, int(1000 * time.time()), random.randint(0, 1000))
-        result = PaymentTransaction(uid=self.uid, out_trade_no=self.out_trade_no,
-                                    balance=balance, coupon=coupon,
-                                    type=PaymentTransaction.Type.BY_DIRECTLY,
-                                    from_cart=from_cart).save(return_keys=['id'])
-        self.tid = result['id']
-        self.body = self.detail = '自由而无用消费%s元' % (money / 100.0)
-        self.attach = '%s-%s' % (self.uid, self.tid)
+        self.body = self.detail = order.name
         if conf.debug:
             self.total_fee = 1
         else:
-            self.total_fee = money
-
-        return True
+            self.total_fee = abs(order.money)
 
     @classmethod
     def sign(self, data):
         weixin_params = []
         for key, value in data.iteritems():
-            if key not in ['uid','tid', 'sign']:
+            if key not in ['uid','sign']:
                 weixin_params.append([str(key), str(value)])
         weixin_params.sort(key=lambda x:x[0])
         sign_src = '%s&key=%s' % ('&'.join(['%s=%s'%(x[0], x[1]) for x in weixin_params]), conf.wechat_fwh_mchkey)
@@ -128,7 +111,7 @@ class WXOrder(object):
                     'timeStamp': str(int(time.time()))
                 }
                 resp['sign'] = self.sign(resp)
-                resp['id'] = self.tid
+                resp['order_id'] = self.out_trade_no
                 return resp
             else:
                 logging.error(data)
@@ -157,75 +140,33 @@ class WXOrder(object):
         if data.get('return_code') != 'SUCCESS' or not data.get('attach'):
             return False
 
-        # check transaction
-        attachs = data.get('attach').split('-')
-        tid = int(attachs[1])
-        t = PaymentTransaction.find(tid)
-        if not t or t.state != PaymentTransaction.State.NORMAL:
+        order_id = data['out_trade_no']
+        order = Order.query_instance(order_id=order_id)
+        if not order or order.state != Order.State.NORMAL:
             return False
 
-        try:
-            out_trade_no = data['out_trade_no']
-            parts = out_trade_no.split('-')
-            uid, flag = int(parts[0]), parts[1]
-            user = User.find(uid)
-            if not user:
-                return False
+        payment_info = {
+            'openid': data.get('openid'),
+            'money': int(data['total_fee']),
+        }
+        user = User.find(order.uid)
+        if order.type == Order.Type.CHARGE:
+            user.balance += order.balance
+        else:
+            if order.balance:
+                pay = min(order.balance, user.banalce)
+                user.balance -= pay
+            if order.coupon:
+                pay = min(order.coupon, user.coupon)
+                user.coupon -= pay
 
-            if t.type == PaymentTransaction.Type.BY_PAYMENT_ITEM:
-                item_id = int(flag)
-                item = PaymentItem.find(item_id)
-                payment_info = {
-                    'openid': data.get('openid'),
-                    'uid': uid,
-                    'item_id': item_id,
-                    'trade_no': data['transaction_id'],
-                    'price': int(data['total_fee']),
-                    'money': item.money + item.charge,
-                    'item_name': '账户充值%s元, 返现%s元' % (item.money/100.0, item.charge/100.0)
-                }
-                user.balance += payment_info['money']
-                user.save()
-                Ledger(uid=user.id, name='账户充值', money=payment_info['money'],
-                       type=Ledger.Type.PAYMENT_MONEY, item_id=item_id).save()
-            else:
-                money = int(flag)
-                payment_info = {
-                    'openid': data.get('openid'),
-                    'uid': uid,
-                    'item_id': 'recharge_%s' % money,
-                    'trade_no': data['transaction_id'],
-                    'price': money,
-                    'money': money,
-                    'item_name': '购买咖啡消费%s元' % (money/100.0)
-                }
-                if t.balance:
-                    pay = min(t.balance, user.banalce)
-                    Ledger(uid=user.id, name='购买咖啡消费', money=pay,
-                       type=Ledger.Type.BUY_USE_BALANCE).save()
-                    user.balance -= pay
-                if t.coupon:
-                    pay = min(t.coupon, user.coupon)
-                    Ledger(uid=user.id, name='购买咖啡消费', money=pay,
-                       type=Ledger.Type.BUY_USE_COUPON).save()
-                    user.coupon -= pay
+            carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
+            for each in carts:
+                cart = Cart(**each)
+                cart.state = Cart.State.FINISHED
+                cart.save()
 
-                if t.from_cart:
-                    carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
-                    for each in carts:
-                        cart = Cart(**each)
-                        cart.state = Cart.State.FINISHED
-                        cart.save()
-
-                user.save()
-
-            Payment(uid=user.id, item_id=payment_info['item_id'],
-                    num=1, money=payment_info['price']).save()
-        except:
-            traceback.print_exc()
-            return False
-
-        t.close()
-
-        WXClient.send_buy_success_msg(user, payment_info)
+        user.save()
+        order.close()
+        WXClient.send_buy_success_msg(payment_info)
         return True

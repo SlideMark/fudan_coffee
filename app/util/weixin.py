@@ -94,16 +94,9 @@ class WXClient(object):
     消费地址：{{address.DATA}}
     消费时间：{{time.DATA}}
     {{remark.DATA}}
-
-    {{first.DATA}}
-    会员姓名：{{name.DATA}}
-    消费内容：{{itemName.DATA}}
-    消费金额：{{itemMoney.}}
-    消费时间：{{time.DATA}}
-    {{remark.DATA}}
     '''
     @staticmethod
-    def send_buy_success_msg(user, data):
+    def send_buy_success_msg(data):
         openid = data.get('openid')
         token = WXClient.get_service_token()
 
@@ -115,7 +108,7 @@ class WXClient(object):
                     'value': '自由而无用咖啡店',
                 },
                 'pay':{
-                    'value':'%s元' % str(data['price']/100.0),
+                    'value':'%s元' % str(data['money']/100.0),
                 },
                 'time': {
                     'value': dt_to_str(datetime.now())

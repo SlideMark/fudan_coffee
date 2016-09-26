@@ -2,15 +2,13 @@
 
 __author__ = 'wills'
 
-from app import app, conf
+from app import app
 from flask import request
 from app.model.shop import Shop
 from app.core.response import Response, ResponseCode
 from app.model.product import Product
-from app.model.ledger import Ledger
 from app.model.user import auth_required
-from app.util.weixin import WXClient
-from app.model.order import WXOrder
+from app.model.order import Order, WXOrder
 
 @app.route("/products")
 def products():
@@ -44,16 +42,23 @@ def _buy_product_with_balance(product_id):
     user = request.user
 
     if user.balance >= pd.price:
+        order = Order(uid=user.id, name=pd.name, money=user.balance-pd.price,
+              balance=-user.balance, type=Order.Type.PAY)
+        order.set_order_id()
+        order.save()
+
         user.balance -= pd.price
         user.save()
 
-        Ledger(uid=user.id, name=pd.name, item_id=pd.id,
-            money=-pd.price, type=Ledger.Type.BUY_USE_BALANCE).save()
-
         return Response(data=pd.to_dict()).out()
     elif user.openid:
-        order = WXOrder(user.id, user.openid)
-        order.set_money(pd.price-user.balance, balance=user.balance)
+        order = Order(uid=user.id, name=pd.name, money=user.balance-pd.price,
+              balance=-user.balance, type=Order.Type.PAY)
+        order.set_order_id()
+        order.save()
+
+        order = WXOrder(user, order)
+
         tokens = order.get_token()
         if not tokens:
             return Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败').out()
@@ -85,9 +90,13 @@ def _buy_product_with_coupon(product_id):
     need_money = pd.price - discount_money
 
     if user.openid:
-        order = WXOrder(user.id, user.openid)
-        order.set_money(need_money, coupon=discount_money)
-        tokens = order.get_token()
+        order = Order(uid=user.id, name=pd.name, money=-need_money,
+              coupon=-discount_money, type=Order.Type.PAY)
+        order.set_order_id()
+        order.save()
+
+        wxorder = WXOrder(user, order)
+        tokens = wxorder.get_token()
         if not tokens:
             return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
 
