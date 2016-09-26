@@ -40,7 +40,7 @@ $(function () {
                         },
                         function(res){
                             showSuccessDialog("支付成功");
-                            var url= window.location.protocol + '//' + window.location.host+'/static/cart.html';
+                            var url= window.location.protocol + '//' + window.location.host+'/static/user.html';
                             window.location.href = url;
                         }
                     );
