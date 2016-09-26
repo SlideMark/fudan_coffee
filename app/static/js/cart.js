@@ -30,10 +30,10 @@ $(function () {
                cancel: '使用余额购买'
            },
            onClickOk : function(){
-                payCartWithCoupon()
+                payCartWithCoupon();
            },
            onClickCancel : function(){
-                payCartWithBalance()
+                payCartWithBalance();
            },
            contentHtml : '<p>不能同时使用余额和优惠额度。</p><p>请选用余额或者优惠券中的一种方式进行支付, 不足部分将通过微信支付。</p>'
         });
