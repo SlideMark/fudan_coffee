@@ -28,10 +28,22 @@ $(function () {
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    var data = result.data;
-                    callWxPurchase(data);
-                    var url= window.location.protocol + '//' + window.location.host+'/static/cart.html';
-                    window.location.href = url;
+                    var order = result.data;
+                    WeixinJSBridge.invoke(
+                        'getBrandWCPayRequest', {
+                            appId: order.appId,
+                            timeStamp: order.timeStamp,
+                            nonceStr: order.nonceStr,
+                            package: order.package,
+                            signType: order.signType,
+                            paySign: order.sign
+                        },
+                        function(res){
+                            showSuccessDialog("支付成功");
+                            var url= window.location.protocol + '//' + window.location.host+'/static/cart.html';
+                            window.location.href = url;
+                        }
+                    );
                 } else {
                     showTips(result.msg);
                 }
