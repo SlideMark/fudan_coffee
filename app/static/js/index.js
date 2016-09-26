@@ -30,7 +30,7 @@ $(function () {
             loading.addClass('hide');
             if(result.code === 0) {
                 result.data.forEach(function(product) {
-                    products.append('<tr><td class="name">'+product.name+'</td><td class="name">'+product.price/100.0+'元</td><td><span class="buy" data-productid="'+product.id+'">购买</span></td><td><span class="addcart" data-productid="'+product.id+'">加入购物车</span></td></tr>');
+                    products.append('<div class="product"><span class="product-name">'+product.name+'</span><span class="product-price">'+product.price/100.0+'元</span><span class="addcart" data-productid="'+product.id+'">加入购物车</span><span class="buy" data-productid="'+product.id+'">购买</span></div>');
                 });
             } else {
                 alert(result.msg);

@@ -13,16 +13,13 @@
     margin: 0 auto;
     padding-bottom: 0.75rem;
 }
-.product {
-    display: block;
-}
-.description {
+.main h5 {
     font-size: 0.3rem;
-    white-space: nowrap;
-    width: 7rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0.2rem auto 0;
+}
+.product {
+    font-size: 0.3rem;
+    line-height: 0.5rem;
+    margin-top: 0.2rem;
 }
 .price {
     font-size: 0.3rem;
@@ -39,22 +36,15 @@ footer {
     border-top: 1px solid #eee;
     box-sizing: border-box;
 }
-
-.name, .price {
-    font-size: 0.5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .addcart, .buy {
     float: right;
-    font-size: 0.5rem;
-    line-height: 0.8rem;
+    font-size: 0.24rem;
+    border-radius: 5px;
     color: #FFFFFF;
     background: #fb562a;
+    padding: 0 0.1rem;
+    margin: 0 0.1rem;
 }
-
 footer a {
     flex: 1;
     text-align: center;
