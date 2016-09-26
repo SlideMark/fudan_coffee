@@ -40,7 +40,6 @@ $(function () {
                         },
                         function(res){
                             showSuccessDialog("支付成功");
-                            location.replace('/static/user.html');
                         }
                     );
                 } else {
