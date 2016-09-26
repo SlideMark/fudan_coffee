@@ -57,11 +57,13 @@ $(function () {
      }
     products.on('click', '.buy', function () {
         var m = $(this);
-        var product_id= m.data('productid');
         $.ajax({
-            url: '/product/'+product_id,
+            url: '/cart',
             type: 'post',
             dataType: 'json',
+            data: {
+                product_id: m.data('productid')
+            },
             success: function (result) {
                 if (result.code === 0) {
                     $(location ).attr("href", "/cart");
