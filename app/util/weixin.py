@@ -88,6 +88,13 @@ class WXClient(object):
 
 
     '''
+    您好，您已消费成功。
+
+    消费金额：{{pay.DATA}}
+    消费地址：{{address.DATA}}
+    消费时间：{{time.DATA}}
+    {{remark.DATA}}
+
     {{first.DATA}}
     会员姓名：{{name.DATA}}
     消费内容：{{itemName.DATA}}
@@ -104,23 +111,17 @@ class WXClient(object):
             'touser':openid,
             'template_id': conf.wechat_template_id,
             'data':{
-                'first':{
-                    'value':'恭喜你购买成功！',
+                'address':{
+                    'value': '自由而无用咖啡店',
                 },
-                'name':{
-                    'value': user.name,
-                },
-                'itemName':{
-                    'value': data['item_name'],
-                },
-                'itemMoney':{
+                'pay':{
                     'value':'%s元' % str(data['price']/100.0),
                 },
                 'time': {
                     'value': dt_to_str(datetime.now())
                 },
                 'remark':{
-                    'value':'如有疑问，请联系客服人员。',
+                    'value':'如有疑问，请联系咖啡店店员。',
                 }
             }
         }
