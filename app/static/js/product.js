@@ -44,35 +44,78 @@ $(function () {
             },
             success: function(result) {
                 if(result.code === 0) {
-                    alert('成功加入购物车');
+                    showSuccessDialog('成功加入购物车');
                 }
             }
         });
     });
-    $('.purchase').click(function () {
-        var tail = $(this).hasClass('buy') ? 'with_balance' : 'with_coupon';
+
+
+    function callWxPurchase(order) {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+                appId: order.appId,
+                timeStamp: order.timeStamp,
+                nonceStr: order.nonceStr,
+                package: order.package,
+                signType: order.signType,
+                paySign: order.sign
+            },
+            function(res){
+                showSuccessDialog("支付成功");
+            }
+        );
+    }
+
+    function buyProduct(url){
         $.ajax({
-            url: '/product/'+pid+'/'+tail,
+            url: url,
             type: 'post',
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    showSuccessDialog('购买成功')
+                    showSuccessDialog("购买成功");
                 } else if (result.code === 10006) {
                     var data = result.data.order;
-                    WeixinJSBridge.invoke(
-				       'getBrandWCPayRequest', {
-				           appId: data.appId,
-				           timeStamp: data.timeStamp,
-				           nonceStr: data.nonceStr,
-				           package: data.package,
-				           signType: data.signType,
-				           paySign: data.sign
-				       },
-				       function(res){
-				       		showTips(JSON.stringify(res));
-				       }
-				    );
+                    callWxPurchase(data);
+                } else {
+                    showTips(result.msg);
+                }
+            }
+        });
+    }
+
+    function showdialog(pid) {
+        $.dialog({
+           type : 'confirm',
+           titleText: '选择支付方式',
+           buttonText: {
+               ok: '使用优惠购买',
+               cancel: '使用余额购买'
+           },
+           onClickOk : function(){
+                buyProduct('/product'+pid+'/with_balance');
+           },
+           onClickCancel : function(){
+                buyProduct('/product'+pid+'/with_coupon');
+           },
+           contentHtml : '<p>不能同时使用余额和优惠额度。</p><p>请选用余额或者优惠券中的一种方式进行支付, 不足部分将通过微信支付。</p>'
+        });
+     }
+
+    $('.purchase').click(function () {
+        $.ajax({
+            url: '/product/'+pid,
+            type: 'post',
+            dataType: 'json',
+            success: function (result) {
+                if (result.code === 0) {
+                    showSuccessDialog('购买成功');
+                } else if (result.code === 10007) {
+                    showdialog(pid);
+                } else if (result.code === 10006) {
+                    var data = result.data.order;
+                    callWxPurchase(data);
                 } else {
                     showTips(result.msg);
                 }

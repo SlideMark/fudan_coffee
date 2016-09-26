@@ -20,6 +20,41 @@ $(function () {
             }
         }
     });
+
+    function callWxPurchase(order) {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+                appId: order.appId,
+                timeStamp: order.timeStamp,
+                nonceStr: order.nonceStr,
+                package: order.package,
+                signType: order.signType,
+                paySign: order.sign
+            },
+            function(res){
+                showSuccessDialog("支付成功");
+            }
+        );
+    }
+
+    function buyProduct(url){
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            success: function (result) {
+                if (result.code === 0) {
+                    showSuccessDialog("购买成功");
+                } else if (result.code === 10006) {
+                    var data = result.data.order;
+                    callWxPurchase(data);
+                } else {
+                    showTips(result.msg);
+                }
+            }
+        });
+    }
+
     payments.on('click', '.buy', function () {
         var m = $(this);
         $.ajax({

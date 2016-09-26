@@ -21,6 +21,44 @@ $(function () {
         }
     });
 
+    function callWxPurchase(order) {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+                appId: order.appId,
+                timeStamp: order.timeStamp,
+                nonceStr: order.nonceStr,
+                package: order.package,
+                signType: order.signType,
+                paySign: order.sign
+            },
+            function(res){
+                showSuccessDialog("支付成功");
+                $('.product').remove()
+                $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
+            }
+        );
+    }
+
+    function buyProduct(url){
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            success: function (result) {
+                if (result.code === 0) {
+                    showSuccessDialog("购买成功");
+                    $('.product').remove()
+                    $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
+                } else if (result.code === 10006) {
+                    var data = result.data.order;
+                    callWxPurchase(data);
+                } else {
+                    showTips(result.msg);
+                }
+            }
+        });
+    }
+
     function showdialog() {
         $.dialog({
            type : 'confirm',
@@ -30,10 +68,10 @@ $(function () {
                cancel: '使用余额购买'
            },
            onClickOk : function(){
-                payCartWithCoupon();
+                buyProduct('/cart/pay_with_balance');
            },
            onClickCancel : function(){
-                payCartWithBalance();
+                buyProduct('/cart/pay_with_coupon');
            },
            contentHtml : '<p>不能同时使用余额和优惠额度。</p><p>请选用余额或者优惠券中的一种方式进行支付, 不足部分将通过微信支付。</p>'
         });
