@@ -66,7 +66,8 @@ $(function () {
             },
             success: function (result) {
                 if (result.code === 0) {
-                    $(location ).attr("href", "/cart");
+                    var url= window.location.protocol + '//' + window.location.host+'/static/cart.html'
+                    window.location.href = url
                 } else {
                     showTips(result.msg);
                 }
