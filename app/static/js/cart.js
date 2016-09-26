@@ -20,16 +20,6 @@ $(function () {
             }
         }
     });
-    $.ajax({
-        url: '/user',
-        type: 'get',
-        dataType: 'json',
-        success: function (result) {
-            if(result.user.coupon) {
-                $('.coupon').removeClass('hide');
-            }
-        }
-    });
 
     function showdialog() {
         $.dialog({
