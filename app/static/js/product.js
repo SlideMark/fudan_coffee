@@ -57,7 +57,7 @@ $(function () {
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    alert('购买成功')
+                    showSuccessDialog('购买成功')
                 } else if (result.code === 10006) {
                     var data = result.data.order;
                     WeixinJSBridge.invoke(
@@ -70,11 +70,11 @@ $(function () {
 				           paySign: data.sign
 				       },
 				       function(res){
-				       		alert(JSON.stringify(res));
+				       		showTips(JSON.stringify(res));
 				       }
 				    );
                 } else {
-                    alert(result.msg);
+                    showTips(result.msg);
                 }
             }
         });

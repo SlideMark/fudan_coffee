@@ -73,9 +73,9 @@ $(function () {
                     if (!products.children().length) {
                         $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
                     }
-                    alert('删除成功');
+                    showSuccessDialog('删除成功');
                 } else {
-                    alert(result.msg);
+                    showTips(result.msg);
                 }
             }
         });
@@ -102,7 +102,7 @@ $(function () {
                 },
                 success: function (result) {
                     if (result.code !== 0) {
-                        alert(result.msg);
+                        showTips(result.msg);
                     }
                 }
             });
@@ -127,7 +127,7 @@ $(function () {
             },
             success: function (result) {
                 if (result.code !== 0) {
-                    alert(result.msg);
+                    showTips(result.msg);
                 }
             }
         });

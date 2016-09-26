@@ -33,7 +33,7 @@ $(function () {
                     products.append('<div class="product"><span class="product-name">'+product.name+'</span><span class="product-price">'+product.price/100.0+'元</span><span class="addcart" data-productid="'+product.id+'">加入购物车</span><span class="buy" data-productid="'+product.id+'">购买</span></div>');
                 });
             } else {
-                alert(result.msg);
+                showTips(result.msg);
             }
         }
     });
@@ -66,8 +66,7 @@ $(function () {
             },
             success: function (result) {
                 if (result.code === 0) {
-                    var url= window.location.protocol + '//' + window.location.host+'/static/cart.html';
-                    window.location.href = url;
+                    location.replace('/static/cart.html');
                 } else {
                     showTips(result.msg);
                 }
@@ -88,7 +87,7 @@ $(function () {
                 if (result.code === 0) {
                     showSuccessDialog('加入成功');
                 } else {
-                    alert(result.msg);
+                    showTips(result.msg);
                 }
             }
         });
