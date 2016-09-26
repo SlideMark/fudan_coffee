@@ -13,6 +13,7 @@ class ResponseCode(object):
     DUPLICATE_DATA = 10004
     PARAMETER_ERROR = 10005
     LOW_BALANCE = 10006
+    UNKNOWN = 10007
 
 class Response(object):
 

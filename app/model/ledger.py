@@ -11,9 +11,7 @@ class Ledger(DAO):
 
     class Type:
         BUY_USE_BALANCE = 0
-        BUY_USE_CHARGE = 1
-        BUY_USE_MONEY = 2
-        BUY_USE_COUPON = 3
-        TRANSFER_COUPON = 4
-        PAYMENT_MONEY = 5
-        PAYMENT_CHARGE = 6
+        BUY_USE_MONEY = 1
+        BUY_USE_COUPON = 2
+        TRANSFER_COUPON = 3
+        PAYMENT_MONEY = 4

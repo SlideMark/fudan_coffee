@@ -182,7 +182,7 @@ class Order(object):
                 user.balance += payment_info['money']
                 user.save()
                 Ledger(uid=user.id, name='账户充值', money=payment_info['money'],
-                       type=Ledger.Type.PAYMENT_CHARGE, item_id=item_id).save()
+                       type=Ledger.Type.PAYMENT_MONEY, item_id=item_id).save()
             else:
                 money = int(flag)
                 payment_info = {
@@ -195,15 +195,15 @@ class Order(object):
                     'item_name': '购买咖啡消费%s元' % (money/100.0)
                 }
                 if t.balance:
-                    pay = max(t.balance, user.banalce)
+                    pay = min(t.balance, user.banalce)
                     Ledger(uid=user.id, name='购买咖啡消费', money=pay,
                        type=Ledger.Type.BUY_USE_BALANCE).save()
                     user.balance -= pay
                 if t.coupon:
-                    pay = max(t.coupon, user.coupon)
+                    pay = min(t.coupon, user.coupon)
                     Ledger(uid=user.id, name='购买咖啡消费', money=pay,
                        type=Ledger.Type.BUY_USE_COUPON).save()
-                    user.balance -= pay
+                    user.coupon -= pay
 
                 if t.from_cart:
                     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)

@@ -7,10 +7,7 @@
 	color: #333;
     text-decoration: none;
 }
-img {
-    max-width: 100%;
-    vertical-align: middle;
-}
+
 .main {
     max-width: 7.5rem;
     margin: 0 auto;
@@ -42,6 +39,22 @@ footer {
     border-top: 1px solid #eee;
     box-sizing: border-box;
 }
+
+.name, .price {
+    font-size: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.addcart, .buy {
+    float: right;
+    font-size: 0.5rem;
+    line-height: 0.8rem;
+    color: #FFFFFF;
+    background: #fb562a;
+}
+
 footer a {
     flex: 1;
     text-align: center;

@@ -7,6 +7,7 @@ $(function () {
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
         return results == null  ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '))
     }
+
     var loading = $('.loading'), products = $('.products');
     $.ajax({
         url: '/account/signin',
@@ -29,11 +30,69 @@ $(function () {
             loading.addClass('hide');
             if(result.code === 0) {
                 result.data.forEach(function(product) {
-                    products.append('<a class="product" href="product.html?pid='+product.id+'"><img src="'+product.icon+'"><p class="description">'+product.description+'</p><span class="price">价格：'+product.price/100.0+'元</span></a>');
+                    products.append('<tr><td class="name">'+product.name+'</td><td class="name">'+product.price/100.0+'元</td><td><span class="buy" data-productid="'+product.id+'">购买</span></td><td><span class="addcart" data-productid="'+product.id+'">加入购物车</span></td></tr>');
                 });
             } else {
                 alert(result.msg);
             }
         }
+    });
+
+    function showdialog(product_id) {
+        $.dialog({
+           type : 'confirm',
+           titleText: '选择支付方式',
+           buttonText: {
+               ok: '使用优惠购买',
+               cancel: '使用余额购买'
+           },
+           onClickOk : function(){
+                buyProductWithCoupon(product_id)
+           },
+           onClickCancel : function(){
+                buyProductWithBalance(product_id)
+           },
+           contentHtml : '<p>不能同时使用余额和优惠额度。</p><p>请选用余额或者优惠券中的一种方式进行支付, 不足部分将通过微信支付。</p>'
+        });
+     }
+    products.on('click', '.buy', function () {
+        var m = $(this);
+        product_id= m.data('productid')
+        $.ajax({
+            url: '/product/'+product_id,
+            type: 'post',
+            dataType: 'json',
+            success: function (result) {
+                if (result.code === 0) {
+                    showSuccessDialog('购买成功');
+                } else if (result.code === 10007) {
+                    showdialog(product_id);
+                } else if (result.code === 10006) {
+                    var data = result.data.order;
+                    callWxPurchase(data);
+                } else {
+                    showTips(result.msg);
+                }
+            }
+        });
+    });
+
+    products.on('click', '.addcart', function () {
+        var m = $(this);
+        $.ajax({
+            url: '/cart',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                product_id: m.data('productid')
+            },
+            success: function (result) {
+                if (result.code === 0) {
+                    showSuccessDialog('加入成功');
+                } else {
+                    alert(result.msg);
+                }
+            }
+        });
     });
 });

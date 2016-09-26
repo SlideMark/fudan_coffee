@@ -24,9 +24,22 @@ def product(product_id=0):
     product = Product.find(product_id)
     return Response(data=product.to_dict()).out()
 
+@app.route("/product/<product_id>", methods=['POST'])
+@auth_required
+def buy(product_id=0):
+    if request.user.balance <=0 and request.user.coupon >0:
+        return _buy_product_with_balance(product_id)
+    elif request.user.balance > 0 and request.user.coupon <= 0:
+        return _buy_product_with_coupon(product_id)
+    else:
+        return Response(code=ResponseCode.UNKNOWN).out()
+
 @app.route("/product/<product_id>/with_balance", methods=['POST'])
 @auth_required
-def buy_product(product_id=0):
+def buy_product_with_balance(product_id=0):
+    return _buy_product_with_balance(product_id)
+
+def _buy_product_with_balance(product_id):
     pd = Product.find(product_id)
     user = request.user
 
@@ -56,6 +69,9 @@ def buy_product(product_id=0):
 @app.route("/product/<product_id>/with_coupon", methods=['POST'])
 @auth_required
 def buy_product_with_coupon(product_id=0):
+    return _buy_product_with_coupon(product_id)
+
+def _buy_product_with_coupon(product_id):
     pd = Product.find(product_id)
     user = request.user
     if user.is_founder():
