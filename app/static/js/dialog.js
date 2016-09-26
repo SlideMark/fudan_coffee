@@ -14,19 +14,15 @@
         if( $('.dialog-wrap').length > 0){
             return;
         }
-
         clearTimeout(timer);
         clearTimeout(aTimer);
         settings.onBeforeShow();
-        
         $('body').append( dialogWrapper = $('<div class="dialog-wrap '+ settings.dialogClass +'"></div>') );
         dialogWrapper.append(
             overlay = $('<div class="dialog-overlay"></div>'),
             content = $('<div class="dialog-content dialog-content-animate"></div>')
         );
         solveTapBug = $('<div class="solve-tap-bug" style="margin:0;padding:0;border:none;background:rgba(255,255,255,0.01); -webkit-tap-highlight-color:rgba(0,0,0,0); width:100%; height:100%; position:fixed; top:0px; left:0px;"></div>').insertBefore(dialogWrapper);
-        
-
         switch (settings.type){
             case 'alert' :
                 if(settings.showTitle){
@@ -44,7 +40,6 @@
                     okBtn = $('<button class="dialog-btn dialog-btn-ok '+ settings.buttonClass.ok +'" >'+ settings.buttonText.ok +'</button>')
                 );
                 break;
-
             case 'confirm' :
                 if(settings.showTitle){
                     content.append(
@@ -62,16 +57,14 @@
                     okBtn = $('<button class="dialog-btn dialog-btn-ok '+ settings.buttonClass.ok +'" >'+ settings.buttonText.ok +'</button>')
                 );
                 break;
-
             case 'info' :
-                var infoContent = settings.contentHtml || '<img class="info-icon" src="'+ settings.infoIcon +'" alt="'+ settings.infoText +'" /><p class="info-text"><font color="white">'+ settings.infoText +'</font></p>';
+                var infoContent = settings.contentHtml || '<img class="info-icon" src="'+ settings.infoIcon +'" alt="'+ settings.infoText +'" /><p class="info-text"><span class="info-text">'+ settings.infoText +'</span></p>';
                 content.append(
                     contentBd = $('<div class="dialog-content-bd">'+ infoContent +'</div>')
                 );
                 dialogWrapper.addClass('dialog-wrap-info');
                 content.addClass('dialog-content-info').removeClass('dialog-content-animate');
                 break;
-
             case 'tips' :
                 var tipsContent = settings.contentHtml || (settings.infoIcon ? '<img class="info-icon" src="'+ settings.infoIcon +'" alt="'+ settings.infoText +'" />' : '') + '<span class="info-text">'+ settings.infoText +'</span>';
                 content.append(
@@ -81,34 +74,28 @@
                 content.addClass('dialog-content-tips').removeClass('dialog-content-animate');
                 break;
         }
-
         setTimeout(function(){            
             dialogWrapper.addClass('dialog-wrap-show');
             settings.onShow();
             _resize();
         }, 20);
-
         // 解决zepto无法正常获取实际高度造成限制最大高度失效
         setTimeout(function(){
             _setMaxHeight();
         }, 100);
 
     };
-
     var _bindEvent = function() {
-
         touchEvent.tap($(okBtn), function(){
             settings.onClickOk();
             $.dialog.close();
             return false;
         });
-
         touchEvent.tap($(cancelBtn), function(){
             settings.onClickCancel();
             $.dialog.close();
             return false;
         });
-
         // overlay clisk hide
         if( settings.overlayClose ){
             touchEvent.tap($(overlay), function(){
@@ -228,39 +215,29 @@
             }
         }
     };
-
-
-
     /*
      * Public methods 
      */
-
     $.dialog = function(options) {
         settings = $.extend({}, $.fn.dialog.defaults, options);        
         $.dialog.init();
         return this;
-    };   
-
+    };
     $.dialog.init = function(){
         _renderDOM();
         _bindEvent();
     };
-
-
     $.dialog.close = function(){
         settings.onBeforeClosed();
-
         dialogWrapper.removeClass('dialog-wrap-show');
         timer = setTimeout(function(){
             dialogWrapper.remove();
             settings.onClosed();            
         }, 100);
-
         // cancel stop body scroll
         $(document).on('touchmove', function(event){
             return true;
         });
-
         // 解决touchend点透，延迟阻止点透层隐藏
         setTimeout(function(){
             solveTapBug.remove();

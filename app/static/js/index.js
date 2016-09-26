@@ -57,7 +57,7 @@ $(function () {
      }
     products.on('click', '.buy', function () {
         var m = $(this);
-        product_id= m.data('productid')
+        var product_id= m.data('productid');
         $.ajax({
             url: '/product/'+product_id,
             type: 'post',

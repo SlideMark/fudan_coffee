@@ -36,13 +36,13 @@
 .dialog-content-info { width: auto; text-align: center; background-color: rgba(0, 0, 0, 0.8); border-radius: 10px; }
 .dialog-content-info .dialog-content-bd { padding: 0; margin: 0; position: relative; width: 140px; height: 140px; color: #fff; text-align: center; }
 .dialog-content-info .dialog-content-bd .info-icon { max-width: 48px; margin: 20% 0 0; }
-.dialog-content-info .dialog-content-bd .info-text { position: absolute; width: 100%; left: 0; bottom: 20px; margin: 0; font-size: 16px; white-space:nowarp; }
+.dialog-content-info .dialog-content-bd .info-text { position: absolute; width: 100%; left: 0; bottom: 20px; margin: 0; font-size: 16px; white-space:nowrap;color: #fff;}
 
 .dialog-wrap-tips .dialog-overlay { background-color: transparent; opacity: 0; filter: alpha(opacity=0); }
 .dialog-content-tips { width: auto; text-align: center; background-color: rgba(0, 0, 0, 0.9); border-radius: 5px; }
 .dialog-content-tips .dialog-content-bd { padding: 10px 16px; margin: 0; position: relative; color: #fff; text-align: center; line-height: 1.2; font-size: 14px; }
 .dialog-content-tips .dialog-content-bd .info-icon { max-width: 16px; margin-right: 7px; vertical-align: middle; }
-.dialog-content-tips .dialog-content-bd .info-text { position: relative; top: 1px; white-space:nowarp; } 
+.dialog-content-tips .dialog-content-bd .info-text { position: relative; top: 1px; white-space:nowrap;color: #fff;}
 
 
 .dialog-wrap-show .dialog-overlay { opacity:0.6; filter:alpha(opacity=60); }
