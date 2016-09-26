@@ -65,3 +65,10 @@
     function buyProductWithCoupon(product_id) {
         buyProduct('/product/'+product_id+'/with_coupon');
     }
+
+    function payCartWithBalance() {
+        buyProduct('/cart/pay_with_balance');
+    }
+    function payCartWithCoupon() {
+        buyProduct('/cart/pay_with_coupon');
+    }

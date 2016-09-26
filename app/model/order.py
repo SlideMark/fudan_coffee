@@ -18,7 +18,12 @@ from app.model.user import User
 from app.util.weixin import WXClient
 from app.model.cart import Cart
 
-class Order(object):
+from app.core.dao import DAO
+
+class Order(DAO):
+    pass
+
+class WXOrder(object):
 
     def __init__(self, uid, openid):
         self.uid = uid
@@ -102,7 +107,7 @@ class Order(object):
              self.mch_id, self.nonce_str, self.notify_url,
              self.out_trade_no, self.spbill_create_ip, self.total_fee,
              self.trade_type, self.openid.encode('utf8'),
-             Order.sign(self.__dict__)
+             WXOrder.sign(self.__dict__)
     )
 
     def get_token(self):

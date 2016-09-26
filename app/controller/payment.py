@@ -7,7 +7,7 @@ from flask import request
 from app.model.payment_item import PaymentItem
 from app.model.ledger import Ledger
 from app.model.user import auth_required
-from app.model.order import Order
+from app.model.order import WXOrder
 from app.core.response import Response, ResponseCode
 from app.util.weixin import WXClient
 from app import conf
@@ -42,7 +42,7 @@ def order():
     item_id = request.args.get('item_id')
 
     if user.openid or not item_id:
-        order = Order(user.id, user.openid)
+        order = WXOrder(user.id, user.openid)
         if not order.set_item(item_id):
             return str(Response(code=ResponseCode.PARAMETER_ERROR, msg='参数错误'))
 
@@ -59,7 +59,7 @@ def order():
 
 @app.route("/payment_notify", methods=['POST'])
 def notify():
-        result = Order.notify(request.stream.read())
+        result = WXOrder.notify(request.stream.read())
         if result:
             return '''<xml>
     <return_code><![CDATA[SUCCESS]]></return_code>

@@ -30,32 +30,40 @@ $(function () {
             }
         }
     });
+
+    function showdialog() {
+        $.dialog({
+           type : 'confirm',
+           titleText: '选择支付方式',
+           buttonText: {
+               ok: '使用优惠购买',
+               cancel: '使用余额购买'
+           },
+           onClickOk : function(){
+                payCartWithCoupon()
+           },
+           onClickCancel : function(){
+                payCartWithBalance()
+           },
+           contentHtml : '<p>不能同时使用余额和优惠额度。</p><p>请选用余额或者优惠券中的一种方式进行支付, 不足部分将通过微信支付。</p>'
+        });
+     }
+
     $('.purchase').click(function () {
-        var tail = $(this).hasClass('cart') ? 'pay_with_balance' : 'pay_with_coupon';
         $.ajax({
-            url: '/cart/'+tail,
+            url: '/cart/pay',
             type: 'post',
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    alert('购买成功')
+                    showSuccessDialog('购买成功');
+                } else if (result.code === 10007) {
+                    showdialog();
                 } else if (result.code === 10006) {
                     var data = result.data.order;
-                    WeixinJSBridge.invoke(
-				       'getBrandWCPayRequest', {
-				           appId: data.appId,
-				           timeStamp: data.timeStamp,
-				           nonceStr: data.nonceStr,
-				           package: data.package,
-				           signType: data.signType,
-				           paySign: data.sign
-				       },
-				       function(res){
-				       		alert(JSON.stringify(res));
-				       }
-				    );
+                    callWxPurchase(data);
                 } else {
-                    alert(result.msg);
+                    showTips(result.msg);
                 }
             }
         });

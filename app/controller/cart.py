@@ -8,7 +8,7 @@ from app.model.cart import Cart
 from app.model.ledger import Ledger
 from app.model.user import auth_required
 from app.model.product import Product
-from app.model.order import Order
+from app.model.order import WXOrder
 from app.core.response import Response, ResponseCode
 from app.util.weixin import WXClient
 
@@ -34,9 +34,13 @@ def add_cart():
     if not product_id or not Product.find(product_id):
         return str(Response(code=ResponseCode.DATA_NOT_EXIST, msg='商品不存在'))
 
-    cart = Cart()
-    cart.uid = request.user.id
-    cart.product_id = product_id
+    cart = Cart.query_instance(uid=request.user.id, product_id=product_id, state=Cart.State.INIT)
+    if cart:
+        cart.num += 1
+    else:
+        cart = Cart()
+        cart.uid = request.user.id
+        cart.product_id = product_id
     ct = cart.save(return_keys=[Cart.PKEY])
     cart = Cart.find(ct[Cart.PKEY])
 
@@ -70,9 +74,23 @@ def delete_cart():
     cart.save()
     return Response(data=cart.to_dict()).out()
 
+
+@app.route("/cart/pay", methods=['POST'])
+@auth_required
+def pay_cart():
+    if request.user.balance <=0 and request.user.coupon >0:
+        return _pay_cart_with_balance()
+    elif request.user.balance > 0 and request.user.coupon <= 0:
+        return _pay_cart_with_coupon()
+    else:
+        return Response(code=ResponseCode.UNKNOWN).out()
+
 @app.route("/cart/pay_with_balance", methods=['POST'])
 @auth_required
 def pay_cart_with_balance():
+    return _pay_cart_with_balance()
+
+def _pay_cart_with_balance():
     user = request.user
     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
 
@@ -102,7 +120,7 @@ def pay_cart_with_balance():
         user.save()
         return Response(data=resp).out()
     elif user.openid:
-        order = Order(user.id, user.openid)
+        order = WXOrder(user.id, user.openid)
         order.set_money(money-user.balance, balance=user.balance, from_cart=1)
         tokens = order.get_token()
         if not tokens:
@@ -119,6 +137,9 @@ def pay_cart_with_balance():
 @app.route("/cart/pay_with_coupon", methods=['POST'])
 @auth_required
 def pay_cart_with_coupon():
+    return _pay_cart_with_coupon()
+
+def _pay_cart_with_coupon():
     user = request.user
     carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
 
@@ -138,7 +159,7 @@ def pay_cart_with_coupon():
     need_money = money - discount_money
 
     if user.openid:
-        order = Order(user.id, user.openid)
+        order = WXOrder(user.id, user.openid)
         order.set_money(money - discount_money, coupon=discount_money, from_cart=1)
         tokens = order.get_token()
         if not tokens:

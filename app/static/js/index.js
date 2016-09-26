@@ -64,12 +64,7 @@ $(function () {
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    showSuccessDialog('购买成功');
-                } else if (result.code === 10007) {
-                    showdialog(product_id);
-                } else if (result.code === 10006) {
-                    var data = result.data.order;
-                    callWxPurchase(data);
+                    $(location ).attr("href", "/cart");
                 } else {
                     showTips(result.msg);
                 }

@@ -10,7 +10,7 @@ from app.model.product import Product
 from app.model.ledger import Ledger
 from app.model.user import auth_required
 from app.util.weixin import WXClient
-from app.model.order import Order
+from app.model.order import WXOrder
 
 @app.route("/products")
 def products():
@@ -52,7 +52,7 @@ def _buy_product_with_balance(product_id):
 
         return Response(data=pd.to_dict()).out()
     elif user.openid:
-        order = Order(user.id, user.openid)
+        order = WXOrder(user.id, user.openid)
         order.set_money(pd.price-user.balance, balance=user.balance)
         tokens = order.get_token()
         if not tokens:
@@ -85,7 +85,7 @@ def _buy_product_with_coupon(product_id):
     need_money = pd.price - discount_money
 
     if user.openid:
-        order = Order(user.id, user.openid)
+        order = WXOrder(user.id, user.openid)
         order.set_money(need_money, coupon=discount_money)
         tokens = order.get_token()
         if not tokens:
