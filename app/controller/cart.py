@@ -77,9 +77,9 @@ def delete_cart():
 @auth_required
 def pay_cart():
     if request.user.balance <=0 and request.user.coupon >0:
-        return _pay_cart_with_balance()
-    elif request.user.balance > 0 and request.user.coupon <= 0:
         return _pay_cart_with_coupon()
+    elif request.user.balance >= 0 and request.user.coupon <= 0:
+        return _pay_cart_with_balance()
     else:
         return Response(code=ResponseCode.UNKNOWN).out()
 
