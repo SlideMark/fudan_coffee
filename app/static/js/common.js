@@ -49,6 +49,7 @@
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
+                    location.replace('/static/index.html');
                     showSuccessDialog("购买成功");
                 } else if (result.code === 10006) {
                     var data = result.data.order;
