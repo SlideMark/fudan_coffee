@@ -93,9 +93,13 @@ def signout():
 @auth_required
 def bindphone():
     phone = request.form.get('phone')
+    password = request.form.get('password')
+
     user = request.user
     user.phone = phone
+    user.password = hashlib.md5('%s-%s' % (conf.salt, password)).hexdigest().lower()
     user.save()
+
     return Response(data=user.to_dict()).out()
 
 

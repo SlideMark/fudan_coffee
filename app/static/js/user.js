@@ -15,6 +15,10 @@ $(function () {
             $('.nickname').text(user.name);
             $('.balance span').text('￥'+user.balance/100);
             $('.coupon span').text('￥'+user.coupon/100);
+            if (user.phone.length > 0) {
+                $('.bindphone').text('绑定手机号(已绑定)');
+                $('.bindphone').removeAttr('href');
+            }
         }
     });
 });

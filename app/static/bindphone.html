@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <title>绑定手机号</title>
+    <script type="text/javascript" src="js/flexible.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/dialog.css">
+
+    <link rel="stylesheet" type="text/css" href="css/sign.css">
+</head>
+<body>
+    <section>
+        <div>
+            <input type="number" class="phone" name="phone" autocorrect="off" autocapitalize="off" minlength="11" placeholder="请输入手机号" />
+        </div>
+        <p class="phoneTip"></p>
+        <div>
+            <input type="password" class="password" name="password" autocorrect="off" autocapitalize="off" minlength="6" placeholder="请输入密码" />
+        </div>
+        <p class="pwdTip"></p>
+        <div>
+            <input type="password" class="confirmPassword" name="confirmPassword" autocorrect="off" autocapitalize="off" minlength="6" placeholder="请再次输入密码" />
+        </div>
+        <p class="conTip"></p>
+        <button type="submit" id="submit">绑定手机号</button>
+        <p class="signupTip"></p>
+        <p>绑定后可通过手机号和密码登录</p>
+    </section>
+    <footer class="hide">
+        <a href="index.html" class="top">首页</a><a href="cart.html" class="cart">购物车</a><a class="cart" onclick='showTips("敬请关注")'>活动</a><a href="user.html" class="mine">我的</a>
+    </footer>
+    <script type="text/javascript" src="js/zepto.min.js?v=1"></script>
+    <script type="text/javascript" src="js/dialog.js?v=2"></script>
+    <script type="text/javascript" src="js/common.js?v=9"></script>
+    <script type="text/javascript" src="js/bindphone.js"></script>
+</body>
+</html>

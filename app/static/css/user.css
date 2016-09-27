@@ -64,6 +64,10 @@ section img {
     background: url("../img/iconfont-quan.png") no-repeat;
     background-size: contain;
 }
+.bindphone:before {
+    background: url("../img/iconfont-gift.png") no-repeat;
+    background-size: contain;
+}
 .logo {
     display: block;
     margin: 0.5rem auto;
