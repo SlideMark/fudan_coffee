@@ -12,9 +12,9 @@
 
     var _renderDOM = function(){
         timestamp = (new Date()).getTime();
-        if( $('.dialog-wrap').length > 0){
-            return;
-        }
+        // if( $('.dialog-wrap').length > 0){
+        //     return;
+        // }
         clearTimeout(timer);
         clearTimeout(aTimer);
         settings.onBeforeShow();
