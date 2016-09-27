@@ -21,7 +21,7 @@ $(function () {
                 $('.bindphone').removeAttr('href');
             }
             if (user.role && 4) {
-                all_order.removeClass('hide');
+                all_order.removeAttr('style');
             }
         }
     });
