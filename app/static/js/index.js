@@ -66,7 +66,7 @@ $(function () {
             },
             success: function (result) {
                 if (result.code === 0) {
-                    location.replace('/static/cart.html');
+                    location.replace('/static/cart.html?t='+new Date().getTime());
                 } else {
                     showTips(result.msg);
                 }
