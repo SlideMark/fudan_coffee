@@ -21,7 +21,7 @@ def all_orders():
         return Response(code=ResponseCode.OPERATE_ERROR, msg='没有权限').out()
     max_id = request.args.get('max_id', 0)
     orders = Order.query(fetchone=False, state=Order.State.FINISHED,
-                         orderby='id desc', extra={'id>':max_id})
+                         orderby='id asc', extra={'id>':max_id})
     resp = []
     for each in orders:
         data = Order(**each).to_dict()
