@@ -3,6 +3,7 @@
  */
 $(function () {
     var loading = $('.loading');
+    var all_order = $('.all_order');
     $.ajax({
         url: '/user',
         type: 'get',
@@ -18,6 +19,9 @@ $(function () {
             if (user.phone.length > 0) {
                 $('.bindphone').text('绑定手机号(已绑定)');
                 $('.bindphone').removeAttr('href');
+            }
+            if (user.role && 4) {
+                all_order.removeClass('hide');
             }
         }
     });
