@@ -5,6 +5,7 @@
     font-weight: normal;
     outline: 0;
 	color: #333;
+	text-decoration: none;
 }
 ::-webkit-input-placeholder{
 	color: #8e8e8e;
