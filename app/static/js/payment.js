@@ -40,8 +40,10 @@ $(function () {
                             paySign: order.sign
                         },
                         function(res){
-                            location.replace('/static/cart.html?t='+new Date().getTime());
-                            showSuccessDialog("支付成功");
+                            if(res.err_msg == "get_brand_wcpay_request：ok" ) {
+                                location.replace('/static/cart.html?t='+new Date().getTime());
+                                showSuccessDialog("支付成功");
+                            }
                         }
                     );
                 } else {

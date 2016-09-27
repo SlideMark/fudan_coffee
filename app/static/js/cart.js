@@ -32,9 +32,11 @@ $(function () {
                 paySign: order.sign
             },
             function(res){
-                showSuccessDialog("支付成功");
-                $('.product').remove()
-                $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
+                if(res.err_msg == "get_brand_wcpay_request：ok" ) {
+                    showSuccessDialog("支付成功");
+                    $('.product').remove()
+                    $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
+                }
             }
         );
     }
