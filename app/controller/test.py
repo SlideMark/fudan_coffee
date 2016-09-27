@@ -8,7 +8,7 @@ from app.model.user import auth_required
 
 
 if conf.debug:
-    @app.route("/test/give_balance")
+    @app.route("/test/give_money")
     @auth_required
     def give_balance():
         request.user.balance += 5000
