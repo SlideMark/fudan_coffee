@@ -76,24 +76,30 @@ def delete_cart():
 @app.route("/cart/pay", methods=['POST'])
 @auth_required
 def pay_cart():
+    carts = Cart.query(fetchone=False, uid=request.user.id, state=Cart.State.INIT)
+
+    if not carts:
+        return Response(code=ResponseCode.DATA_NOT_EXIST, msg='购物车内没有物品').out()
+
     if request.user.balance <=0 and request.user.coupon >0:
-        return _pay_cart_with_coupon()
+        return _pay_cart_with_coupon(carts)
     elif request.user.balance >= 0 and request.user.coupon <= 0:
-        return _pay_cart_with_balance()
+        return _pay_cart_with_balance(carts)
     else:
         return Response(code=ResponseCode.UNKNOWN).out()
 
 @app.route("/cart/pay_with_balance", methods=['POST'])
 @auth_required
 def pay_cart_with_balance():
-    return _pay_cart_with_balance()
-
-def _pay_cart_with_balance():
-    user = request.user
-    carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
+    carts = Cart.query(fetchone=False, uid=request.user.id, state=Cart.State.INIT)
 
     if not carts:
         return Response(code=ResponseCode.DATA_NOT_EXIST, msg='购物车内没有物品').out()
+
+    return _pay_cart_with_balance(carts)
+
+def _pay_cart_with_balance(carts):
+    user = request.user
     money = 0
     name = ''
 
@@ -147,14 +153,15 @@ def _pay_cart_with_balance():
 @app.route("/cart/pay_with_coupon", methods=['POST'])
 @auth_required
 def pay_cart_with_coupon():
-    return _pay_cart_with_coupon()
-
-def _pay_cart_with_coupon():
-    user = request.user
-    carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
+    carts = Cart.query(fetchone=False, uid=request.user.id, state=Cart.State.INIT)
 
     if not carts:
         return Response(code=ResponseCode.DATA_NOT_EXIST, msg='购物车内没有物品').out()
+
+    return _pay_cart_with_coupon(carts)
+
+def _pay_cart_with_coupon(carts):
+    user = request.user
 
     if user.is_founder():
         discount = 0.4
