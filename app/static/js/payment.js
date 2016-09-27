@@ -41,7 +41,7 @@ $(function () {
                             paySign: order.sign
                         },
                         function(res){
-                            if(res.err_msg == "get_brand_wcpay_request: ok" ) {
+                            if(res.err_msg.indexOf('ok') != -1 ) {
                                 location.replace('/static/cart.html?t='+new Date().getTime());
                                 showSuccessDialog("支付成功");
                             }

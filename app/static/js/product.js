@@ -62,7 +62,9 @@ $(function () {
                 paySign: order.sign
             },
             function(res){
-                showSuccessDialog("支付成功");
+                if(res.err_msg.indexOf('ok') != -1 ) {
+                    showSuccessDialog("支付成功");
+                }
             }
         );
     }
