@@ -36,8 +36,8 @@ $(function () {
                     showSuccessDialog("支付成功");
                     $('.products').empty();
                     $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
-                } else {
-                    showTips(res.err_msg)
+                } else if (res.err_msg == "get_brand_wcpay_request:fail") {
+                    showFailDialog("支付失败");
                 }
             }
         );

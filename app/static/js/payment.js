@@ -44,8 +44,8 @@ $(function () {
                             if (res.err_msg == "get_brand_wcpay_request:ok") {
                                 location.replace('/static/cart.html?t='+new Date().getTime());
                                 showSuccessDialog("支付成功");
-                            } else {
-                                showTips(res.err_msg)
+                            } else if (res.err_msg == "get_brand_wcpay_request:fail") {
+                                showFailDialog("支付失败");
                             }
                         }
                     );
