@@ -8,16 +8,19 @@
     /*
      * Private methods 
      */    
-    var wrap, overlay, content, title, close, cancelBtn, okBtn, delBtn, settings, timer, aTimer, dialogWrapper, solveTapBug;
+    var wrap, overlay, content, title, close, cancelBtn, okBtn, delBtn, settings, timer, aTimer, dialogWrapper, solveTapBug, timestamp;
 
     var _renderDOM = function(){
+        timestamp = (new Date()).getTime();
         if( $('.dialog-wrap').length > 0){
             return;
         }
         clearTimeout(timer);
         clearTimeout(aTimer);
         settings.onBeforeShow();
-        $('body').append( dialogWrapper = $('<div class="dialog-wrap '+ settings.dialogClass +'"></div>') );
+        $('body').append('<div id="dialog-wrap-'+timestamp+'" class="dialog-wrap '+ settings.dialogClass +'"></div>');
+        // $('body').append( dialogWrapper = $('<div id="dialog-wrap-'+timestamp+'" class="dialog-wrap '+ settings.dialogClass +'"></div>') );
+        dialogWrapper = $("#dialog-wrap-"+timestamp);
         dialogWrapper.append(
             overlay = $('<div class="dialog-overlay"></div>'),
             content = $('<div class="dialog-content dialog-content-animate"></div>')
@@ -34,7 +37,7 @@
                     contentBd = $('<div class="dialog-content-bd">'+ settings.contentHtml +'</div>')
                 );
                 content.append(
-                    contentFt = $('<div class="dialog-content-ft"></div>')                   
+                    contentFt = $('<div class="dialog-content-ft"></div>')
                 );
                 contentFt.append(
                     okBtn = $('<button class="dialog-btn dialog-btn-ok '+ settings.buttonClass.ok +'" >'+ settings.buttonText.ok +'</button>')
@@ -74,7 +77,7 @@
                 content.addClass('dialog-content-tips').removeClass('dialog-content-animate');
                 break;
         }
-        setTimeout(function(){            
+        setTimeout(function(){
             dialogWrapper.addClass('dialog-wrap-show');
             settings.onShow();
             _resize();
@@ -110,7 +113,7 @@
 
         // stop body scroll
         $(document).on('touchmove', function(event){
-            if( $(dialogWrapper).find($(event.target)).length ){
+            if( dialogWrapper.find($(event.target)).length ){
                 return false;
             }else{
                 return true;
@@ -135,7 +138,7 @@
             var contentTitleHeight = $(title).height() + parseInt($(title).css('margin-top')) + parseInt($(title).css('margin-bottom')) + parseInt($(title).css('padding-top')) + parseInt($(title).css('padding-bottom'));
             var contentFtHeight = $(contentFt).height() + parseInt($(contentFt).css('margin-top')) + parseInt($(contentFt).css('margin-bottom')) + parseInt($(contentFt).css('padding-top')) + parseInt($(contentFt).css('padding-bottom'));
             var contentBdSpace =  parseInt($(contentBd).css('margin-top')) + parseInt($(contentBd).css('margin-bottom')) + parseInt($(contentBd).css('padding-top')) + parseInt($(contentBd).css('padding-bottom'));
-    
+
             var contentMaxHeight = windowHeight - contentTitleHeight - contentFtHeight - contentBdSpace - 50;
             $(contentBd).css({'max-height': contentMaxHeight, 'overflow-y':'auto'});
         }
@@ -183,7 +186,7 @@
     };
 
     var touchEvent = {
-        tap : function(element, fn){           
+        tap : function(element, fn){
             if ('ontouchstart' in window || 'ontouchstart' in document) {
                 var supportsTouch = true;
             } else if(window.navigator.msPointerEnabled) {
@@ -197,7 +200,7 @@
                     startTx = touches.clientX;
                     startTy = touches.clientY;
                 });
-                
+
                 element.on('touchend',function(e){
                     var touches = e.changedTouches ? e.changedTouches[0] : e.originalEvent.changedTouches[0];
                     endTx = touches.clientX,
@@ -229,9 +232,9 @@
     };
     $.dialog.close = function(){
         settings.onBeforeClosed();
-        $('.dialog-wrap').removeClass('dialog-wrap-show');
+        dialogWrapper.removeClass('dialog-wrap-show');
         timer = setTimeout(function(){
-            $('.dialog-wrap').remove();
+            dialogWrapper.remove();
             settings.onClosed();
         }, 100);
         // cancel stop body scroll
