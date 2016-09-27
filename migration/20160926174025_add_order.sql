@@ -14,3 +14,4 @@ CREATE TABLE fc_order (
     create_at   TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     update_at   TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
+create unique index fc_order_order_id on fc_order(order_id);
