@@ -73,6 +73,17 @@ section img {
     background-size: contain;
 }
 
+footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #FFFFFF;
+    display: flex;
+    border-top: 1px solid #eee;
+    box-sizing: border-box;
+}
+
 footer a {
     flex: 1;
     text-align: center;
