@@ -38,7 +38,7 @@ $(function () {
                         }
                         orders.prepend(getOrder(order));
                     });
-                    showTips('有新的订单完成');
+                    showSuccessDialog('新的订单完成!');
                 }
             }
         });
