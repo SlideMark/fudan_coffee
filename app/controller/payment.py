@@ -30,7 +30,7 @@ def buy_item(item_id=0):
 
 @app.route("/payment_order", methods=['GET'])
 @auth_required
-def order():
+def payment_order():
     user = request.user
     item_id = request.args.get('item_id')
     item = PaymentItem.find(item_id)

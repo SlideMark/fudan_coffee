@@ -126,7 +126,7 @@ def _pay_cart_with_balance(carts):
 
         order = Order(uid=user.id, name=name, balance=-money, type=Order.Type.PAY)
         order.set_order_id()
-        order.save()
+        order.close()
 
         user.balance -= money
         user.save()
