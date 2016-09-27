@@ -107,9 +107,9 @@ def _pay_cart_with_balance(carts):
         pd = Product.find(each['product_id'])
         money += pd.price * each['num']
         if name:
-            name = '%s,%s' % (name, pd.name)
+            name = '%s,%sx%s' % (name, pd.name, each['num'])
         else:
-            name = pd.name
+            name = '%sx%s' % (pd.name, each['num'])
     if user.balance >= money:
         resp = []
         for each in carts:
@@ -176,9 +176,9 @@ def _pay_cart_with_coupon(carts):
         pd = Product.find(each['product_id'])
         money += pd.price * each['num']
         if name:
-            name = '%s,%s' % (name, pd.name)
+            name = '%s,%sx%s' % (name, pd.name, each['num'])
         else:
-            name = pd.name
+            name = '%sx%s' % (pd.name, each['num'])
 
     discount_money = min(user.coupon, int(money*discount))
     need_money = money - discount_money
