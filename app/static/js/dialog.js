@@ -8,7 +8,7 @@
     /*
      * Private methods 
      */    
-    var wrap, overlay, content, title, close, cancelBtn, okBtn, delBtn, settings, timer, aTimer;
+    var wrap, overlay, content, title, close, cancelBtn, okBtn, delBtn, settings, timer, aTimer, dialogWrapper, solveTapBug;
 
     var _renderDOM = function(){
         if( $('.dialog-wrap').length > 0){
@@ -229,10 +229,10 @@
     };
     $.dialog.close = function(){
         settings.onBeforeClosed();
-        dialogWrapper.removeClass('dialog-wrap-show');
+        $('.dialog-wrap').removeClass('dialog-wrap-show');
         timer = setTimeout(function(){
-            dialogWrapper.remove();
-            settings.onClosed();            
+            $('.dialog-wrap').remove();
+            settings.onClosed();
         }, 100);
         // cancel stop body scroll
         $(document).on('touchmove', function(event){
@@ -259,14 +259,10 @@
             }, params.autoClose);
         }
     };
-
-
     // 插件
     $.fn.dialog = function(options){
         return this;
     };
-
-
     $.fn.dialog.defaults = {
         type : 'alert',     // alert、confirm、info、tips
         titleText : '信息提示',
@@ -276,7 +272,6 @@
         autoClose : 0,
         overlayClose : false,
         drag : false,
-
         buttonText : {
             ok : '确定',
             cancel : '取消',
@@ -287,18 +282,14 @@
             cancel : '',
             delete : ''
         },
-
         infoText : '',      // working in info type
         infoIcon : '',      // working in info type
-
         onClickOk : function(){},
         onClickCancel : function(){},
         onClickClose : function(){},
-
         onBeforeShow : function(){},
         onShow : function(){},
         onBeforeClosed : function(){},
         onClosed : function(){}
     }
-
 })(window, window.Zepto || window.jQuery);
