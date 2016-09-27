@@ -43,7 +43,7 @@ $(function () {
                         function(res){
                             if (res.err_msg == "get_brand_wcpay_request:ok") {
                                 showSuccessDialog("支付成功");
-                                location.replace('/static/user.html?t='+new Date().getTime());
+                                //location.replace('/static/user.html?t='+new Date().getTime());
                             } else if (res.err_msg == "get_brand_wcpay_request:fail") {
                                 showFailDialog("支付失败");
                             }
