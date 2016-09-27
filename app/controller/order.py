@@ -4,7 +4,7 @@ __author__ = 'wills'
 
 from app import app
 from flask import request
-from app.model.user import auth_required
+from app.model.user import auth_required, User
 from app.model.order import Order, WXOrder
 from app.core.response import Response, ResponseCode
 
@@ -14,6 +14,22 @@ def orders():
     orders = Order.query(fetchone=False, uid=request.user.id, orderby='id desc')
     return Response(data=[Order(**each).to_dict() for each in orders]).out()
 
+@app.route("/all_orders")
+@auth_required
+def all_orders():
+    if not request.user.is_employee():
+        return Response(code=ResponseCode.OPERATE_ERROR, msg='没有权限').out()
+    max_id = request.args.get('max_id', 0)
+    orders = Order.query(fetchone=False, state=Order.State.FINISHED,
+                         orderby='id desc', extra={'id>':max_id})
+    resp = []
+    for each in orders:
+        data = Order(**each).to_dict()
+        user = User.find(each['uid'])
+        data['user_name'] = user.name
+        resp.append(data)
+
+    return Response(data=resp).out()
 
 @app.route("/order/<order_id>", methods=['GET'])
 @auth_required
