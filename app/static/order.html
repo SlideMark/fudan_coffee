@@ -1,56 +1,28 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-  	<meta name="format-detection" content="telephone=no">
-    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-  	<title>我的订单</title>
-    <script type="text/javascript" src="js/flexible.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/dialog.css">
-          <link rel="stylesheet" type="text/css" href="css/order.css?v=1">
-
+    <head>
+        <meta charset="utf-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <title>我的订单</title>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/dialog.css">
+        <link rel="stylesheet" type="text/css" href="css/order.css?v=2">
   </head>
   <body>
-<style type="text/css">
-body{background:#ECF0F3;list-style: none;}
-.content{height:100%;font-size: 14px;}
-.content .title{height:145px;background: #fff;border-bottom:1px solid #ECF0F3;clear: both;margin-bottom: 8px;}
-.content .title li{margin-top:5px;}
-.small_title{display: inline-block;font-size:16px;margin-left:20px;margin-top:10px;font-family: 黑体;text-overflow:ellipsis;width:250px; white-space:nowrap; text-overflow:ellipsis; -o-text-overflow:ellipsis; overflow: hidden;}
-.title .three{margin-left: 8px;}
-.content .add_ticket{position: fixed;bottom: 10px;margin:0 auto;}
-.state{margin-left: 43%;font-weight:500;}
-.question{margin-left: 5px;}
-
-.label-info {
-    background-color: #5bc0de;
-}
-
-.label {
-    display: inline;
-    padding: .2em .6em .3em;
-    font-size: 75%;
-    font-weight: bold;
-    line-height: 1;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: .25em;
-}
-.redcolor{color:#04BE02;}
-</style>
-<div style="width:100%;height:100%;">
-	<div class="content">
-			<section class="orders"></section>
+	<div class="main">
+        <section class="orders"></section>
 	</div>
-</div>
+    <p class="empty hide">您还没有订单</p>
     <footer class="hide">
-        <a href="index.html" class="top">首页</a><a href="cart.html" class="cart">购物车</a><a class="cart" onclick='showTips("敬请关注")'>活动</a><a href="user.html" class="mine">我的</a>
+        <a href="index.html" class="top">首页</a>
+        <a href="cart.html" class="cart">购物车</a>
+        <a class="cart" onclick='showTips("敬请关注")'>活动</a>
+        <a href="user.html" class="mine">我的</a>
     </footer>
     <script type="text/javascript" src="js/zepto.min.js?v=1"></script>
     <script type="text/javascript" src="js/dialog.js?v=2"></script>
     <script type="text/javascript" src="js/common.js?v=9"></script>
-    <script type="text/javascript" src="js/order.js?v=17"></script>
+    <script type="text/javascript" src="js/order.js?v=18"></script>
   </body>
 </html>

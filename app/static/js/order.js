@@ -5,11 +5,10 @@ $(function () {
     function getOrder(order) {
         var type = '';
         if (order.type === 0) {
-            type = '充值';
+            type = '充值：';
         } else {
-            type = '购买';
+            type = '购买：';
         }
-
         var state = '';
         if (order.state === 0) {
             state = '未支付';
@@ -18,26 +17,9 @@ $(function () {
         } else {
             state = '已取消';
         }
-        return  '<div class="title">'+
-                    '<div style="height:30px;border-bottom:1px solid #efefef;margin-left:5px;color:#444349;">'+
-                        '<li style="margin-left:5px;float:left;">'+type+':&nbsp'+order.order_id+'<li>'+
-                        '<li class="state" style="float:right;margin-right:10px;">'+state+'</li>'+
-                    '</div>'+
-				    '<div style="height:28px;margin-top:13px;margin-left:5px;font-size:16px;">'+
-			            '<span class="question">'+order.name+'</span>'+
-			        '</div>'+
-				    '<div style="margin-left:10px;color:#838184">'+
-			            '<p>微信:&nbsp'+order.money/100.0+'元</p>'+
-			            '<p>余额:&nbsp'+order.balance/100.0+'元</p>'+
-			            '<p>优惠:&nbsp'+order.coupon/100.0+'元</p>'+
-			        '</div>'+
-				    '<div style="margin-left:10px;color:#838184;margin-top:5px;">'+
-				        '<p>日期:&nbsp'+order.create_at+'</p>'+
-				    '</div>'+
-				 '</div>';
+        return  '<div class="order"><div class="order-hd clear"><p class="fl">'+type+order.order_id+'</p><p class="fr">'+state+'</p></div><div class="order-bd"><span class="question">'+order.name+'</span><p>微信：'+order.money/100.0+'元</p><p>余额：'+order.balance/100.0+'元</p><p>优惠：'+order.coupon/100.0+'元</p><p>日期：'+order.create_at+'</p></div></div>';
 	}
-
-    var empty = $('.empty'), orders = $('.orders'), st = 0;
+    var empty = $('.empty'), orders = $('.orders');
     $.ajax({
         url: '/orders',
         type: 'get',
@@ -52,6 +34,7 @@ $(function () {
                 });
             } else {
                 orders.addClass('hide');
+                empty.removeClass('hide');
                 $('footer').addClass('hide');
             }
         }

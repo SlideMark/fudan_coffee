@@ -16,7 +16,30 @@ img {
     margin: 0 auto;
     padding-bottom: 0.75rem;
 }
-
+.clear:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+.fl {
+    float: left;
+}
+.fr {
+    float: right;
+}
+.orders {
+    background: #ECF0F3;
+}
+.order {
+    background: #fff;
+    font-size: 0.3rem;
+    margin-bottom: 0.1rem;
+}
+.order-hd, .order-bd {
+    line-height: 0.5rem;
+    padding: 0.1rem 0.2rem;
+    border-bottom: 1px solid #e0e0e0;
+}
 .empty {
     font-size: 0.28rem;
     color: #999;
