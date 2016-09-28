@@ -154,10 +154,10 @@ class WXOrder(object):
             user.balance += order.balance
         else:
             if order.balance:
-                pay = min(order.balance, user.banalce)
+                pay = min(abs(order.balance), user.banalce)
                 user.balance -= pay
             if order.coupon:
-                pay = min(order.coupon, user.coupon)
+                pay = min(abs(order.coupon), user.coupon)
                 user.coupon -= pay
 
             carts = Cart.query(fetchone=False, uid=user.id, state=Cart.State.INIT)
