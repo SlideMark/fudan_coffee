@@ -19,10 +19,15 @@ $(function () {
         dataType: 'json',
         success: function(result) {
             $('.loading').addClass('hide');
-            if(result.data.length) {
-                order.append(getOrder(result.data));
+            if(result.code === 0) {
+                var order = result.data;
+                if (order.state != 1) {
+                    showTips('订单无效!');
+                } else {
+                    order.append(getOrder(result.data));
+                    showSuccessDialog('购买成功!');
+                }
             }
         }
     });
-    showSuccessDialog('购买成功!');
 });
