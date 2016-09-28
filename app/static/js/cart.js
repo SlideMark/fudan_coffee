@@ -54,7 +54,7 @@ $(function () {
                     showSuccessDialog("购买成功");
                     $('.products').empty();
                     $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
-                    location.replace('/static/buy_success.html?order_id='+order.id);
+                    location.replace('/static/buy_success.html?order_id='+result.data.id);
                 } else if (result.code === 10006) {
                     var data = result.data.order;
                     var order_id = result.data.order_id;
