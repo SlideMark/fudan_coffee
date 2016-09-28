@@ -35,8 +35,12 @@ def all_orders():
 @auth_required
 def order(order_id=0):
     order = Order.find(order_id)
+    if order.uid != request.user.id:
+        return Response(code=ResponseCode.OPERATE_ERROR, msg='没有权限查看他人订单')
 
-    return Response(data=order.to_dict()).out()
+    resp = order.to_dict()
+    resp['user_name'] = request.user.name
+    return Response(data=resp).out()
 
 
 @app.route("/order/<order_id>", methods=['POST'])

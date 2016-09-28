@@ -27,6 +27,8 @@ $(function () {
                     order_view.append(getOrder(result.data));
                     showSuccessDialog('购买成功!');
                 }
+            } else {
+                showTips(result.msg)
             }
         }
     });

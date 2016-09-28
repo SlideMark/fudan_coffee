@@ -120,7 +120,7 @@ def signup():
             user.name = phone
             user.password = password
             user.phone = phone
-            user.openid = 'dummy'
+            user.openid = ''
             user.update_session()
             user.save()
 
