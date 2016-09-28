@@ -33,7 +33,6 @@ $(function () {
             },
             function(res){
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
-                    showSuccessDialog("支付成功");
                     $('.products').empty();
                     $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
                     location.replace('/static/buy_success.html?order_id='+order_id);
@@ -51,7 +50,6 @@ $(function () {
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    showSuccessDialog("购买成功");
                     $('.products').empty();
                     $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
                     location.replace('/static/buy_success.html?order_id='+result.data.id);
@@ -91,9 +89,9 @@ $(function () {
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    showSuccessDialog('购买成功');
                     $('.products').empty();
                     $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
+                    location.replace('/static/buy_success.html?order_id='+result.data.id);
                 } else if (result.code === 10007) {
                     showdialog();
                 } else if (result.code === 10006) {
