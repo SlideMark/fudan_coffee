@@ -21,7 +21,7 @@ $(function () {
         }
     });
 
-    function callWxPurchase(order) {
+    function callWxPurchase(order_id, order) {
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest', {
                 appId: order.appId,
@@ -36,6 +36,7 @@ $(function () {
                     showSuccessDialog("支付成功");
                     $('.products').empty();
                     $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
+                    location.replace('/static/buy_success.html?order_id='+order_id);
                 } else if (res.err_msg == "get_brand_wcpay_request:fail") {
                     showFailDialog("支付失败");
                 }
@@ -53,9 +54,11 @@ $(function () {
                     showSuccessDialog("购买成功");
                     $('.products').empty();
                     $('.empty').removeClass('hide').text('您的购物车是空的，赶紧去添加吧！');
+                    location.replace('/static/buy_success.html?order_id='+order.id);
                 } else if (result.code === 10006) {
                     var data = result.data.order;
-                    callWxPurchase(data);
+                    var order_id = result.data.order_id;
+                    callWxPurchase(order_id, data);
                 } else {
                     showTips(result.msg);
                 }

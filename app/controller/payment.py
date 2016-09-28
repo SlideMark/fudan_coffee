@@ -39,14 +39,16 @@ def payment_order():
         order = Order(uid=user.id, name=item.name, money=-item.money,
               balance=item.money+item.charge, type=Order.Type.CHARGE)
         order.set_order_id()
-        order.save()
+        resp = order.save(return_keys=[Order.PKEY])
+        order = Order.find(resp[Order.PKEY])
 
         wxorder = WXOrder(user, order)
         tokens = wxorder.get_token()
         if not tokens:
             return str(Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败'))
 
-        return str(Response(data=tokens))
+        return str(Response(data={'order_id': order.id,
+                                  'order': tokens}))
     elif not user.openid:
         return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
     else:

@@ -30,7 +30,8 @@ $(function () {
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
-                    var order = result.data;
+                    var order = result.data.order;
+                    var order_id = result.data.order_id;
                     WeixinJSBridge.invoke(
                         'getBrandWCPayRequest', {
                             appId: order.appId,
@@ -42,8 +43,7 @@ $(function () {
                         },
                         function(res){
                             if (res.err_msg == "get_brand_wcpay_request:ok") {
-                                showSuccessDialog("支付成功");
-                                //location.replace('/static/user.html?t='+new Date().getTime());
+                                location.replace('/static/buy_success.html?order_id='+order_id);
                             } else if (res.err_msg == "get_brand_wcpay_request:fail") {
                                 showFailDialog("支付失败");
                             }

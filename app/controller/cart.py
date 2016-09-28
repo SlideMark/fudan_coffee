@@ -110,32 +110,28 @@ def _pay_cart_with_balance(carts):
             name = '%s,%sx%s' % (name, pd.name, each['num'])
         else:
             name = '%sx%s' % (pd.name, each['num'])
+
     if user.balance >= money:
-        resp = []
         for each in carts:
-            pd = Product.find(each['product_id'])
             ct = Cart(**each)
             ct.state = Cart.State.FINISHED
             ct.save()
 
-            cart = Cart(**each).to_dict()
-            cart['product_name'] = pd.name
-            cart['product_price'] = pd.price
-            cart['product_icon'] = pd.icon
-            resp.append(cart)
-
         order = Order(uid=user.id, name=name, balance=-money, type=Order.Type.PAY)
         order.set_order_id()
-        order.close()
+        order.state = Order.State.FINISHED
+        resp = order.save(return_keys=[Order.PKEY])
+        order = Order.find(resp[Order.PKEY])
 
         user.balance -= money
         user.save()
-        return Response(data=resp).out()
+        return Response(data=order.to_dict()).out()
     elif user.openid:
         order = Order(uid=user.id, name=name, money=user.balance-money,
               balance=-user.balance, type=Order.Type.PAY)
         order.set_order_id()
-        order.save()
+        resp = order.save(return_keys=[Order.PKEY])
+        order = Order.find(resp[Order.PKEY])
 
         wxorder = WXOrder(user, order)
         tokens = wxorder.get_token()
@@ -145,6 +141,7 @@ def _pay_cart_with_balance(carts):
         return Response(code=ResponseCode.LOW_BALANCE,
                             msg='余额不足',
                             data={'need_money': money-user.balance,
+                                  'order_id': order.id,
                                     'order': tokens}).out()
     else:
         return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
@@ -187,7 +184,8 @@ def _pay_cart_with_coupon(carts):
         order = Order(uid=user.id, name=name, money=-need_money,
               coupon=-discount_money, type=Order.Type.PAY)
         order.set_order_id()
-        order.save()
+        resp = order.save(return_keys=[Order.PKEY])
+        order = Order.find(resp[Order.PKEY])
 
         wxorder = WXOrder(user, order)
         tokens = wxorder.get_token()
@@ -197,6 +195,7 @@ def _pay_cart_with_coupon(carts):
         return str(Response(code=ResponseCode.LOW_BALANCE,
                                 msg='余额不足',
                                 data={'need_money': need_money,
+                                      'order_id': order.id,
                                       'order': tokens}))
     else:
         return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))

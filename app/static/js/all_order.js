@@ -43,5 +43,7 @@ $(function () {
             }
         });
     }
+    getNewOrders()
+
     setInterval(getNewOrders,5000)
 });
