@@ -95,8 +95,7 @@ $(function () {
                 } else if (result.code === 10007) {
                     showdialog();
                 } else if (result.code === 10006) {
-                    var data = result.data.order;
-                    callWxPurchase(data);
+                    callWxPurchase(result.data.order_id, result.data.order);
                 } else {
                     showTips(result.msg);
                 }
