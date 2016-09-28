@@ -36,7 +36,7 @@ def all_orders():
 def order(order_id=0):
     order = Order.find(order_id)
     if order.uid != request.user.id:
-        return Response(code=ResponseCode.OPERATE_ERROR, msg='没有权限查看他人订单')
+        return Response(code=ResponseCode.OPERATE_ERROR, msg='没有权限查看他人订单').out()
 
     resp = order.to_dict()
     resp['user_name'] = request.user.name
