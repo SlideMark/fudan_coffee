@@ -22,6 +22,7 @@ def events():
     return str(Response(data=resp))
 
 @app.route("/event/<event_id>", methods=['GET'])
+@auth_required
 def event(event_id=0):
     ev = Event.find(event_id)
     resp = ev.to_dict()
@@ -29,6 +30,7 @@ def event(event_id=0):
     return str(Response(data=resp))
 
 @app.route("/event/<event_id>", methods=['POST'])
+@auth_required
 def join_event(event_id=0):
     ev = Event.find(event_id)
     user = request.user

@@ -8,7 +8,7 @@ from app.model.user import User
 class Event(DAO):
 
     TABLE = 'fc_event'
-    COLUMNS = ['title', 'creator', 'state', 'fee', 'user_limit', 'poster_url', 'shop_id',
+    COLUMNS = ['id', 'title', 'creator', 'state', 'fee', 'user_limit', 'poster_url', 'shop_id',
                'description', 'open_at', 'close_at', 'memo', 'create_at', 'update_at']
 
     class State:
