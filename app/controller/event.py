@@ -4,9 +4,11 @@ __author__ = 'wills'
 
 from app import app
 from app.model.event import Event
+from app.model.order import Order, WXOrder
 from flask import request
-from app.core.response import Response
+from app.core.response import Response, ResponseCode
 from app.model.user import auth_required
+from app.model.user_event import UserEvent
 
 @app.route("/events")
 def events():
@@ -25,6 +27,42 @@ def event(event_id=0):
     resp = ev.to_dict()
     resp['creator'] = ev.get_creator().to_dict()
     return str(Response(data=resp))
+
+@app.route("/event/<event_id>", methods=['POST'])
+def join_event(event_id=0):
+    ev = Event.find(event_id)
+    user = request.user
+    user_ev = UserEvent.query(uid=user.id, event_id=ev.id)
+    if user_ev and user_ev.state == UserEvent.State.INIT:
+        return Response(code=ResponseCode.DUPLICATE_DATA, msg='已经报名成功')
+
+    if ev.fee <= 0:
+        if user_ev:
+            user_ev = UserEvent(**user_ev)
+            user_ev.state = UserEvent.State.INIT
+            user_ev.save()
+        else:
+            UserEvent(uid=user.id, event_id=ev.id).save()
+
+        return Response().out()
+    elif user.openid:
+        order = Order(uid=user.id, name=ev.title, money=-ev.fee, type=Order.Type.JOIN_EVENT)
+        order.set_order_id()
+        resp = order.save(return_keys=[Order.PKEY])
+        order = Order.find(resp[Order.PKEY])
+
+        wxorder = WXOrder(user, order)
+        tokens = wxorder.get_token()
+        if not tokens:
+            return Response(code=ResponseCode.OPERATE_ERROR, msg='订单生成失败').out()
+
+        return Response(code=ResponseCode.LOW_BALANCE,
+                            msg='余额不足',
+                            data={'need_money': ev.fee,
+                                  'order_id': order.id,
+                                    'order': tokens}).out()
+    else:
+        return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
 
 @app.route("/event", methods=['POST'])
 @auth_required

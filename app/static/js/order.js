@@ -6,8 +6,10 @@ $(function () {
         var type = '';
         if (order.type === 0) {
             type = '充值：';
-        } else {
+        } else if (order.type === 1) {
             type = '购买：';
+        } else {
+            type = '报名：';
         }
         var state = '';
         if (order.state === 0) {

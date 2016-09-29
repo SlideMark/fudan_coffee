@@ -31,6 +31,7 @@ class Order(DAO):
     class Type:
         CHARGE = 0
         PAY = 1
+        JOIN_EVENT = 2
 
     def set_order_id(self):
         self.order_id = '%s%s' % (datetime.now().strftime('%Y%m%d%H%M%S'), random.randint(1000,9999))
