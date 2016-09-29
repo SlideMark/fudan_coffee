@@ -18,6 +18,7 @@ def events():
         ev = Event(**each)
         r = ev.to_dict()
         r['creator'] = ev.get_creator().to_dict()
+        r['num'] = UserEvent.count(event_id=ev.id, state=UserEvent.State.INIT)
         resp.append(r)
     return str(Response(data=resp))
 
