@@ -69,7 +69,7 @@
 | key | Requried | type | description |
 |-----|----------|------|-------------|
 | code  | y    | number | 返回状态码 |
-| data  | y     | object | 订单信息|
+| data  | y     | object | order_id 和 订单信息|
 
 #### 订单信息
 

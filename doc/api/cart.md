@@ -76,6 +76,10 @@
 | code  | y    | number | 返回状态码 |
 | data | y | object | cart信息|
 
+## POST /cart/pay
+
+自动选择支付方式
+
 ## POST /cart/pay_with_balance
 
 余额结算购物车
