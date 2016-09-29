@@ -7,6 +7,7 @@ from flask import request
 from app.model.user import auth_required, User
 from app.model.order import Order, WXOrder
 from app.core.response import Response, ResponseCode
+import time
 
 @app.route("/orders")
 @auth_required
@@ -40,6 +41,7 @@ def order(order_id=0):
 
     resp = order.to_dict()
     resp['user_name'] = request.user.name
+    time.sleep(0.5)
     return Response(data=resp).out()
 
 
