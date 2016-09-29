@@ -10,6 +10,7 @@ from app import conf
 import urllib2
 from xml.etree import ElementTree
 from app.model.user import User
+from app.model.user_event import UserEvent
 from app.util.weixin import WXClient
 from app.model.cart import Cart
 from datetime import datetime
@@ -153,6 +154,14 @@ class WXOrder(object):
         user = User.find(order.uid)
         if order.type == Order.Type.CHARGE:
             user.balance += order.balance
+        elif order.type == Order.Type.JOIN_EVENT:
+            user_event = UserEvent.query(uid=order.uid, event_id=order.item_id)
+            if user_event:
+                user_ev = UserEvent(**user_event)
+                user_ev.state = UserEvent.State.INIT
+                user_ev.save()
+            else:
+                UserEvent(uid=user.id, event_id=order.item_id).save()
         else:
             if order.balance:
                 pay = min(abs(order.balance), user.banalce)

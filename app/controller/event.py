@@ -48,7 +48,8 @@ def join_event(event_id=0):
 
         return Response().out()
     elif user.openid:
-        order = Order(uid=user.id, name=ev.title, money=-ev.fee, type=Order.Type.JOIN_EVENT)
+        order = Order(uid=user.id, name=ev.title, money=-ev.fee,
+                      item_id=ev.id, type=Order.Type.JOIN_EVENT)
         order.set_order_id()
         resp = order.save(return_keys=[Order.PKEY])
         order = Order.find(resp[Order.PKEY])
