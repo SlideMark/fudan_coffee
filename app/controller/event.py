@@ -35,8 +35,8 @@ def join_event(event_id=0):
     ev = Event.find(event_id)
     user = request.user
     user_ev = UserEvent.query(uid=user.id, event_id=ev.id)
-    if user_ev and user_ev.state == UserEvent.State.INIT:
-        return Response(code=ResponseCode.DUPLICATE_DATA, msg='已经报名成功')
+    if user_ev and user_ev['state'] == UserEvent.State.INIT:
+        return Response(code=ResponseCode.DUPLICATE_DATA, msg='已经报名成功').out()
 
     if ev.fee <= 0:
         if user_ev:
