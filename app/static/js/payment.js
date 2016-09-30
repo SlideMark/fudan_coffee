@@ -11,13 +11,11 @@ $(function () {
             $('.loading').addClass('hide');
             if(result.data.length) {
                 empty.addClass('hide');
-                $('footer').removeClass('hide');
                 result.data.forEach(function(payment) {
                     payments.append('<div class="payment"><div class="payment_info"><p class="description">'+payment.name+'</p><span class="price">价格：'+payment.money/100.0+'元, 返现'+payment.charge/100.0+'元</span></div><span class="buy" data-paymentitemid="'+payment.id+'">购买</span></div>');
                 });
             } else {
                 payments.addClass('hide');
-                $('footer').addClass('hide');
             }
         }
     });

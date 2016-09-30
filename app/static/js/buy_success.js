@@ -21,7 +21,6 @@ $(function () {
         dataType: 'json',
         success: function(result) {
             $('.loading').addClass('hide');
-            $('footer').removeClass('hide');
             if(result.code === 0) {
                 var order = result.data;
                 if (order.state != 1) {

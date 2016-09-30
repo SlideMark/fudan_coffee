@@ -30,14 +30,12 @@ $(function () {
             $('.loading').addClass('hide');
             if(result.data.length) {
                 empty.addClass('hide');
-                $('footer').removeClass('hide');
                 result.data.forEach(function(order) {
                     orders.append(getOrder(order));
                 });
             } else {
                 orders.addClass('hide');
                 empty.removeClass('hide');
-                $('footer').addClass('hide');
             }
         }
     });

@@ -68,6 +68,20 @@ def join_event(event_id=0):
     else:
         return str(Response(code=ResponseCode.AUTH_REQUIRED, msg='请微信关注服务号'))
 
+@app.route("/event/<event_id>/cancel", methods=['POST'])
+@auth_required
+def cancel_event(event_id=0):
+    ev = Event.find(event_id)
+    user = request.user
+    user_ev = UserEvent.query(uid=user.id, event_id=ev.id)
+    if not user_ev or user_ev['state'] != UserEvent.State.INIT:
+        return Response(code=ResponseCode.DATA_NOT_EXIST, msg='暂无报名').out()
+
+    user_ev = UserEvent(**user_ev)
+    user_ev.state = UserEvent.State.CANCELED
+    user_ev.save()
+    return Response().out()
+
 @app.route("/event", methods=['POST'])
 @auth_required
 def create_event():
