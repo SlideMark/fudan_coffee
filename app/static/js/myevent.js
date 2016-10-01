@@ -15,6 +15,7 @@
         dataType: 'json',
         success: function(result) {
             $('.loading').addClass('hide');
+            events.empty();
             if(result.data.length) {
                 empty.addClass('hide');
                 result.data.forEach(function(event) {
