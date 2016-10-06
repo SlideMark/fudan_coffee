@@ -13,7 +13,7 @@ class Event(DAO):
 
     class State:
         DRAFT = 0
-        IN_REVIRE = 1
+        IN_REVIEW = 1
         PASSED = 2
         REJECTED = 3
         DELETED = 4
