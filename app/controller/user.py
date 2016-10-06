@@ -53,8 +53,8 @@ def published_events():
 @auth_required
 def user_event(event_id=0):
     ev = Event.find(event_id)
-    ev_user = UserEvent.query(fetchone=False, event_id=ev.id, uid=request.user.id,
-                          state=UserEvent.State.INIT, orderby='id desc')
+    ev_user = UserEvent.query(fetchone=False, event_id=ev.id,
+                              state=UserEvent.State.INIT, orderby='id desc')
     resp = ev.to_dict()
     users = []
     for each in ev_user:
