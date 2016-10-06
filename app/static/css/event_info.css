@@ -8,8 +8,10 @@
     text-decoration: none;
 }
 img {
-    max-width: 100%;
-    vertical-align: middle;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    border: 5px solid #FFFFFF;
 }
 .main {
     max-width: 7.5rem;
