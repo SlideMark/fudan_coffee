@@ -23,12 +23,8 @@ $(function () {
             $('.loading').addClass('hide');
             if(result.code === 0) {
                 var order = result.data;
-                if (order.state != 1) {
-                    showTips('订单无效!');
-                } else {
-                    order_view.append(getOrder(result.data));
-                    showSuccessDialog('购买成功!');
-                }
+                order_view.append(getOrder(result.data));
+                showSuccessDialog('购买成功!');
             } else {
                 showTips(result.msg)
             }
