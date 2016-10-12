@@ -39,7 +39,7 @@ def event(event_id=0):
 
     return str(Response(data=resp))
 
-@app.route("/event/<event_id>", methods=['POST'])
+@app.route("/event/<event_id>/join")
 @auth_required
 def join_event(event_id=0):
     ev = Event.find(event_id)

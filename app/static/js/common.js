@@ -42,14 +42,16 @@
 
  function join_event(event_id) {
         $.ajax({
-            url: '/event/'+event_id,
-            type: 'post',
+            url: '/event/'+event_id+'/join',
+            type: 'get',
             dataType: 'json',
             success: function (result) {
                 if (result.code === 0) {
                     showSuccessDialog('报名成功');
                 } else if (result.code === 10003) {
-                    showTips('请关注自由而无用服务号进行报名');
+                    var url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc21f8a22b8362d8b&redirect_uri='+location.href+'&response_type=code&scope=snsapi_userinfo&state=';
+                    //showTips('请关注自由而无用服务号进行报名');
+                    location.replace(url);
                 } else if (result.code === 10006) {
                     var order = result.data.order;
                     var order_id = result.data.order_id;
