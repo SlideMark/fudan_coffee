@@ -9,9 +9,9 @@
 
     function getShopName(code) {
         if (code === 0){
-            return '歌华大厦店';
+            return '自由而无用歌华大厦店';
         }
-        return '奥体中心点';
+        return '自由而无用奥体中心店';
     }
 
     function showSuccessDialog(msg) {
