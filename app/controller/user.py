@@ -2,13 +2,54 @@
 
 __author__ = 'wills'
 
-from app import app
+import time
+import hashlib
+from app import app,conf
 from app.model.event import Event
 from flask import request
 from app.core.response import Response, ResponseCode
 from app.model.user import auth_required, User
 from app.model.user_event import UserEvent
 from app.util.timeutil import dt_to_str
+from app.core.cache import LocalCache
+from app.util.weixin import WXClient
+
+@app.route("/signature")
+def signature():
+    url = request.args.get('url')
+
+    ticket = LocalCache.get('TICKET_CACHE_KEY')
+    if not ticket:
+        token = LocalCache.get('TOKEN_CACHE_KEY')
+        if not token:
+            token_info = WXClient.get_js_token(conf.wechat_app_id, conf.wechat_secret)
+            if not token_info or token_info.get('errcode'):
+                return Response(code=ResponseCode.OPERATE_ERROR, msg='获取token失败').out()
+            token = token_info.get('access_token')
+            expire_time = token_info.get('expires_in')
+            LocalCache.set('TOKEN_CACHE_KEY', token, expire_time=expire_time - 100)
+
+        ticket_info = WXClient.get_js_ticket(token)
+        if not ticket_info or ticket_info.get('errcode'):
+            return Response(code=ResponseCode.OPERATE_ERROR, msg='获取ticket失败').out()
+
+        ticket = ticket_info.get('ticket')
+        expire_time = ticket_info.get('expires_in')
+        LocalCache.set('TICKET_CACHE_KEY', ticket, expire_time=expire_time - 100)
+
+    time_stamp = int(time.time())
+    noncestr = hashlib.md5(str(time.time())).hexdigest().lower()
+    msgs = [['jsapi_ticket', ticket],
+                ['noncestr', noncestr],
+                ['timestamp', time_stamp],
+                ['url', url]]
+
+    signature = hashlib.sha1('&'.join(['%s=%s' % (msg[0], msg[1]) for msg in msgs])).hexdigest()
+    return Response(data={
+        'appId': conf.wechat_app_id,
+        'signature': signature,
+        'timestamp': time_stamp,
+        'nonceStr': noncestr}).out()
 
 @app.route("/user")
 @auth_required
