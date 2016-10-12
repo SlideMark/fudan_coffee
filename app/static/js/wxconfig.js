@@ -1,6 +1,6 @@
 function wxCallBack(res) {
 	wx.config({
-		debug: true,
+		debug: false,
 		appId: res.appId,
 		timestamp:res.data.timestamp,
 		nonceStr: res.data.nonceStr,
