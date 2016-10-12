@@ -48,6 +48,8 @@
             success: function (result) {
                 if (result.code === 0) {
                     showSuccessDialog('报名成功');
+                } else if (result.code === 10003) {
+                    showTips('请关注自由而无用服务号进行报名');
                 } else if (result.code === 10006) {
                     var order = result.data.order;
                     var order_id = result.data.order_id;
