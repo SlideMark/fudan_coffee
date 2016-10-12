@@ -17,7 +17,8 @@ from app.util.weixin import WXClient
 @app.route("/signature")
 def signature():
     url = request.args.get('url')
-
+    import logging
+    logging.error(url)
     ticket = LocalCache.get('TICKET_CACHE_KEY')
     if not ticket:
         token = WXClient.get_service_token()
