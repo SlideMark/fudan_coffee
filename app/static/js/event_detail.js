@@ -24,6 +24,9 @@ $(function () {
             if (ev.member === 1) {
                 footer.html('已报名');
             } else {
+                if (auto=="1") {
+                    join_event(event_id);
+                }
                 footer.click(function () {
                     join_event(event_id);
                 });
@@ -47,8 +50,4 @@ $(function () {
             });
         }
     });
-
-    if (auto=="1") {
-        join_event(event_id);
-    }
 });
