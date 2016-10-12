@@ -49,7 +49,7 @@
                 if (result.code === 0) {
                     showSuccessDialog('报名成功');
                 } else if (result.code === 10003) {
-                    var url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc21f8a22b8362d8b&redirect_uri='+location.href+'&response_type=code&scope=snsapi_userinfo&state=';
+                    var url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc21f8a22b8362d8b&redirect_uri=http://'+location.host+'/event/'+event_id+'/join'+'&response_type=code&scope=snsapi_userinfo&state=';
                     //showTips('请关注自由而无用服务号进行报名');
                     location.replace(url);
                 } else if (result.code === 10006) {
