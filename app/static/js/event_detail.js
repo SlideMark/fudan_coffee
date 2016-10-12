@@ -8,12 +8,13 @@ $(function () {
 	}
     var event_id = getUrlParam('event_id');
     var auto = getUrlParam('auto');
+    var code = getUrlParam('code');
 
     var event = $('.event');
     var footer = $('.join');
     var header = $('.header');
     $.ajax({
-        url: '/event/'+event_id,
+        url: '/event/'+event_id+'?code='+code,
         type: 'get',
         dataType: 'json',
         success: function(result) {
