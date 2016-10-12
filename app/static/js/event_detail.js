@@ -26,23 +26,40 @@ $(function () {
                     join_event(event_id);
                 });
             }
-            WeixinJSBridge.on('menu:share:appmessage', function(argv){
-                WeixinJSBridge.invoke('sendAppMessage',{
-                    "desc": ev.description,
-                    "title": ev.title
-                }, function(res) {
-                    //_report('send_msg', res.err_msg);
-                })
-            });
-            // 分享到朋友圈
-            WeixinJSBridge.on('menu:share:timeline', function(argv){
-                WeixinJSBridge.invoke('shareTimeline',{
-                    "desc": ev.description,
-                    "title": ev.title
-                }, function(res) {
-                       //_report('timeline', res.err_msg);
+            wx.ready(function() {
+                wx.onMenuShareTimeline({
+                    title: ev.description,
+                    link: location.href,
+                    imgUrl: ev.poster_url,
+                    success: function() {},
+                    fail: function() {}
+                });
+                wx.onMenuShareAppMessage({
+                    title: ev.title,
+                    desc: ev.description,
+                    link: location.href,
+                    imgUrl: ev.poster_url,
+                    success: function() {},
+                    fail: function() {}
                 });
             });
+            // WeixinJSBridge.on('menu:share:appmessage', function(argv){
+            //     WeixinJSBridge.invoke('sendAppMessage',{
+            //         "desc": ev.description,
+            //         "title": ev.title
+            //     }, function(res) {
+            //         //_report('send_msg', res.err_msg);
+            //     })
+            // });
+            // // 分享到朋友圈
+            // WeixinJSBridge.on('menu:share:timeline', function(argv){
+            //     WeixinJSBridge.invoke('shareTimeline',{
+            //         "desc": ev.description,
+            //         "title": ev.title
+            //     }, function(res) {
+            //            //_report('timeline', res.err_msg);
+            //     });
+            // });
         }
     });
 });
