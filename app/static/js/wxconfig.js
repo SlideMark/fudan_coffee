@@ -35,7 +35,7 @@ $.ajax({
 	type: 'get',
 	dataType: 'json',
 	data: {
-		url: location.href.split('#')[0]
+		url: location.href.split('#')[0].replace('&', '%26')
 	},
 	success: function(res) {
 		wxCallBack(res);
