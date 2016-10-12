@@ -48,7 +48,7 @@ $(function () {
         }
     });
 
-    if (auto===1) {
+    if (auto=="1") {
         join_event(event_id);
     }
 });
