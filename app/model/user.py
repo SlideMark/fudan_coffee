@@ -103,6 +103,51 @@ def auth_required(func):
     wraper.__name__ = func.__name__
     return wraper
 
+def auth_optional(func):
+    def wraper(*args, **argv):
+        uid = request.cookies.get('uid')
+        session = request.cookies.get('session')
+        user = None
+        need_cookie = False
+        if uid:
+            user = User.query_instance(id=uid, session_data=session)
+        elif request.args.get('code'):
+            code = request.args.get('code')
+            token = WXClient.get_wx_token(conf.wechat_app_id, conf.wechat_secret, code)
+            if token and token.get('errcode') is None:
+                need_cookie = True
+                openid = token.get('openid')
+                access_token = token.get('access_token')
+                user = User.query_instance(openid=openid)
+                if user:
+                    user.access_token = access_token
+                    user.update_session()
+                    user.save()
+                else:
+                    user = User()
+                    user.openid = openid
+                    user.access_token = access_token
+                    user.update_session()
+                    if _signup(user):
+                        user.save()
+                        user = User.query_instance(openid=openid, master=True)
+
+                        WXClient.send_signup_msg(user, {"openid": openid})
+                    else:
+                        return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取用户资料失败'))
+
+        request.user = user
+        if user:
+            resp = make_response(func(*args, **argv))
+            if need_cookie:
+                resp.set_cookie('uid', '%s'%user.id)
+                resp.set_cookie('session', user.session_data)
+            return resp
+        return func(*args, **argv)
+
+    wraper.__name__ = func.__name__
+    return wraper
+
 def logedin(request):
     uid = request.cookies.get('uid')
     session = request.cookies.get('session')

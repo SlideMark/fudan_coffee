@@ -7,7 +7,7 @@ from app.model.event import Event
 from app.model.order import Order, WXOrder
 from flask import request
 from app.core.response import Response, ResponseCode
-from app.model.user import auth_required, User
+from app.model.user import auth_required, auth_optional, User
 from app.model.user_event import UserEvent
 
 @app.route("/events")
@@ -23,6 +23,7 @@ def events():
     return str(Response(data=resp))
 
 @app.route("/event/<event_id>", methods=['GET'])
+@auth_optional
 def event(event_id=0):
     ev = Event.find(event_id)
     resp = ev.to_dict()
@@ -30,12 +31,8 @@ def event(event_id=0):
     resp['num'] = UserEvent.count(event_id=ev.id, state=UserEvent.State.INIT)
     resp['member'] = 0
 
-    uid = request.cookies.get('uid')
-    session = request.cookies.get('session')
-    if uid:
-        user = User.query_instance(id=uid, session_data=session)
-        if user and UserEvent.query(event_id=ev.id, uid=user.id, state=UserEvent.State.INIT):
-            resp['member'] = 1
+    if request.user and UserEvent.query(event_id=ev.id, uid=request.user.id, state=UserEvent.State.INIT):
+        resp['member'] = 1
 
     return str(Response(data=resp))
 
