@@ -1,9 +1,9 @@
 function wxCallBack(res) {
 	wx.config({
 		debug: true,
-		appId: 'wxc21f8a22b8362d8b',
-		timestamp:res.data.time_stamp,
-		nonceStr: res.data.noncestr,
+		appId: res.appId,
+		timestamp:res.data.timestamp,
+		nonceStr: res.data.nonceStr,
 		signature:res.data.signature,
 		jsApiList: [
 			'checkJsApi',
