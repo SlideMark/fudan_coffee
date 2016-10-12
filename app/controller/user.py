@@ -20,15 +20,7 @@ def signature():
 
     ticket = LocalCache.get('TICKET_CACHE_KEY')
     if not ticket:
-        token = LocalCache.get('TOKEN_CACHE_KEY')
-        if not token:
-            token_info = WXClient.get_js_token(conf.wechat_app_id, conf.wechat_secret)
-            if not token_info or token_info.get('errcode'):
-                return Response(code=ResponseCode.OPERATE_ERROR, msg='获取token失败').out()
-            token = token_info.get('access_token')
-            expire_time = token_info.get('expires_in')
-            LocalCache.set('TOKEN_CACHE_KEY', token, expire_time=expire_time - 100)
-
+        token = WXClient.get_service_token()
         ticket_info = WXClient.get_js_ticket(token)
         if not ticket_info or ticket_info.get('errcode'):
             return Response(code=ResponseCode.OPERATE_ERROR, msg='获取ticket失败').out()
