@@ -28,6 +28,12 @@ def event(event_id=0):
     ev = Event.find(event_id)
     resp = ev.to_dict()
     resp['creator'] = ev.get_creator().to_dict()
+    resp['num'] = UserEvent.count(event_id=ev.id, state=UserEvent.State.INIT)
+
+    if UserEvent.query(event_id=ev.id, uid=request.user.id, state=UserEvent.State.INIT):
+        resp['member'] = 1
+    else:
+        resp['member'] = 0
     return str(Response(data=resp))
 
 @app.route("/event/<event_id>", methods=['POST'])

@@ -2,44 +2,9 @@
  * Created by wills on 16/9/17.
  */
 
- function join_event(event_id) {
-        $.ajax({
-            url: '/event/'+event_id,
-            type: 'post',
-            dataType: 'json',
-            success: function (result) {
-                if (result.code === 0) {
-                    showSuccessDialog('报名成功');
-                } else if (result.code === 10006) {
-                    var order = result.data.order;
-                    var order_id = result.data.order_id;
-                    WeixinJSBridge.invoke(
-                        'getBrandWCPayRequest', {
-                            appId: order.appId,
-                            timeStamp: order.timeStamp,
-                            nonceStr: order.nonceStr,
-                            package: order.package,
-                            signType: order.signType,
-                            paySign: order.sign
-                        },
-                        function(res){
-                            if (res.err_msg == "get_brand_wcpay_request:ok") {
-                                location.replace('/static/buy_success.html?order_id='+order_id);
-                            } else if (res.err_msg == "get_brand_wcpay_request:fail") {
-                                showFailDialog("支付失败");
-                            }
-                        }
-                    );
-                } else {
-                    showTips(result.msg);
-                }
-            }
-        });
- }
-
 $(function () {
     function getEvent(event) {
-        return  '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><img src="'+event.poster_url+'" alt=""/><span class="question">'+event.description+'</span><p>费用：'+event.fee/100.0+'元</p><p>组织者：'+event.creator.name+'</p><p>已报名：'+event.num+'人</p><p>开始时间：'+event.open_at+'</p><p>地点：'+getShopName(event.shop_id)+'</p></div><action><a onclick="join_event('+event.id+');">我要报名</></action></div>';
+        return  '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><p>费用：'+event.fee/100.0+'元</p><p>组织者：'+event.creator.name+'</p><p>已报名：'+event.num+'人</p><p>开始时间：'+event.open_at+'</p><p>地点：'+getShopName(event.shop_id)+'</p></div><action><a href="/static/event_detail.html?event_id='+event.id+'">我要报名</></action></div>';
 	}
     var empty = $('.empty'), events = $('.events');
     $.ajax({

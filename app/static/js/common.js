@@ -38,3 +38,39 @@
             autoClose : 2500
         });
     }
+
+
+ function join_event(event_id) {
+        $.ajax({
+            url: '/event/'+event_id,
+            type: 'post',
+            dataType: 'json',
+            success: function (result) {
+                if (result.code === 0) {
+                    showSuccessDialog('报名成功');
+                } else if (result.code === 10006) {
+                    var order = result.data.order;
+                    var order_id = result.data.order_id;
+                    WeixinJSBridge.invoke(
+                        'getBrandWCPayRequest', {
+                            appId: order.appId,
+                            timeStamp: order.timeStamp,
+                            nonceStr: order.nonceStr,
+                            package: order.package,
+                            signType: order.signType,
+                            paySign: order.sign
+                        },
+                        function(res){
+                            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                location.replace('/static/buy_success.html?order_id='+order_id);
+                            } else if (res.err_msg == "get_brand_wcpay_request:fail") {
+                                showFailDialog("支付失败");
+                            }
+                        }
+                    );
+                } else {
+                    showTips(result.msg);
+                }
+            }
+        });
+ }
