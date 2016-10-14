@@ -22,6 +22,7 @@ $(function () {
             event.append(getEvent(ev));
             header.html(ev.title);
             if (ev.member === 1) {
+                footer.html('已报名');
             } else {
                 if (code.length != 0) {
                     join_event(event_id);
