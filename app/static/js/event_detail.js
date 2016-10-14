@@ -7,7 +7,6 @@ $(function () {
         return  '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><img src="'+event.poster_url+'" alt=""/><span class="question">'+event.description+'</span><hr><p>费用：'+event.fee/100.0+'元</p><hr><p>组织者：'+event.creator.name+'</p><hr><p>已报名：'+event.num+'人</p><hr><p>活动时间：'+event.open_at+'~'+event.close_at+'</p><hr><p>地点：'+getShopName(event.shop_id)+'</p></div></div>';
 	}
     var event_id = getUrlParam('event_id');
-    var auto = getUrlParam('auto');
     var code = getUrlParam('code');
 
     var event = $('.event');
@@ -23,9 +22,8 @@ $(function () {
             event.append(getEvent(ev));
             header.html(ev.title);
             if (ev.member === 1) {
-                footer.html('已报名');
             } else {
-                if (auto=="1") {
+                if (code.length != 0) {
                     join_event(event_id);
                 }
                 footer.click(function () {
@@ -35,7 +33,7 @@ $(function () {
             wx.ready(function() {
                 wx.onMenuShareTimeline({
                     title: ev.description,
-                    link: location.href,
+                    link: location.href.split('&')[0],
                     imgUrl: ev.poster_url,
                     success: function() {},
                     fail: function() {}
@@ -43,7 +41,7 @@ $(function () {
                 wx.onMenuShareAppMessage({
                     title: ev.title,
                     desc: ev.description,
-                    link: location.href,
+                    link: location.href.split('&')[0],
                     imgUrl: ev.poster_url,
                     success: function() {},
                     fail: function() {}
