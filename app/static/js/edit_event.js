@@ -5,7 +5,7 @@ $(function() {
     var event_id = getUrlParam('event_id');
 
     var title=$('.title'), desc=$('.description'), fee=$('.fee'), shop_id=$('.shop_id'),
-        open_time=$('.open_at'), close_time=$('.close_at'), poster=$(".poster");
+        open_time=$('.open_at'), close_time=$('.close_at'), poster=$(".poster"), show_num=$(".show_num");
     var titleTip = $('.titleTip'), descTip = $('.descTip'), createTip = $('.createTip'),
         openTimeTip = $('.openTimeTip'), closeTimeTip = $('.closeTimeTip');
     var titleValidate = true, descValidate = true, openTimeValidate = true, closeTimeValidate = true;
@@ -77,6 +77,9 @@ $(function() {
             desc.val(ev.description);
             fee.val(ev.fee/100.0);
             $('input[type="radio"][name="shop_id"][value="'+ev.shop_id+'"]').attr("checked", "checked");
+            if (ev.show_num) {
+                show_num.attr("checked", "checked");
+            }
             open_time.val(ev.open_at.split(" ").join("T"));
             close_time.val(ev.close_at.split(" ").join("T"));
             $("#poster_img").attr("src", ev.poster_url);

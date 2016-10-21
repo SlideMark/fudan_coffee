@@ -121,6 +121,7 @@ def edit_event(event_id=0):
     ev = Event.find(event_id)
     ev.fee = int(request.form.get('fee', 0)) * 100
     ev.shop_id = request.form.get('shop_id', 0)
+    ev.show_num = request.form.get('show_num') == 'on'
     ev.title = request.form.get('title')
     ev.user_limit = request.form.get('user_limit', 0)
     ev.description = request.form.get('description')
@@ -142,6 +143,7 @@ def create_event():
     ev = Event()
     ev.fee = int(request.form.get('fee', 0)) * 100
     ev.shop_id = request.form.get('shop_id', 0)
+    ev.show_num = request.form.get('show_num') == 'on'
     ev.title = request.form.get('title')
     ev.user_limit = request.form.get('user_limit', 0)
     ev.description = request.form.get('description')

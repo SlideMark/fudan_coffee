@@ -4,7 +4,12 @@
 
 $(function () {
     function getEvent(event) {
-        return  '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><p>费用：'+event.fee/100.0+'元</p><p>组织者：'+event.creator.name+'</p><p>已报名：'+event.num+'人</p><p>开始时间：'+event.open_at+'</p><p>地点：'+getShopName(event.shop_id)+'</p></div><action><a href="/static/event_detail.html?event_id='+event.id+'">我要报名</></action></div>';
+        var r = '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><p>费用：'+event.fee/100.0+'元</p><p>组织者：'+event.creator.name+'</p>';
+        if (event.show_num) {
+            r += '<p>已报名：'+event.num+'人</p>';
+        }
+        r += '<p>开始时间：'+event.open_at+'</p><p>地点：'+getShopName(event.shop_id)+'</p></div><action><a href="/static/event_detail.html?event_id='+event.id+'">我要报名</></action></div>';
+	    return r;
 	}
     var empty = $('.empty'), events = $('.events');
     $.ajax({
