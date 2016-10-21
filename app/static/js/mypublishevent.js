@@ -28,7 +28,7 @@
     }
 $(function () {
     function getEvent(event) {
-        return  '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><img src="'+event.poster_url+'" alt=""/><span class="question">'+event.description+'</span><p>费用：'+event.fee/100.0+'元</p><p>已报名：'+event.num+'人</p><p>开始时间：'+event.open_at+'</p><p>地点：'+getShopName(event.shop_id)+'</p></div><action><a href="event_info.html?event_id='+event.id+'">报名详情</a><a href="edit_event.html?event_id='+event.id+'">修改</a><a class="warn" onclick="deleteClick('+event.id+')">删除</a></action></div>';
+        return  '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><img src="'+event.poster_url+'" alt=""/><span class="question">'+event.description.replace(/\r\n/g, "<br>")+'</span><p>费用：'+event.fee/100.0+'元</p><p>已报名：'+event.num+'人</p><p>开始时间：'+event.open_at+'</p><p>地点：'+getShopName(event.shop_id)+'</p></div><action><a href="event_info.html?event_id='+event.id+'">报名详情</a><a href="edit_event.html?event_id='+event.id+'">修改</a><a class="warn" onclick="deleteClick('+event.id+')">删除</a></action></div>';
 	}
     var empty = $('.empty'), events = $('.events');
     var a = getUrlParam('a');

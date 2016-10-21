@@ -4,7 +4,7 @@
 
 $(function () {
     function getEvent(event) {
-        var r = '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><img src="'+event.poster_url+'" alt=""/><hr><p>介绍: '+event.description+'</p><hr><p>费用：'+event.fee/100.0+'元</p><hr><p>组织者：'+event.creator.name+'</p>';
+        var r = '<div class="event"><div class="event-hd clear"><p class="fl">'+event.title+'</p></div><div class="event-bd"><img src="'+event.poster_url+'" alt=""/><hr><p>介绍: '+event.description.replace(/\r\n/g, "<br>")+'</p><hr><p>费用：'+event.fee/100.0+'元</p><hr><p>组织者：'+event.creator.name+'</p>';
         if (event.show_num) {
             r += '<hr><p>已报名：'+event.num+'人</p>';
         }
