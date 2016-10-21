@@ -93,6 +93,7 @@ def auth_required(func):
             request.user = user
 
             resp = make_response(func(*args, **argv))
+            resp.mimetype = 'application/json'
             if need_cookie:
                 resp.set_cookie('uid', '%s'%user.id)
                 resp.set_cookie('session', user.session_data)
@@ -139,6 +140,8 @@ def auth_optional(func):
         request.user = user
         if user:
             resp = make_response(func(*args, **argv))
+            resp.mimetype = 'application/json'
+
             if need_cookie:
                 resp.set_cookie('uid', '%s'%user.id)
                 resp.set_cookie('session', user.session_data)

@@ -19,7 +19,7 @@
             type : 'info',
             infoText : msg,
             infoIcon : 'img/icon/success.png',
-            autoClose : 2500
+            autoClose : 1500
         });
     }
      function showFailDialog(msg) {
@@ -39,6 +39,14 @@
         });
     }
 
+    function showProcessDialog(msg) {
+        $.dialog({
+            type : 'info',
+            infoText : msg,
+            infoIcon : 'img/icon/loading.gif',
+            autoClose : 1000
+        });
+    }
 
  function join_event(event_id) {
         $.ajax({

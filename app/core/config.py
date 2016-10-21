@@ -21,3 +21,7 @@ class Config(object):
         self.wechat_fwh_mchkey = conf.get('wechat_fwh_mchkey')
         self.salt = conf.get('salt')
         self.wechat_template_id = conf.get('wechat_template_id')
+        self.qiniu_key = conf.get('qiniu_key')
+        self.qiniu_secret = conf.get('qiniu_secret')
+        self.qiniu_img_bucket = conf.get('qiniu_img_bucket')
+        self.qiniu_img_prefix = conf.get('qiniu_img_prefix')

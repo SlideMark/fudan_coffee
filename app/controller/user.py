@@ -3,6 +3,7 @@
 __author__ = 'wills'
 
 import time
+from datetime import datetime
 import hashlib
 from app import app,conf
 from app.model.event import Event
@@ -13,6 +14,7 @@ from app.model.user_event import UserEvent
 from app.util.timeutil import dt_to_str
 from app.core.cache import LocalCache
 from app.util.weixin import WXClient
+from app.util.qn import QiniuCloud
 
 @app.route("/signature")
 def signature():
@@ -74,7 +76,7 @@ def joined_events():
 @app.route("/user/events/publish")
 @auth_required
 def published_events():
-    evs = Event.query(fetchone=False, creator=request.user.id, orderby='id desc')
+    evs = Event.query(fetchone=False, creator=request.user.id, extra={"state <": Event.State.DELETED}, orderby='id desc')
     resp = []
     for each in evs:
         ev = Event(**each)
@@ -100,3 +102,66 @@ def user_event(event_id=0):
     resp['users'] = users
     resp['num'] = len(users)
     return Response(data=resp).out()
+
+
+@app.route("/user/event/<event_id>", methods=['DELETE'])
+@auth_required
+def delete_event(event_id=0):
+    ev = Event.find(event_id)
+    if ev.creator != request.user.id:
+        return Response(code=ResponseCode.OPERATE_ERROR, msg='没有权限').out()
+    ev.state = Event.State.DELETED
+    ev.save()
+    return Response().out()
+
+
+@app.route("/user/event/<event_id>", methods=['PUT'])
+@auth_required
+def edit_event(event_id=0):
+    ev = Event.find(event_id)
+    ev.fee = int(request.form.get('fee', 0)) * 100
+    ev.shop_id = request.form.get('shop_id', 0)
+    ev.title = request.form.get('title')
+    ev.user_limit = request.form.get('user_limit', 0)
+    ev.description = request.form.get('description')
+    ev.open_at = request.form.get('open_at')
+    ev.close_at = request.form.get('close_at')
+
+    file = request.files.get('poster')
+    if file and file.filename != "" and  allowed_file(file.filename):
+        filename = '%s_%s' % (request.user.id, datetime.now().strftime('%Y%m%d%H%M%S'))
+        QiniuCloud.upload_file(file, filename, conf.qiniu_img_bucket)
+        ev.poster_url = conf.qiniu_img_prefix + filename
+    ev.save()
+
+    return str(Response())
+
+@app.route("/event", methods=['POST'])
+@auth_required
+def create_event():
+    ev = Event()
+    ev.fee = int(request.form.get('fee', 0)) * 100
+    ev.shop_id = request.form.get('shop_id', 0)
+    ev.title = request.form.get('title')
+    ev.user_limit = request.form.get('user_limit', 0)
+    ev.description = request.form.get('description')
+    ev.creator = request.user.id
+    ev.open_at = request.form.get('open_at')
+    ev.close_at = request.form.get('close_at')
+
+    file = request.files.get('poster')
+    if not file or file.filename == '':
+        return Response(code=ResponseCode.OPERATE_ERROR, msg='请选择上传文件').out()
+    elif allowed_file(file.filename):
+        filename = '%s_%s' % (request.user.id, datetime.now().strftime('%Y%m%d%H%M%S'))
+        QiniuCloud.upload_file(file, filename, conf.qiniu_img_bucket)
+        ev.poster_url = conf.qiniu_img_prefix + filename
+        ev.save()
+    else:
+        return Response(code=ResponseCode.OPERATE_ERROR, msg='请选择正确的上传格式文件').out()
+
+    return str(Response())
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ['jpg', 'png', 'JPG', 'PNG']

@@ -7,12 +7,12 @@ from app.model.event import Event
 from app.model.order import Order, WXOrder
 from flask import request
 from app.core.response import Response, ResponseCode
-from app.model.user import auth_required, auth_optional, User
+from app.model.user import auth_required, auth_optional
 from app.model.user_event import UserEvent
 
 @app.route("/events")
 def events():
-    evs = Event.query_all(orderby='open_at asc')
+    evs = Event.query(fetchone=False, extra={"state <": Event.State.DELETED}, orderby='open_at asc')
     resp = []
     for each in evs:
         ev = Event(**each)
@@ -87,17 +87,3 @@ def cancel_event(event_id=0):
     user_ev.state = UserEvent.State.CANCELED
     user_ev.save()
     return Response().out()
-
-@app.route("/event", methods=['POST'])
-@auth_required
-def create_event():
-    ev = Event()
-    ev.fee = request.form['fee'] or 0
-    ev.user_limit = request.form['user_limit'] or 0
-    ev.poster_url = request.form['poster_url']
-    ev.description = request.form['description']
-    ev.creator = request.user.id
-    ev.open_at = request.form['open_at']
-    ev.close_at = request.form['close_at']
-    ev.save()
-    return str(Response())

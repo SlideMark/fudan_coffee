@@ -30,3 +30,13 @@ wechat_fwh_mchkey: 1234
 
 # 微信消费成功推送模板id
 wechat_template_id: 21221
+
+# 七牛key
+qiniu_key: xxxx
+
+# 七牛secret
+qiniu_secret: xxxxx
+
+# 七牛图片上传bucket
+qiniu_img_bucket: xxxx
+qiniu_img_prefix: xxxx

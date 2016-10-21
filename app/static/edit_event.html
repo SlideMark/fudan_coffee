@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <title>修改活动</title>
+    <script type="text/javascript" src="js/flexible.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/dialog.css">
+
+    <link rel="stylesheet" type="text/css" href="css/create_event.css">
+</head>
+<body>
+    <section>
+        <form id="create_form" method="post" enctype="multipart/form-data">
+        <div>
+            <span class="name">活动标题: </span><input type="text" class="title" name="title" placeholder="请输入活动标题" />
+        </div>
+        <p class="titleTip"></p>
+        <div>
+            <span class="name">活动简介: </span><textarea rows="4" cols="100%" class="description" name="description" placeholder="请输入活动简介" ></textarea>
+        </div>
+        <p class="descTip"></p>
+        <div>
+            <span class="name">报名费用: </span><input type="number" class="fee" name="fee" placeholder="输入价格" /><span class="name">元</span>
+        </div>
+        <p class="feeTip"></p>
+        <div>
+            <span class="name">开始时间: </span><input type="datetime-local" class="open_at" name="open_at" />
+        </div>
+        <p class="openTimeTip"></p>
+        <div>
+            <span class="name">结束时间: </span><input type="datetime-local" class="close_at" name="close_at" />
+        </div>
+        <p class="closeTimeTip"></p>
+        <div>
+            <span class="name">活动地点:</span>
+            <input type="radio" name="shop_id" value=1 checked="checked"/><span class="name">奥体中心店</span>
+          <input type="radio" name="shop_id" value=0 /><span class="name">歌华大厦店</span>
+        </div>
+        <div>
+            <span class="name">活动海报: </span><input type="file" class="poster" name="poster"/>
+        </div>
+        <div>
+        <img id="poster_img" src="" alt=""/>
+        </div>
+        <button type="submit" id="submit">提交</button>
+        <p class="createTip"></p>
+        </form>
+    </section>
+    <script type="text/javascript" src="js/zepto.min.js?v=1"></script>
+    <script type="text/javascript" src="js/dialog.js?v=2"></script>
+    <script type="text/javascript" src="js/common.js?v=7"></script>
+    <script type="text/javascript" src="js/edit_event.js"></script>
+</body>
+</html>

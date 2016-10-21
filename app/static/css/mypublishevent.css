@@ -78,6 +78,10 @@ footer a {
     font-size: 0.24rem;
     line-height: 0.75rem;
 }
+
+.warn {
+    background: #FF0000;
+}
 .loading {
     position: fixed;
     top: 0;
