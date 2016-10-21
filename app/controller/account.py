@@ -5,7 +5,6 @@ __author__ = 'wills'
 from app import app, conf
 from app.model.user import User
 from flask import request, make_response
-from app.util.weixin import WXClient
 from app.core.response import ResponseCode, Response
 from app.model.user import auth_required, logedin
 import hashlib
@@ -15,25 +14,9 @@ import hashlib
 def wechat_signin():
     return Response(data=request.user.json()).out()
 
-
-def _signup(user):
-    wx_user = WXClient.get_wx_profile(user.openid, user.access_token)
-    if wx_user and wx_user.get('errcode') is None:
-        user.name = wx_user.get('nickname')
-        user.gender = wx_user.get('sex')
-        user.avatar = wx_user.get('headimgurl')
-        user.province = wx_user.get('province')
-        user.city = wx_user.get('city')
-        user.unionid = wx_user.get('unionid')
-        return True
-    else:
-        return False
-
-
 @app.route("/account/login", methods=['POST'])
 def password_signin():
     if logedin(request):
-        # return render_template('user.html', user=request.user)
         return str(Response(code=ResponseCode.OPERATE_ERROR, msg='用户已经登录'))
     phone = request.form.get('phone')
     password = request.form.get('password')
