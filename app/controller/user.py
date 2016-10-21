@@ -120,6 +120,8 @@ def delete_event(event_id=0):
 def edit_event(event_id=0):
     ev = Event.find(event_id)
     ev.fee = int(request.form.get('fee', 0)) * 100
+    if ev.fee <0:
+        return Response(code=ResponseCode.PARAMETER_ERROR, msg='输入收费错误').out()
     ev.shop_id = request.form.get('shop_id', 0)
     ev.show_num = request.form.get('show_num') == 'on'
     ev.title = request.form.get('title')
@@ -142,6 +144,8 @@ def edit_event(event_id=0):
 def create_event():
     ev = Event()
     ev.fee = int(request.form.get('fee', 0)) * 100
+    if ev.fee <0:
+        return Response(code=ResponseCode.PARAMETER_ERROR, msg='输入收费错误').out()
     ev.shop_id = request.form.get('shop_id', 0)
     ev.show_num = request.form.get('show_num') == 'on'
     ev.title = request.form.get('title')
