@@ -11,40 +11,9 @@ from app.model.user import auth_required, logedin
 import hashlib
 
 @app.route("/account/signin")
+@auth_required
 def wechat_signin():
-    if logedin(request):
-        return str(Response(user=request.user.json()))
-
-    code = request.args.get('code')
-    token = WXClient.get_wx_token(conf.wechat_app_id, conf.wechat_secret, code)
-    print token
-    if token and token.get('errcode') is None:
-        openid = token.get('openid')
-        access_token = token.get('access_token')
-    else:
-        return str(Response(code=ResponseCode.OPERATE_ERROR, msg='获取微信token失败'))
-    user = User.query_instance(openid=openid)
-    if user:
-        user.access_token = access_token
-        user.update_session()
-        user.save()
-    else:
-        user = User()
-        user.openid = openid
-        user.access_token = access_token
-        user.update_session()
-        if _signup(user):
-            user.save()
-            user = User.query_instance(openid=openid, master=True)
-
-            WXClient.send_signup_msg(user, {"openid": openid})
-        else:
-            return Response(code=ResponseCode.OPERATE_ERROR, msg='获取用户资料失败').out()
-
-    resp = make_response(str(Response(data=user.json())))
-    resp.set_cookie('uid', '%s'%user.id)
-    resp.set_cookie('session', user.session_data)
-    return resp
+    return Response(data=request.user.json()).out()
 
 
 def _signup(user):
