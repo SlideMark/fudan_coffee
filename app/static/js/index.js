@@ -26,12 +26,9 @@ $(function () {
         });
     } else {
         $.ajax({
-            url: '/account/user',
+            url: '/user',
             type: 'get',
             dataType: 'json',
-            data: {
-                code: getUrlParam('code')
-            },
             success: function (result) {
                 if (result.code != 0) {
                     location.replace("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc21f8a22b8362d8b&redirect_uri=http%3a%2f%2fm.linehrs.com%2fstatic%2findex.html&response_type=code&scope=snsapi_userinfo&state=");
