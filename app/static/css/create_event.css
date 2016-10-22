@@ -56,6 +56,20 @@ p {
     padding: 0.15rem 0;
 }
 
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 )
+                url('../img/icon/loading.gif')
+                50% 50%
+                no-repeat;
+}
+
 footer {
     position: fixed;
     left: 0;
