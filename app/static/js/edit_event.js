@@ -34,8 +34,6 @@ $(function() {
              var reader = new FileReader();
              reader.onload=function(){
                   $("#poster_img").attr("src", this.result);
-                  $("#poster_img").attr("width", "320");
-                  $("#poster_img").attr("height", "300");
              }
              reader.readAsDataURL(file[0]);
             }
@@ -83,8 +81,6 @@ $(function() {
             open_time.val(ev.open_at.split(" ").join("T"));
             close_time.val(ev.close_at.split(" ").join("T"));
             $("#poster_img").attr("src", ev.poster_url);
-            $("#poster_img").attr("width", "320");
-            $("#poster_img").attr("height", "300");
         }
     });
 });

@@ -31,8 +31,6 @@ $(function() {
              var reader = new FileReader();
              reader.onload=function(){
                   $("#poster_img").attr("src", this.result);
-                  $("#poster_img").attr("width", "320");
-                  $("#poster_img").attr("height", "300");
              }
              reader.readAsDataURL(file[0]);
             }
