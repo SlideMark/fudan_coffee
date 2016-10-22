@@ -59,6 +59,7 @@ $(function() {
                     if(data.code === 0) {
                         location.replace('/static/mypublishevent.html?a=c');
                     } else {
+                        $('.modal').hide();
                         createTip.text(data.msg);
                     }
                 }
