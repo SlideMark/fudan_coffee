@@ -45,6 +45,7 @@ $(function() {
                 url: '/event',
                 type: 'post',
                 data: data,
+                contentType: false,
                 cache: false,
                 processData: false,
                 async: false,
