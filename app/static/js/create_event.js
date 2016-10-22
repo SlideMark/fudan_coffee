@@ -7,6 +7,7 @@ $(function() {
     var titleTip = $('.titleTip'), descTip = $('.descTip'), createTip = $('.createTip'),
         openTimeTip = $('.openTimeTip'), closeTimeTip = $('.closeTimeTip');
     var titleValidate = false, descValidate = false, openTimeValidate = false, closeTimeValidate = false;
+    var create_form = $('#create_form');
 
     title.change(function () {
         titleValidate = $(this).val().length > 0;
@@ -37,10 +38,11 @@ $(function() {
             }
       });
 
-    $('#submit').click(function(e) {
+    create_form.submit(function(e) {
         e.preventDefault();
         if(titleValidate && descValidate && openTimeValidate && closeTimeValidate) {
-            var data = new FormData($('#create_form').get()[0]);
+            $('.modal').show();
+            var data = new FormData(create_form.get()[0]);
             $.ajax({
                 url: '/event',
                 type: 'post',
