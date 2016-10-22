@@ -16,6 +16,11 @@ section {
     margin: 0 auto;
 }
 
+img {
+    max-width: 100%;
+    vertical-align: middle;
+}
+
 .name {
     text-align: center;
     font-size: 0.28rem;
