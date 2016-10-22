@@ -45,17 +45,19 @@ $(function() {
                 url: '/event',
                 type: 'post',
                 data: data,
-                contentType: false,
-                cache: false,
+                // cache: false,
                 processData: false,
-                async: false,
-                beforeSend:function () {
-                    $('.modal').show();
-                },
-                complete:function(){
-                    $('.modal').hide();
-                },
+                // async: false,
+                // beforeSend:function () {
+                //     $('.modal').show();
+                // },
+                // complete:function(){
+                //     $('.modal').hide();
+                // },
                 success: function(data) {
+                    if (typeof data === 'string') {
+                        data = JSON.parse(data);
+                    }
                     if(data.code === 0) {
                         location.replace('/static/mypublishevent.html?a=c');
                     } else {
