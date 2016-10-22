@@ -30,7 +30,9 @@ $(function () {
             type: 'get',
             dataType: 'json',
             success: function (result) {
-                if (result.code != 0) {
+                if (result.code === 0) {
+                    $('footer').removeClass('hide');
+                } else {
                     location.replace("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc21f8a22b8362d8b&redirect_uri=http%3a%2f%2fm.linehrs.com%2fstatic%2findex.html&response_type=code&scope=snsapi_userinfo&state=");
                 }
             }
