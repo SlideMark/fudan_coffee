@@ -45,9 +45,9 @@ $(function() {
                 url: '/event',
                 type: 'post',
                 data: data,
-                // cache: false,
+                cache: false,
                 processData: false,
-                // async: false,
+                async: false,
                 // beforeSend:function () {
                 //     $('.modal').show();
                 // },
