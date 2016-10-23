@@ -33,7 +33,18 @@ $(function () {
                     join_event(event_id);
                 }
                 footer.click(function () {
-                    join_event(event_id);
+                    if (ev.fee >0) {
+                        $.dialog({
+                           titleText: "支付",
+                           type : 'confirm',
+                           onClickOk : function(){
+                               join_event(event_id);
+                           },
+                           contentHtml : '<p>将通过微信支付'+ev.fee/100.0+'元, 确定支付?</p>'
+                        });
+                    } else {
+                        join_event(event_id);
+                    }
                 });
             }
             wx.ready(function() {
