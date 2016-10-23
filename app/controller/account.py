@@ -45,6 +45,9 @@ def signout():
 @auth_required
 def bindphone():
     phone = request.form.get('phone')
+    if User.query(phone=phone):
+        return Response(code=ResponseCode.PARAMETER_ERROR, msg='该手机号码已存在').out()
+
     password = request.form.get('password')
 
     user = request.user
