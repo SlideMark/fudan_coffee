@@ -56,6 +56,7 @@
             success: function (result) {
                 if (result.code === 0) {
                     showSuccessDialog('报名成功');
+                    $(".join").text("已报名");
                 } else if (result.code === 10003) {
                     var join = encodeURIComponent(location.href.split('&')[0]);
                     var url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc21f8a22b8362d8b&redirect_uri='+join+'&response_type=code&scope=snsapi_userinfo&state=';
