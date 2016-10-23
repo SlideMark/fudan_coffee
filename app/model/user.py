@@ -64,7 +64,7 @@ def auth_required(func):
         need_cookie = False
         if uid:
             user = User.query_instance(id=uid, session_data=session)
-        elif request.args.get('code'):
+        if not user and request.args.get('code'):
             code = request.args.get('code')
             token = WXClient.get_wx_token(conf.wechat_app_id, conf.wechat_secret, code)
             if token and token.get('errcode') is None:
@@ -112,7 +112,7 @@ def auth_optional(func):
         need_cookie = False
         if uid:
             user = User.query_instance(id=uid, session_data=session)
-        elif request.args.get('code'):
+        if not user and request.args.get('code'):
             code = request.args.get('code')
             token = WXClient.get_wx_token(conf.wechat_app_id, conf.wechat_secret, code)
             if token and token.get('errcode') is None:
