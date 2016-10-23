@@ -43,7 +43,6 @@ $(function() {
         e.preventDefault();
         if(titleValidate && descValidate && openTimeValidate && closeTimeValidate) {
             var data = new FormData($('#create_form').get()[0]);
-            showProcessDialog("提交中...");
             $.ajax({
                 url: '/user/event/'+event_id,
                 type: 'put',
@@ -51,7 +50,13 @@ $(function() {
                 contentType: false,
                 cache: false,
                 processData: false,
-                async: false,
+                async: true,
+                beforeSend:function () {
+                     $('.modal').show();
+                },
+                complete:function(){
+                     $('.modal').hide();
+                },
                 success: function(data) {
                     if(data.code === 0) {
                         location.replace('/static/mypublishevent.html?a=e');

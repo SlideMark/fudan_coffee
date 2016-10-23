@@ -39,7 +39,6 @@ $(function() {
     create_form.submit(function(e) {
         e.preventDefault();
         if(titleValidate && descValidate && openTimeValidate && closeTimeValidate) {
-            $('.modal').show();
             var data = new FormData(create_form.get()[0]);
             $.ajax({
                 url: '/event',
@@ -48,13 +47,13 @@ $(function() {
                 contentType: false,
                 cache: false,
                 processData: false,
-                async: false,
-                // beforeSend:function () {
-                //     $('.modal').show();
-                // },
-                // complete:function(){
-                //     $('.modal').hide();
-                // },
+                async: true,
+                beforeSend:function () {
+                     $('.modal').show();
+                },
+                complete:function(){
+                     $('.modal').hide();
+                },
                 success: function(data) {
                     if (typeof data === 'string') {
                         data = JSON.parse(data);
@@ -62,7 +61,6 @@ $(function() {
                     if(data.code === 0) {
                         location.replace('/static/mypublishevent.html?a=c');
                     } else {
-                        $('.modal').hide();
                         createTip.text(data.msg);
                     }
                 }
